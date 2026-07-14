@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 72">
+  <rect x="4" y="4" width="64" height="64" rx="15" fill="#14161f"/>
+  <rect x="15" y="15" width="18" height="18" rx="4.5" fill="#ffb338"/>
+  <rect x="41" y="41" width="18" height="18" rx="4.5" fill="#2f5fff"/>
+  <path d="M27 45 L45 27" stroke="#f5f6f3" stroke-width="4" stroke-linecap="round"/>
+  <path d="M37 27 L45 27 L45 35" fill="none" stroke="#f5f6f3" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="84" y="38" font-family="'Fredoka', 'Comic Sans MS', sans-serif" font-weight="700" font-size="27" fill="#14161f" letter-spacing="-0.5">A&amp;A Creations</text>
+  <text x="84" y="57" font-family="'Fredoka', 'Comic Sans MS', sans-serif" font-weight="500" font-size="12.5" fill="#5b616e" letter-spacing="1.5">WEBSITES FOR LOCAL BUSINESS</text>
+</svg>
