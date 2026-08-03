@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>A&amp;A Creations — Proposal Template</title>
+<style>
+  @media print{ body{margin:0;} .no-print{display:none;} }
+  body{font-family:Arial,sans-serif;background:#eceee9;margin:0;padding:40px;color:#1f222c;}
+  .sheet{max-width:800px;margin:0 auto;background:#fff;padding:56px;border-radius:4px;}
+  .instructions{max-width:800px;margin:0 auto 24px;background:#fffbea;border:1px solid #ffd580;border-radius:8px;padding:20px 24px;font-size:13.5px;line-height:1.7;color:#5c4a00;}
+  .instructions h3{margin-top:0;color:#1f222c;}
+  .instructions table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12.5px;}
+  .instructions th,.instructions td{text-align:left;padding:6px 8px;border-bottom:1px solid #ffe4a3;}
+  .fill{background:#fff4cc;padding:1px 5px;border-radius:3px;font-weight:600;}
+  .print-btn{max-width:800px;margin:0 auto 16px;text-align:right;}
+  .print-btn button{background:#2f5fff;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;}
+
+  .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;}
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand .mark{width:52px;height:52px;background:#14161f;border-radius:12px;display:flex;align-items:center;justify-content:center;}
+  .brand .name{font-size:20px;font-weight:700;color:#14161f;}
+  .brand .tag{font-size:11px;color:#5b616e;letter-spacing:0.5px;}
+  .doc-title{text-align:right;}
+  .doc-title h1{font-size:24px;color:#2f5fff;margin:0;letter-spacing:1px;}
+  .doc-title .meta{font-size:12px;color:#5b616e;margin-top:6px;}
+
+  h2.section{font-size:15px;text-transform:uppercase;letter-spacing:0.5px;color:#2f5fff;border-bottom:2px solid #eceee9;padding-bottom:8px;margin:32px 0 16px;}
+  .findings{background:#f5f6f3;border-radius:8px;padding:18px 20px;font-size:14px;line-height:1.7;}
+  .findings ul{margin:8px 0 0;padding-left:20px;}
+  .reco-box{border:2px solid #2f5fff;border-radius:10px;padding:20px;margin-top:14px;}
+  .reco-box .package{font-size:18px;font-weight:700;color:#2f5fff;}
+  .reco-box .price{font-size:28px;font-weight:700;margin:8px 0;}
+  .addon-list{font-size:13.5px;color:#5b616e;margin-top:10px;}
+  .addon-list li{margin-bottom:4px;}
+  table.included{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:10px;}
+  table.included td{padding:8px 10px;border-bottom:1px solid #eceee9;}
+  table.included td:first-child{color:#1a9e5c;font-weight:700;width:24px;}
+  .why-grid{display:flex;gap:16px;margin-top:10px;}
+  .why-item{flex:1;background:#f5f6f3;border-radius:8px;padding:16px;font-size:13px;}
+  .why-item b{display:block;color:#14161f;margin-bottom:4px;font-size:13.5px;}
+  .steps{counter-reset:step;list-style:none;padding:0;margin-top:10px;}
+  .steps li{counter-increment:step;padding:10px 0 10px 36px;position:relative;font-size:14px;border-bottom:1px solid #eceee9;}
+  .steps li::before{content:counter(step);position:absolute;left:0;top:8px;width:24px;height:24px;background:#2f5fff;color:#fff;border-radius:50%;text-align:center;line-height:24px;font-size:12px;font-weight:700;}
+  .validity{margin-top:32px;padding-top:16px;border-top:1px solid #eceee9;font-size:12.5px;color:#5b616e;text-align:center;}
+</style>
+</head>
+<body>
+
+<div class="instructions no-print">
+  <h3>📋 How to fill this out per client (aim for under 10 minutes)</h3>
+  <p>Everything below the proposal itself stays the same every time. You only touch <span class="fill">highlighted</span> spots and the two boxed sections. Delete this whole instructions box before sending/printing — it won't show up when you print anyway.</p>
+  <ol>
+    <li><b>"What We Found"</b> — copy straight from the <code>Signals Found</code> column in your lead-finder CSV for that business. Don't rewrite it, just paste and lightly clean up the wording.</li>
+    <li><b>"Our Recommendation"</b> — pick the package + add-ons using the table below based on their business type.</li>
+    <li><b>Fill in</b> business name, contact name, and the price from your Pricing sheet.</li>
+  </ol>
+  <table>
+    <tr><th>Business type</th><th>Recommended package</th><th>Add-ons worth suggesting</th></tr>
+    <tr><td>Home services (plumber, electrician)</td><td>Growth</td><td>WhatsApp Business Setup, Basic SEO</td></tr>
+    <tr><td>Café / restaurant</td><td>Growth</td><td>WhatsApp Business Setup (menu in-chat), Photo gallery</td></tr>
+    <tr><td>Salon / clinic</td><td>Growth</td><td>Booking System, WhatsApp Business Setup</td></tr>
+    <tr><td>Retail / boutique</td><td>Growth or Custom</td><td>Online Payments, WhatsApp Business Setup</td></tr>
+    <tr><td>No website at all (any type)</td><td>Starter</td><td>AI/GEO Visibility (great value pitch here)</td></tr>
+    <tr><td>Professional services (accountant, consultant)</td><td>Starter or Growth</td><td>Basic SEO, AI/GEO Visibility</td></tr>
+  </table>
+</div>
+
+<div class="print-btn no-print">
+  <button onclick="window.print()">🖨 Print / Save as PDF</button>
+</div>
+
+<div class="sheet">
+
+  <div class="top">
+    <div class="brand">
+      <div class="mark">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="1 18 8.5 10.5 13.5 15.5 23 6" stroke="#ffb338"/>
+          <polyline points="17 6 23 6 23 12" stroke="#2f5fff"/>
+        </svg>
+      </div>
+      <div>
+        <div class="name">A&amp;A Creations</div>
+        <div class="tag">WEBSITES FOR LOCAL BUSINESS</div>
+      </div>
+    </div>
+    <div class="doc-title">
+      <h1>PROPOSAL</h1>
+      <div class="meta">Prepared for <b class="fill">[Business Name]</b><br>Date: <span class="fill">[DD/MM/YYYY]</span></div>
+    </div>
+  </div>
+
+  <h2 class="section">What We Found</h2>
+  <div class="findings">
+    We took a look at <b class="fill">[Business Name]</b>'s current online presence and found:
+    <ul class="fill">
+      <li>[Paste specific finding from lead-finder "Signals Found" column — e.g. "No mobile viewport meta tag (site isn't mobile-friendly)"]</li>
+      <li>[Second finding]</li>
+      <li>[Third finding, if relevant]</li>
+    </ul>
+  </div>
+
+  <h2 class="section">Our Recommendation</h2>
+  <div class="reco-box">
+    <div class="package fill">[Growth Package]</div>
+    <div class="price fill">₹[19,999]</div>
+    <div style="font-size:13px;color:#5b616e;">Delivered in <span class="fill">[10–14 days]</span> from approval</div>
+    <div class="addon-list">
+      <b>Recommended add-ons for your business:</b>
+      <ul class="fill">
+        <li>[Add-on 1 — e.g. WhatsApp Business Setup — ₹1,999]</li>
+        <li>[Add-on 2, if relevant]</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="section">What's Included</h2>
+  <table class="included">
+    <tr><td>✓</td><td>Mobile-first, custom-built website (not a template)</td></tr>
+    <tr><td>✓</td><td>Contact form + click-to-call + WhatsApp button</td></tr>
+    <tr><td>✓</td><td>Basic on-page SEO setup</td></tr>
+    <tr><td>✓</td><td>Google Business Profile sync</td></tr>
+    <tr><td>✓</td><td>Fixed price agreed before any work begins</td></tr>
+    <tr><td>✓</td><td>Revision rounds + free post-launch support window</td></tr>
+    <tr><td>✓</td><td>Full source code ownership on final payment</td></tr>
+  </table>
+
+  <h2 class="section">Why A&amp;A Creations</h2>
+  <div class="why-grid">
+    <div class="why-item"><b>Fixed price</b>What's quoted is what's billed — no surprise invoices mid-project.</div>
+    <div class="why-item"><b>Fast turnaround</b>Days, not months — most agencies take 4-8 weeks for this scope.</div>
+    <div class="why-item"><b>You own it</b>Full code and design ownership transfers to you, no lock-in.</div>
+  </div>
+
+  <h2 class="section">Next Steps</h2>
+  <ol class="steps">
+    <li>Reply "yes" to confirm you'd like to proceed</li>
+    <li>Pay the 50% deposit via the payment link we'll send</li>
+    <li>Share your logo, photos, and business details (or we help fill gaps)</li>
+    <li>We build, you review a live preview link, we launch</li>
+  </ol>
+
+  <div class="validity">This proposal is valid for 14 days from the date above. Questions? hello@aacreations.com &nbsp;|&nbsp; +91 84540 21541</div>
+
+</div>
+
+</body>
+</html>
