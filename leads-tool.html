@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Lead Finder — Internal Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .tool-wrap{max-width:1100px;margin:0 auto;padding:32px 24px 80px;}
+  .tool-header{display:flex;align-items:center;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--line);margin-bottom:32px;}
+  .gate{max-width:360px;margin:120px auto;text-align:center;}
+  .gate input{width:100%;padding:13px 16px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:15px;margin:16px 0;}
+  .gate p{color:var(--slate);font-size:13px;}
+  .form-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:24px;}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field label{font-size:12px;font-weight:600;color:var(--slate);text-transform:uppercase;letter-spacing:0.3px;}
+  .field input{padding:11px 14px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:14px;min-width:200px;}
+  .status-msg{padding:14px 18px;border-radius:8px;margin-bottom:20px;font-size:14px;}
+  .status-msg.error{background:#fdeceb;color:#c0342a;}
+  .status-msg.loading{background:var(--cobalt-dim);color:var(--cobalt);}
+  .status-msg.success{background:#e6f7ee;color:#1a9e5c;}
+  table.results{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13px;}
+  table.results th{background:var(--ink);color:#fff;padding:10px 12px;text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:0.3px;}
+  table.results td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
+  table.results tr:last-child td{border-bottom:none;}
+  .score-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-weight:700;font-size:12px;}
+  .score-high{background:#fdeceb;color:#c0342a;}
+  .score-mid{background:#fff4de;color:#8a5a00;}
+  .score-low{background:#e6f7ee;color:#1a9e5c;}
+  .signals-cell{max-width:280px;font-size:11.5px;color:var(--slate);}
+  .no-website{color:#c0342a;font-weight:600;font-size:12px;}
+  .toolbar-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+
+  .tabs{display:flex;gap:4px;margin-bottom:24px;border-bottom:1px solid var(--line);}
+  .tab-btn{padding:10px 18px;background:none;border:none;cursor:pointer;font-family:'Fredoka',sans-serif;font-weight:600;font-size:14px;color:var(--slate);border-bottom:2px solid transparent;margin-bottom:-1px;}
+  .tab-btn.active{color:var(--cobalt);border-bottom-color:var(--cobalt);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  .stats-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;}
+  .stat-chip{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+  .stat-chip .num{font-size:22px;font-weight:700;color:var(--ink);}
+  .stat-chip .lbl{font-size:11px;color:var(--slate);text-transform:uppercase;letter-spacing:0.3px;margin-top:2px;}
+
+  .filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:18px;}
+  .filter-row select{padding:9px 12px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:13px;}
+  .status-select{padding:5px 8px;border-radius:6px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:12px;}
+  .status-New{background:#f0f1ed;}
+  .status-Contacted{background:#fff4de;}
+  .status-Interested{background:var(--cobalt-dim);}
+  .status-Converted{background:#e6f7ee;}
+  .status-Not-Interested{background:#fdeceb;}
+  .del-btn{background:none;border:none;cursor:pointer;color:var(--slate);font-size:15px;padding:4px 8px;}
+  .del-btn:hover{color:#c0342a;}
+</style>
+</head>
+<body class="loaded">
+
+<div id="gateScreen" class="gate">
+  <h2>🔒 Internal Tool</h2>
+  <p>This page isn't part of the public site — enter the passcode to continue.</p>
+  <input type="password" id="passcodeInput" placeholder="Passcode">
+  <button class="btn btn-primary" onclick="checkPasscode()" style="width:100%;justify-content:center;">Enter</button>
+  <p id="gateError" style="color:#c0342a;display:none;">Incorrect passcode.</p>
+</div>
+
+<div id="toolScreen" style="display:none;">
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <div style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;">
+        <span style="width:8px;height:8px;border-radius:2px;background:var(--amber);display:inline-block;"></span>
+        A&amp;A Creations — Lead Finder <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--slate);font-weight:400;">INTERNAL</span>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <a href="site-builder.html" class="btn btn-ghost" style="padding:8px 16px;font-size:13px;">Site Builder →</a>
+        <a href="index.html" class="btn btn-ghost" style="padding:8px 16px;font-size:13px;">← Back to site</a>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" id="tabBtnSearch" onclick="switchTab('search')">🔍 New Search</button>
+      <button class="tab-btn" id="tabBtnStored" onclick="switchTab('stored')">📊 All Stored Leads</button>
+    </div>
+
+    <div id="panelSearch" class="tab-panel active">
+      <div class="form-row">
+        <div class="field">
+          <label>Category (comma-separated for multiple)</label>
+          <input type="text" id="queryInput" placeholder="plumbers, electricians, salons" value="plumbers">
+        </div>
+        <div class="field">
+          <label>Location</label>
+          <input type="text" id="locationInput" placeholder="Mumbai, India" value="Mumbai, India">
+        </div>
+        <div class="field">
+          <label>Max results per category</label>
+          <input type="number" id="maxResultsInput" value="15" min="1" max="20">
+        </div>
+        <button class="btn btn-primary" onclick="runSearch()" id="searchBtn">Run Search</button>
+      </div>
+
+      <div id="statusMsg"></div>
+      <div class="toolbar-actions" id="toolbarActions" style="display:none;">
+        <span id="resultCount" style="font-size:13px;color:var(--slate);"></span>
+        <button class="btn btn-ghost" style="padding:8px 16px;font-size:13px;" onclick="downloadCSV(currentLeads, 'search_results')">⬇ Download CSV</button>
+      </div>
+      <div id="resultsContainer"></div>
+    </div>
+
+    <div id="panelStored" class="tab-panel">
+      <div class="stats-bar" id="statsBar"></div>
+
+      <div class="filter-row">
+        <div class="field">
+          <label>Category</label>
+          <select id="filterCategory" onchange="loadStoredLeads()"><option value="">All</option></select>
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select id="filterStatus" onchange="loadStoredLeads()">
+            <option value="">All</option>
+            <option>New</option>
+            <option>Contacted</option>
+            <option>Interested</option>
+            <option>Converted</option>
+            <option>Not Interested</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Only no-website leads</label>
+          <select id="filterNoWebsite" onchange="loadStoredLeads()">
+            <option value="">No</option>
+            <option value="true">Yes</option>
+          </select>
+        </div>
+        <button class="btn btn-ghost" style="padding:9px 16px;font-size:13px;" onclick="loadStoredLeads()">↻ Refresh</button>
+        <button class="btn btn-ghost" style="padding:9px 16px;font-size:13px;" onclick="downloadCSV(storedLeads, 'all_leads_database')">⬇ Download Full CSV</button>
+      </div>
+
+      <div id="storedResultsContainer"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Not real security — this only stops casual/accidental visits and search engines
+  // (robots.txt + noindex tag handle the search engine part). Anyone determined
+  // can view-source and see this. Change this to whatever you like.
+  const PASSCODE = "aacreations2026";
+
+  function checkPasscode() {
+    const input = document.getElementById('passcodeInput').value;
+    if (input === PASSCODE) {
+      document.getElementById('gateScreen').style.display = 'none';
+      document.getElementById('toolScreen').style.display = 'block';
+      sessionStorage.setItem('aa_gate_passed', '1');
+    } else {
+      document.getElementById('gateError').style.display = 'block';
+    }
+  }
+  if (sessionStorage.getItem('aa_gate_passed') === '1') {
+    document.getElementById('gateScreen').style.display = 'none';
+    document.getElementById('toolScreen').style.display = 'block';
+  }
+  document.getElementById('passcodeInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkPasscode();
+  });
+
+  let currentLeads = [];
+  let storedLeads = [];
+
+  function scoreBadgeClass(score) {
+    if (score >= 40) return 'score-high';
+    if (score >= 20) return 'score-mid';
+    return 'score-low';
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  function switchTab(tab) {
+    document.getElementById('tabBtnSearch').classList.toggle('active', tab === 'search');
+    document.getElementById('tabBtnStored').classList.toggle('active', tab === 'stored');
+    document.getElementById('panelSearch').classList.toggle('active', tab === 'search');
+    document.getElementById('panelStored').classList.toggle('active', tab === 'stored');
+    if (tab === 'stored') loadStoredLeads();
+  }
+
+  async function runSearch() {
+    const query = document.getElementById('queryInput').value.trim();
+    const location = document.getElementById('locationInput').value.trim() || 'Mumbai, India';
+    const maxResults = document.getElementById('maxResultsInput').value || 15;
+    const statusEl = document.getElementById('statusMsg');
+    const btn = document.getElementById('searchBtn');
+
+    if (!query) {
+      statusEl.innerHTML = '<div class="status-msg error">Enter at least one category.</div>';
+      return;
+    }
+
+    const categories = query.split(',').map(c => c.trim()).filter(Boolean);
+    btn.disabled = true;
+    btn.textContent = 'Searching...';
+    statusEl.innerHTML = `<div class="status-msg loading">Searching ${categories.length} categor${categories.length > 1 ? 'ies' : 'y'} in ${escapeHtml(location)}... this can take up to 10-15 seconds per category.</div>`;
+    document.getElementById('resultsContainer').innerHTML = '';
+    document.getElementById('toolbarActions').style.display = 'none';
+
+    let allLeads = [];
+    let errors = [];
+    let lastTotalStored = null;
+
+    for (const category of categories) {
+      try {
+        const url = `/.netlify/functions/find-leads?query=${encodeURIComponent(category)}&location=${encodeURIComponent(location)}&max_results=${encodeURIComponent(maxResults)}`;
+        const resp = await fetch(url);
+        const data = await resp.json();
+        if (!resp.ok) {
+          errors.push(`${category}: ${data.error || 'unknown error'}`);
+          continue;
+        }
+        allLeads = allLeads.concat(data.leads);
+        lastTotalStored = data.totalStored;
+      } catch (e) {
+        errors.push(`${category}: ${e.message}`);
+      }
+    }
+
+    allLeads.sort((a, b) => b.score - a.score);
+    currentLeads = allLeads;
+
+    btn.disabled = false;
+    btn.textContent = 'Run Search';
+
+    let msg = '';
+    if (errors.length) {
+      msg = `<div class="status-msg error">Some searches failed:<br>${errors.map(escapeHtml).join('<br>')}</div>`;
+    } else if (lastTotalStored !== null) {
+      msg = `<div class="status-msg success">Saved to your database — ${lastTotalStored} total leads stored across all searches so far.</div>`;
+    }
+    statusEl.innerHTML = msg;
+
+    renderResults(allLeads);
+  }
+
+  function renderResults(leads) {
+    const container = document.getElementById('resultsContainer');
+    const toolbar = document.getElementById('toolbarActions');
+
+    if (!leads.length) {
+      container.innerHTML = '<div class="status-msg error">No results. Try a broader category or check the location spelling.</div>';
+      return;
+    }
+
+    toolbar.style.display = 'flex';
+    const noWebsiteCount = leads.filter(l => !l.website).length;
+    document.getElementById('resultCount').textContent = `${leads.length} leads found (${noWebsiteCount} with no website)`;
+
+    const rows = leads.map(l => `
+      <tr>
+        <td><b>${escapeHtml(l.name)}</b><br><span style="color:var(--slate);font-size:11px;">${escapeHtml(l.category)}</span></td>
+        <td>${l.rating ? `⭐ ${l.rating} (${l.reviewCount || 0})` : '—'}</td>
+        <td><span class="score-badge ${scoreBadgeClass(l.score)}">${l.score}</span></td>
+        <td>${l.website ? `<a href="${escapeHtml(l.website)}" target="_blank" rel="noopener">${escapeHtml(l.website.slice(0, 30))}${l.website.length > 30 ? '...' : ''}</a>` : '<span class="no-website">No website</span>'}</td>
+        <td>${escapeHtml(l.phone) || '—'}</td>
+        <td class="signals-cell">${l.website ? escapeHtml(l.signals.join('; ')) : `<b>Suggest:</b> ${escapeHtml(l.suggestedPlatforms)}`}</td>
+      </tr>
+    `).join('');
+
+    container.innerHTML = `
+      <table class="results">
+        <thead><tr><th>Business</th><th>Rating</th><th>Score</th><th>Website</th><th>Phone</th><th>Signals / Platforms</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  async function loadStoredLeads() {
+    const container = document.getElementById('storedResultsContainer');
+    const category = document.getElementById('filterCategory').value;
+    const status = document.getElementById('filterStatus').value;
+    const noWebsite = document.getElementById('filterNoWebsite').value;
+
+    container.innerHTML = '<div class="status-msg loading">Loading...</div>';
+
+    const params = new URLSearchParams();
+    if (category) params.set('category', category);
+    if (status) params.set('status', status);
+    if (noWebsite) params.set('no_website', noWebsite);
+
+    try {
+      const resp = await fetch(`/.netlify/functions/leads-store?${params.toString()}`);
+      const data = await resp.json();
+      if (!resp.ok) {
+        container.innerHTML = `<div class="status-msg error">${escapeHtml(data.error || 'Failed to load')}</div>`;
+        return;
+      }
+      storedLeads = data.leads;
+      renderStats(data.stats);
+      populateCategoryFilter(data.stats.categories, category);
+      renderStoredTable(data.leads);
+    } catch (e) {
+      container.innerHTML = `<div class="status-msg error">${escapeHtml(e.message)}</div>`;
+    }
+  }
+
+  function populateCategoryFilter(categories, selected) {
+    const sel = document.getElementById('filterCategory');
+    const current = sel.value;
+    sel.innerHTML = '<option value="">All</option>' + categories.map(c =>
+      `<option value="${escapeHtml(c)}" ${c === (selected || current) ? 'selected' : ''}>${escapeHtml(c)}</option>`
+    ).join('');
+  }
+
+  function renderStats(stats) {
+    document.getElementById('statsBar').innerHTML = `
+      <div class="stat-chip"><div class="num">${stats.total}</div><div class="lbl">Total Leads</div></div>
+      <div class="stat-chip"><div class="num">${stats.noWebsite}</div><div class="lbl">No Website</div></div>
+      <div class="stat-chip"><div class="num">${stats.byStatus['Contacted'] || 0}</div><div class="lbl">Contacted</div></div>
+      <div class="stat-chip"><div class="num">${stats.byStatus['Interested'] || 0}</div><div class="lbl">Interested</div></div>
+      <div class="stat-chip"><div class="num">${stats.byStatus['Converted'] || 0}</div><div class="lbl">Converted</div></div>
+    `;
+  }
+
+  function renderStoredTable(leads) {
+    const container = document.getElementById('storedResultsContainer');
+    if (!leads.length) {
+      container.innerHTML = '<div class="status-msg error">No stored leads match this filter yet — run a search first.</div>';
+      return;
+    }
+    const statuses = ['New', 'Contacted', 'Interested', 'Converted', 'Not Interested'];
+    const rows = leads.map(l => `
+      <tr>
+        <td><b>${escapeHtml(l.name)}</b><br><span style="color:var(--slate);font-size:11px;">${escapeHtml(l.category)}</span></td>
+        <td><span class="score-badge ${scoreBadgeClass(l.score)}">${l.score}</span></td>
+        <td>${l.website ? `<a href="${escapeHtml(l.website)}" target="_blank" rel="noopener">link</a>` : '<span class="no-website">None</span>'}</td>
+        <td>${escapeHtml(l.phone) || '—'}</td>
+        <td class="signals-cell">${l.website ? escapeHtml(l.signals.join('; ')) : `<b>Suggest:</b> ${escapeHtml(l.suggestedPlatforms)}`}</td>
+        <td>
+          <select class="status-select status-${l.status.replace(' ', '-')}" onchange="updateStatus('${l.id}', this.value, this)">
+            ${statuses.map(s => `<option value="${s}" ${s === l.status ? 'selected' : ''}>${s}</option>`).join('')}
+          </select>
+        </td>
+        <td><button class="del-btn" onclick="deleteLead('${l.id}', '${escapeHtml(l.name).replace(/'/g, "\\'")}')" title="Delete">🗑</button></td>
+      </tr>
+    `).join('');
+
+    container.innerHTML = `
+      <table class="results">
+        <thead><tr><th>Business</th><th>Score</th><th>Website</th><th>Phone</th><th>Signals / Platforms</th><th>Status</th><th></th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  async function updateStatus(id, status, selectEl) {
+    selectEl.className = `status-select status-${status.replace(' ', '-')}`;
+    try {
+      const resp = await fetch('/.netlify/functions/leads-store', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status }),
+      });
+      if (!resp.ok) {
+        const data = await resp.json();
+        alert('Failed to update status: ' + (data.error || 'unknown error'));
+        return;
+      }
+      const lead = storedLeads.find(l => l.id === id);
+      if (lead) lead.status = status;
+    } catch (e) {
+      alert('Failed to update status: ' + e.message);
+    }
+  }
+
+  async function deleteLead(id, name) {
+    if (!confirm(`Delete "${name}" from your leads database? This can't be undone.`)) return;
+    try {
+      const resp = await fetch(`/.netlify/functions/leads-store?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+      if (!resp.ok) {
+        const data = await resp.json();
+        alert('Failed to delete: ' + (data.error || 'unknown error'));
+        return;
+      }
+      loadStoredLeads();
+    } catch (e) {
+      alert('Failed to delete: ' + e.message);
+    }
+  }
+
+  function downloadCSV(leads, filenamePrefix) {
+    if (!leads || !leads.length) { alert('No leads to export yet.'); return; }
+    const headers = ['Business Name', 'Category', 'Address', 'Phone', 'Website', 'Rating', 'Review Count', 'Score', 'Signals', 'Suggested Platforms', 'Status'];
+    const rows = leads.map(l => [
+      l.name, l.category, l.address || '', l.phone, l.website,
+      l.rating || '', l.reviewCount || '', l.score,
+      l.signals.join('; '), l.suggestedPlatforms || '', l.status || ''
+    ]);
+    const csv = [headers, ...rows].map(row =>
+      row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')
+    ).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${filenamePrefix}_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  document.getElementById('queryInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') runSearch();
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Site Builder — Internal Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .tool-wrap{max-width:900px;margin:0 auto;padding:32px 24px 80px;}
+  .tool-header{display:flex;align-items:center;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--line);margin-bottom:32px;}
+  .gate{max-width:360px;margin:120px auto;text-align:center;}
+  .gate input{width:100%;padding:13px 16px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:15px;margin:16px 0;}
+  .gate p{color:var(--slate);font-size:13px;}
+
+  .form-section{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;margin-bottom:20px;}
+  .form-section h3{font-size:14px;text-transform:uppercase;letter-spacing:0.4px;color:var(--cobalt);margin:0 0 16px;}
+  .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+  .field.full{grid-column:1 / -1;}
+  .field label{font-size:12px;font-weight:600;color:var(--slate);}
+  .field input, .field select, .field textarea{padding:11px 14px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:14px;}
+  .field textarea{resize:vertical;min-height:60px;}
+  .color-row{display:flex;align-items:center;gap:10px;}
+  .color-row input[type=color]{width:50px;height:38px;padding:2px;border-radius:6px;border:1px solid var(--line-dark);cursor:pointer;}
+
+  .service-row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:10px;align-items:center;}
+  .remove-btn{background:#fdeceb;color:#c0342a;border:none;border-radius:6px;width:32px;height:32px;cursor:pointer;font-size:14px;}
+  .add-btn{background:var(--paper-dim);border:1px dashed var(--line-dark);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:var(--slate);}
+
+  .lead-picker{display:flex;gap:10px;margin-bottom:16px;}
+  .lead-picker select{flex:1;}
+  .status-msg{padding:14px 18px;border-radius:8px;margin:16px 0;font-size:14px;}
+  .status-msg.error{background:#fdeceb;color:#c0342a;}
+  .status-msg.loading{background:var(--cobalt-dim);color:var(--cobalt);}
+  .status-msg.success{background:#e6f7ee;color:#1a9e5c;}
+
+  .tier-options{display:flex;gap:10px;}
+  .tier-card{flex:1;border:2px solid var(--line);border-radius:10px;padding:14px;cursor:pointer;text-align:center;}
+  .tier-card.selected{border-color:var(--cobalt);background:var(--cobalt-dim);}
+  .tier-card b{display:block;font-size:14px;}
+  .tier-card span{font-size:11px;color:var(--slate);}
+</style>
+</head>
+<body class="loaded">
+
+<div id="gateScreen" class="gate">
+  <h2>🔒 Internal Tool</h2>
+  <p>This page isn't part of the public site — enter the passcode to continue.</p>
+  <input type="password" id="passcodeInput" placeholder="Passcode">
+  <button class="btn btn-primary" onclick="checkPasscode()" style="width:100%;justify-content:center;">Enter</button>
+  <p id="gateError" style="color:#c0342a;display:none;">Incorrect passcode.</p>
+</div>
+
+<div id="toolScreen" style="display:none;">
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <div style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;">
+        <span style="width:8px;height:8px;border-radius:2px;background:var(--amber);display:inline-block;"></span>
+        A&amp;A Creations — Site Builder <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--slate);font-weight:400;">INTERNAL</span>
+      </div>
+      <a href="leads-tool.html" class="btn btn-ghost" style="padding:8px 16px;font-size:13px;">Lead Finder →</a>
+    </div>
+
+    <div class="form-section">
+      <h3>Start from a stored lead (optional)</h3>
+      <div class="lead-picker">
+        <select id="leadPicker"><option value="">— Load leads from database —</option></select>
+        <button class="btn btn-ghost" style="font-size:13px;padding:9px 16px;" onclick="loadLeadsIntoPicker()">↻ Load</button>
+        <button class="btn btn-primary" style="font-size:13px;padding:9px 16px;" onclick="applySelectedLead()">Use This Lead</button>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Business Details</h3>
+      <div class="field-grid">
+        <div class="field"><label>Business Name *</label><input type="text" id="businessName" placeholder="Spice Route Cafe"></div>
+        <div class="field">
+          <label>Category *</label>
+          <select id="category">
+            <option value="home-services">Home Services</option>
+            <option value="restaurant">Restaurant / Café</option>
+            <option value="salon">Salon / Spa</option>
+          </select>
+        </div>
+      </div>
+      <div class="field full">
+        <label>Package Tier *</label>
+        <div class="tier-options">
+          <div class="tier-card selected" data-tier="starter" onclick="selectTier('starter')"><b>Starter</b><span>1 page</span></div>
+          <div class="tier-card" data-tier="growth" onclick="selectTier('growth')"><b>Growth</b><span>3 pages</span></div>
+          <div class="tier-card" data-tier="custom" onclick="selectTier('custom')"><b>Custom</b><span>4 pages</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Brand Colors</h3>
+      <div class="field-grid">
+        <div class="field">
+          <label>Primary Color</label>
+          <div class="color-row"><input type="color" id="primaryColor" value="#2f5fff"><span id="primaryColorHex">#2f5fff</span></div>
+        </div>
+        <div class="field">
+          <label>Accent Color</label>
+          <div class="color-row"><input type="color" id="accentColor" value="#ffb338"><span id="accentColorHex">#ffb338</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Contact Info</h3>
+      <div class="field-grid">
+        <div class="field"><label>Phone</label><input type="text" id="contactPhone" placeholder="+91 98765 43210"></div>
+        <div class="field"><label>WhatsApp Number</label><input type="text" id="contactWhatsapp" placeholder="+91 98765 43210"></div>
+        <div class="field"><label>Email</label><input type="text" id="contactEmail" placeholder="hello@business.com"></div>
+        <div class="field"><label>Address</label><input type="text" id="contactAddress" placeholder="Bandra West, Mumbai"></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Content</h3>
+      <div class="field full"><label>Tagline / Headline</label><input type="text" id="tagline" placeholder="Authentic flavors, made fresh daily"></div>
+      <div class="field full"><label>About (short description)</label><textarea id="about" placeholder="A neighborhood cafe serving comfort food since 2020."></textarea></div>
+
+      <label style="font-size:12px;font-weight:600;color:var(--slate);">Services / Offerings</label>
+      <div id="servicesContainer"></div>
+      <button class="add-btn" onclick="addServiceRow()">+ Add Service</button>
+    </div>
+
+    <div id="statusMsg"></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:16px;font-size:16px;" onclick="generateSite()" id="generateBtn">⚡ Generate Website</button>
+
+  </div>
+</div>
+
+<script>
+  const PASSCODE = "aacreations2026"; // same deterrent note as leads-tool.html — change freely
+
+  function checkPasscode() {
+    if (document.getElementById('passcodeInput').value === PASSCODE) {
+      document.getElementById('gateScreen').style.display = 'none';
+      document.getElementById('toolScreen').style.display = 'block';
+      sessionStorage.setItem('aa_gate_passed', '1');
+    } else {
+      document.getElementById('gateError').style.display = 'block';
+    }
+  }
+  if (sessionStorage.getItem('aa_gate_passed') === '1') {
+    document.getElementById('gateScreen').style.display = 'none';
+    document.getElementById('toolScreen').style.display = 'block';
+  }
+  document.getElementById('passcodeInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPasscode(); });
+
+  let selectedTier = 'starter';
+  let loadedLeads = [];
+
+  function selectTier(tier) {
+    selectedTier = tier;
+    document.querySelectorAll('.tier-card').forEach(c => c.classList.toggle('selected', c.dataset.tier === tier));
+  }
+
+  document.getElementById('primaryColor').addEventListener('input', e => {
+    document.getElementById('primaryColorHex').textContent = e.target.value;
+  });
+  document.getElementById('accentColor').addEventListener('input', e => {
+    document.getElementById('accentColorHex').textContent = e.target.value;
+  });
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  function addServiceRow(name = '', description = '') {
+    const container = document.getElementById('servicesContainer');
+    const row = document.createElement('div');
+    row.className = 'service-row';
+    row.innerHTML = `
+      <input type="text" placeholder="Service name" class="svc-name" value="${escapeHtml(name)}">
+      <input type="text" placeholder="Short description" class="svc-desc" value="${escapeHtml(description)}">
+      <button class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+    `;
+    container.appendChild(row);
+  }
+  // Start with 2 empty rows
+  addServiceRow();
+  addServiceRow();
+
+  async function loadLeadsIntoPicker() {
+    const picker = document.getElementById('leadPicker');
+    picker.innerHTML = '<option value="">Loading...</option>';
+    try {
+      const resp = await fetch('/.netlify/functions/leads-store');
+      const data = await resp.json();
+      loadedLeads = data.leads || [];
+      picker.innerHTML = '<option value="">— Select a lead —</option>' +
+        loadedLeads.map((l, i) => `<option value="${i}">${escapeHtml(l.name)} (${escapeHtml(l.category)}) — ${escapeHtml(l.status)}</option>`).join('');
+    } catch (e) {
+      picker.innerHTML = '<option value="">Failed to load leads</option>';
+    }
+  }
+
+  function applySelectedLead() {
+    const idx = document.getElementById('leadPicker').value;
+    if (idx === '') return;
+    const lead = loadedLeads[idx];
+    document.getElementById('businessName').value = lead.name;
+    document.getElementById('contactPhone').value = lead.phone || '';
+    document.getElementById('contactWhatsapp').value = lead.phone || '';
+    document.getElementById('contactAddress').value = lead.address || '';
+
+    // Best-effort category match from the lead's search category
+    const categorySelect = document.getElementById('category');
+    const catLower = (lead.category || '').toLowerCase();
+    if (catLower.includes('restaurant') || catLower.includes('cafe') || catLower.includes('food')) {
+      categorySelect.value = 'restaurant';
+    } else if (catLower.includes('salon') || catLower.includes('spa')) {
+      categorySelect.value = 'salon';
+    } else {
+      categorySelect.value = 'home-services';
+    }
+
+    document.getElementById('statusMsg').innerHTML = `<div class="status-msg success">Loaded "${escapeHtml(lead.name)}" — fill in the remaining details below (colors, tagline, services) then generate.</div>`;
+  }
+
+  async function generateSite() {
+    const statusEl = document.getElementById('statusMsg');
+    const btn = document.getElementById('generateBtn');
+
+    const services = Array.from(document.querySelectorAll('.service-row')).map(row => ({
+      name: row.querySelector('.svc-name').value.trim(),
+      description: row.querySelector('.svc-desc').value.trim(),
+    })).filter(s => s.name);
+
+    const spec = {
+      businessName: document.getElementById('businessName').value.trim(),
+      category: document.getElementById('category').value,
+      package: selectedTier,
+      primaryColor: document.getElementById('primaryColor').value,
+      accentColor: document.getElementById('accentColor').value,
+      contact: {
+        phone: document.getElementById('contactPhone').value.trim(),
+        whatsapp: document.getElementById('contactWhatsapp').value.trim(),
+        email: document.getElementById('contactEmail').value.trim(),
+        address: document.getElementById('contactAddress').value.trim(),
+      },
+      content: {
+        tagline: document.getElementById('tagline').value.trim(),
+        about: document.getElementById('about').value.trim(),
+        services,
+      },
+    };
+
+    if (!spec.businessName) {
+      statusEl.innerHTML = '<div class="status-msg error">Business name is required.</div>';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Generating...';
+    statusEl.innerHTML = '<div class="status-msg loading">Building your website...</div>';
+
+    try {
+      const resp = await fetch('/.netlify/functions/generate-site', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(spec),
+      });
+
+      if (!resp.ok) {
+        const data = await resp.json();
+        statusEl.innerHTML = `<div class="status-msg error">${escapeHtml(data.error || 'Generation failed')}</div>`;
+        btn.disabled = false;
+        btn.textContent = '⚡ Generate Website';
+        return;
+      }
+
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${spec.businessName.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}-website.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      statusEl.innerHTML = `<div class="status-msg success">Done! Your website zip is downloading. Unzip it, and drag the folder onto Netlify (or push it as its own new site/repo) to deploy it for the client.</div>`;
+    } catch (e) {
+      statusEl.innerHTML = `<div class="status-msg error">${escapeHtml(e.message)}</div>`;
+    }
+
+    btn.disabled = false;
+    btn.textContent = '⚡ Generate Website';
+  }
+</script>
+
+</body>
+</html>
