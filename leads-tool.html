@@ -54,6 +54,13 @@
   .status-Not-Interested{background:#fdeceb;}
   .del-btn{background:none;border:none;cursor:pointer;color:var(--slate);font-size:15px;padding:4px 8px;}
   .del-btn:hover{color:#c0342a;}
+
+  .bulk-bar{display:flex;align-items:center;gap:10px;background:var(--cobalt-dim);border-radius:8px;padding:10px 16px;margin-bottom:16px;flex-wrap:wrap;}
+  th.sortable{cursor:pointer;user-select:none;}
+  th.sortable:hover{opacity:0.85;}
+  th.sortable .arrow{font-size:10px;margin-left:4px;opacity:0.6;}
+  .build-site-btn{background:none;border:1px solid var(--line-dark);border-radius:6px;padding:4px 10px;font-size:11.5px;cursor:pointer;color:var(--cobalt);font-weight:600;}
+  .build-site-btn:hover{background:var(--cobalt-dim);}
 </style>
 </head>
 <body class="loaded">
@@ -114,6 +121,10 @@
 
       <div class="filter-row">
         <div class="field">
+          <label>Search by name</label>
+          <input type="text" id="searchStored" placeholder="Search..." oninput="loadStoredLeads()" style="min-width:180px;">
+        </div>
+        <div class="field">
           <label>Category</label>
           <select id="filterCategory" onchange="loadStoredLeads()"><option value="">All</option></select>
         </div>
@@ -137,6 +148,16 @@
         </div>
         <button class="btn btn-ghost" style="padding:9px 16px;font-size:13px;" onclick="loadStoredLeads()">↻ Refresh</button>
         <button class="btn btn-ghost" style="padding:9px 16px;font-size:13px;" onclick="downloadCSV(storedLeads, 'all_leads_database')">⬇ Download Full CSV</button>
+      </div>
+
+      <div class="bulk-bar" id="bulkBar" style="display:none;">
+        <span id="bulkCount" style="font-size:13px;font-weight:600;"></span>
+        <select id="bulkStatusSelect" style="padding:7px 10px;border-radius:6px;border:1px solid var(--line-dark);font-size:13px;">
+          <option>New</option><option>Contacted</option><option>Interested</option><option>Converted</option><option>Not Interested</option>
+        </select>
+        <button class="btn btn-ghost" style="padding:7px 14px;font-size:12.5px;" onclick="bulkUpdateStatus()">Apply Status</button>
+        <button class="btn btn-ghost" style="padding:7px 14px;font-size:12.5px;color:#c0342a;" onclick="bulkDelete()">Delete Selected</button>
+        <button class="btn btn-ghost" style="padding:7px 14px;font-size:12.5px;" onclick="clearSelection()">Clear</button>
       </div>
 
       <div id="storedResultsContainer"></div>
@@ -278,11 +299,16 @@
       </table>`;
   }
 
+  let sortColumn = 'score';
+  let sortDir = 'desc';
+  let selectedIds = new Set();
+
   async function loadStoredLeads() {
     const container = document.getElementById('storedResultsContainer');
     const category = document.getElementById('filterCategory').value;
     const status = document.getElementById('filterStatus').value;
     const noWebsite = document.getElementById('filterNoWebsite').value;
+    const search = document.getElementById('searchStored').value.trim().toLowerCase();
 
     container.innerHTML = '<div class="status-msg loading">Loading...</div>';
 
@@ -298,13 +324,40 @@
         container.innerHTML = `<div class="status-msg error">${escapeHtml(data.error || 'Failed to load')}</div>`;
         return;
       }
-      storedLeads = data.leads;
+      let leads = data.leads;
+      if (search) {
+        leads = leads.filter(l => l.name.toLowerCase().includes(search));
+      }
+      leads = sortLeads(leads);
+      storedLeads = leads;
       renderStats(data.stats);
       populateCategoryFilter(data.stats.categories, category);
-      renderStoredTable(data.leads);
+      renderStoredTable(leads);
+      updateBulkBar();
     } catch (e) {
       container.innerHTML = `<div class="status-msg error">${escapeHtml(e.message)}</div>`;
     }
+  }
+
+  function sortLeads(leads) {
+    const sorted = [...leads].sort((a, b) => {
+      let av = a[sortColumn], bv = b[sortColumn];
+      if (sortColumn === 'name') { av = av.toLowerCase(); bv = bv.toLowerCase(); }
+      if (av < bv) return sortDir === 'asc' ? -1 : 1;
+      if (av > bv) return sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+    return sorted;
+  }
+
+  function setSort(column) {
+    if (sortColumn === column) {
+      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortColumn = column;
+      sortDir = 'desc';
+    }
+    loadStoredLeads();
   }
 
   function populateCategoryFilter(categories, selected) {
@@ -325,6 +378,11 @@
     `;
   }
 
+  function sortArrow(column) {
+    if (sortColumn !== column) return '';
+    return sortDir === 'asc' ? '<span class="arrow">▲</span>' : '<span class="arrow">▼</span>';
+  }
+
   function renderStoredTable(leads) {
     const container = document.getElementById('storedResultsContainer');
     if (!leads.length) {
@@ -334,6 +392,7 @@
     const statuses = ['New', 'Contacted', 'Interested', 'Converted', 'Not Interested'];
     const rows = leads.map(l => `
       <tr>
+        <td><input type="checkbox" class="row-check" data-id="${l.id}" ${selectedIds.has(l.id) ? 'checked' : ''} onchange="toggleSelect('${l.id}', this.checked)"></td>
         <td><b>${escapeHtml(l.name)}</b><br><span style="color:var(--slate);font-size:11px;">${escapeHtml(l.category)}</span></td>
         <td><span class="score-badge ${scoreBadgeClass(l.score)}">${l.score}</span></td>
         <td>${l.website ? `<a href="${escapeHtml(l.website)}" target="_blank" rel="noopener">link</a>` : '<span class="no-website">None</span>'}</td>
@@ -344,15 +403,84 @@
             ${statuses.map(s => `<option value="${s}" ${s === l.status ? 'selected' : ''}>${s}</option>`).join('')}
           </select>
         </td>
+        <td><button class="build-site-btn" onclick="sendToBuilder('${l.id}')">⚡ Build Site</button></td>
         <td><button class="del-btn" onclick="deleteLead('${l.id}', '${escapeHtml(l.name).replace(/'/g, "\\'")}')" title="Delete">🗑</button></td>
       </tr>
     `).join('');
 
+    const allChecked = leads.length > 0 && leads.every(l => selectedIds.has(l.id));
+
     container.innerHTML = `
       <table class="results">
-        <thead><tr><th>Business</th><th>Score</th><th>Website</th><th>Phone</th><th>Signals / Platforms</th><th>Status</th><th></th></tr></thead>
+        <thead><tr>
+          <th><input type="checkbox" id="selectAllCheck" ${allChecked ? 'checked' : ''} onchange="toggleSelectAll(this.checked)"></th>
+          <th class="sortable" onclick="setSort('name')">Business${sortArrow('name')}</th>
+          <th class="sortable" onclick="setSort('score')">Score${sortArrow('score')}</th>
+          <th>Website</th><th>Phone</th><th>Signals / Platforms</th><th>Status</th><th></th><th></th>
+        </tr></thead>
         <tbody>${rows}</tbody>
       </table>`;
+  }
+
+  function toggleSelect(id, checked) {
+    if (checked) selectedIds.add(id); else selectedIds.delete(id);
+    updateBulkBar();
+  }
+
+  function toggleSelectAll(checked) {
+    storedLeads.forEach(l => { if (checked) selectedIds.add(l.id); else selectedIds.delete(l.id); });
+    renderStoredTable(storedLeads);
+    updateBulkBar();
+  }
+
+  function clearSelection() {
+    selectedIds.clear();
+    renderStoredTable(storedLeads);
+    updateBulkBar();
+  }
+
+  function updateBulkBar() {
+    const bar = document.getElementById('bulkBar');
+    const count = document.getElementById('bulkCount');
+    if (selectedIds.size > 0) {
+      bar.style.display = 'flex';
+      count.textContent = `${selectedIds.size} selected`;
+    } else {
+      bar.style.display = 'none';
+    }
+  }
+
+  async function bulkUpdateStatus() {
+    const status = document.getElementById('bulkStatusSelect').value;
+    const ids = Array.from(selectedIds);
+    for (const id of ids) {
+      await fetch('/.netlify/functions/leads-store', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status }),
+      });
+    }
+    selectedIds.clear();
+    loadStoredLeads();
+  }
+
+  async function bulkDelete() {
+    const ids = Array.from(selectedIds);
+    if (!confirm(`Delete ${ids.length} selected lead(s)? This can't be undone.`)) return;
+    for (const id of ids) {
+      await fetch(`/.netlify/functions/leads-store?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+    }
+    selectedIds.clear();
+    loadStoredLeads();
+  }
+
+  // ===== Handoff to Site Builder — writes the lead to sessionStorage and
+  // navigates over, where applyHandoffLead() picks it up automatically =====
+  function sendToBuilder(id) {
+    const lead = storedLeads.find(l => l.id === id);
+    if (!lead) return;
+    sessionStorage.setItem('aa_handoff_lead', JSON.stringify(lead));
+    window.location.href = 'site-builder.html';
   }
 
   async function updateStatus(id, status, selectEl) {

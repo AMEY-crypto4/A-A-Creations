@@ -8,7 +8,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 <style>
-  .tool-wrap{max-width:900px;margin:0 auto;padding:32px 24px 80px;}
+  .tool-wrap{max-width:1400px;margin:0 auto;padding:32px 24px 80px;}
+  .builder-layout{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;}
+  .form-col{min-width:0;}
+  .preview-col{position:sticky;top:24px;}
+  .preview-frame-wrap{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.05);}
+  .preview-toolbar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--paper-dim);}
+  .preview-toolbar b{font-size:12.5px;color:var(--slate);text-transform:uppercase;letter-spacing:0.3px;}
+  #previewFrame{width:100%;height:640px;border:none;display:block;background:#fafafa;}
+  .preview-placeholder{height:640px;display:flex;align-items:center;justify-content:center;color:var(--slate);font-size:14px;text-align:center;padding:40px;}
+  @media (max-width:1100px){.builder-layout{grid-template-columns:1fr;} .preview-col{position:static;}}
+
   .tool-header{display:flex;align-items:center;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--line);margin-bottom:32px;}
   .gate{max-width:360px;margin:120px auto;text-align:center;}
   .gate input{width:100%;padding:13px 16px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:15px;margin:16px 0;}
@@ -26,6 +36,8 @@
   .color-row input[type=color]{width:50px;height:38px;padding:2px;border-radius:6px;border:1px solid var(--line-dark);cursor:pointer;}
 
   .service-row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;margin-bottom:10px;align-items:center;}
+  .testimonial-row{display:grid;grid-template-columns:2fr 1fr auto;gap:10px;margin-bottom:10px;align-items:center;}
+  .gallery-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:10px;align-items:center;}
   .remove-btn{background:#fdeceb;color:#c0342a;border:none;border-radius:6px;width:32px;height:32px;cursor:pointer;font-size:14px;}
   .add-btn{background:var(--paper-dim);border:1px dashed var(--line-dark);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:var(--slate);}
 
@@ -62,6 +74,9 @@
       </div>
       <a href="leads-tool.html" class="btn btn-ghost" style="padding:8px 16px;font-size:13px;">Lead Finder →</a>
     </div>
+
+    <div class="builder-layout">
+    <div class="form-col">
 
     <div class="form-section">
       <h3>Start from a stored lead (optional)</h3>
@@ -129,8 +144,37 @@
       <button class="add-btn" onclick="addServiceRow()">+ Add Service</button>
     </div>
 
+    <div class="form-section">
+      <h3>Testimonials (optional — leave empty to omit this section entirely)</h3>
+      <div id="testimonialsContainer"></div>
+      <button class="add-btn" onclick="addTestimonialRow()">+ Add Testimonial</button>
+    </div>
+
+    <div class="form-section">
+      <h3>Gallery Photo Labels (optional — placeholders until real photos are added)</h3>
+      <div id="galleryContainer"></div>
+      <button class="add-btn" onclick="addGalleryRow()">+ Add Photo Slot</button>
+    </div>
+
     <div id="statusMsg"></div>
-    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:16px;font-size:16px;" onclick="generateSite()" id="generateBtn">⚡ Generate Website</button>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ghost" style="flex:1;justify-content:center;padding:14px;font-size:15px;" onclick="updatePreview()" id="previewBtn">👁 Update Preview</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center;padding:14px;font-size:15px;" onclick="generateSite()" id="generateBtn">⚡ Download Website</button>
+    </div>
+
+    </div>
+
+    <div class="preview-col">
+      <div class="preview-frame-wrap">
+        <div class="preview-toolbar">
+          <b>Live Preview</b>
+          <span id="previewStatus" style="font-size:11px;color:var(--slate);">Not generated yet</span>
+        </div>
+        <div class="preview-placeholder" id="previewPlaceholder">Fill in the business name and click "Update Preview" to see the actual generated homepage here — this renders the real engine output, not a mockup.</div>
+        <iframe id="previewFrame" style="display:none;"></iframe>
+      </div>
+    </div>
+    </div>
 
   </div>
 </div>
@@ -143,6 +187,7 @@
       document.getElementById('gateScreen').style.display = 'none';
       document.getElementById('toolScreen').style.display = 'block';
       sessionStorage.setItem('aa_gate_passed', '1');
+      applyHandoffLead();
     } else {
       document.getElementById('gateError').style.display = 'block';
     }
@@ -150,6 +195,7 @@
   if (sessionStorage.getItem('aa_gate_passed') === '1') {
     document.getElementById('gateScreen').style.display = 'none';
     document.getElementById('toolScreen').style.display = 'block';
+    applyHandoffLead();
   }
   document.getElementById('passcodeInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPasscode(); });
 
@@ -189,6 +235,58 @@
   addServiceRow();
   addServiceRow();
 
+  function addTestimonialRow(quote = '', author = '') {
+    const container = document.getElementById('testimonialsContainer');
+    const row = document.createElement('div');
+    row.className = 'testimonial-row';
+    row.innerHTML = `
+      <input type="text" placeholder="Quote" class="tst-quote" value="${escapeHtml(quote)}">
+      <input type="text" placeholder="Author name" class="tst-author" value="${escapeHtml(author)}">
+      <button class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+    `;
+    container.appendChild(row);
+  }
+
+  function addGalleryRow(label = '') {
+    const container = document.getElementById('galleryContainer');
+    const row = document.createElement('div');
+    row.className = 'gallery-row';
+    row.innerHTML = `
+      <input type="text" placeholder="e.g. 'Storefront' or 'Signature dish'" class="gal-label" value="${escapeHtml(label)}">
+      <button class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+    `;
+    container.appendChild(row);
+  }
+
+  // ===== Handoff from leads-tool.html: reads the lead the user picked
+  // there (stored via sessionStorage) and pre-fills the form here =====
+  function applyHandoffLead() {
+    const raw = sessionStorage.getItem('aa_handoff_lead');
+    if (!raw) return;
+    sessionStorage.removeItem('aa_handoff_lead'); // one-time use, don't re-apply on refresh
+    try {
+      const lead = JSON.parse(raw);
+      applyLeadData(lead);
+      document.getElementById('statusMsg').innerHTML = `<div class="status-msg success">Loaded "${escapeHtml(lead.name)}" from the Lead Finder — fill in the remaining details then generate.</div>`;
+    } catch (e) { /* ignore malformed handoff data */ }
+  }
+
+  function applyLeadData(lead) {
+    document.getElementById('businessName').value = lead.name || '';
+    document.getElementById('contactPhone').value = lead.phone || '';
+    document.getElementById('contactWhatsapp').value = lead.phone || '';
+    document.getElementById('contactAddress').value = lead.address || '';
+    const categorySelect = document.getElementById('category');
+    const catLower = (lead.category || '').toLowerCase();
+    if (catLower.includes('restaurant') || catLower.includes('cafe') || catLower.includes('food')) {
+      categorySelect.value = 'restaurant';
+    } else if (catLower.includes('salon') || catLower.includes('spa')) {
+      categorySelect.value = 'salon';
+    } else {
+      categorySelect.value = 'home-services';
+    }
+  }
+
   async function loadLeadsIntoPicker() {
     const picker = document.getElementById('leadPicker');
     picker.innerHTML = '<option value="">Loading...</option>';
@@ -207,10 +305,7 @@
     const idx = document.getElementById('leadPicker').value;
     if (idx === '') return;
     const lead = loadedLeads[idx];
-    document.getElementById('businessName').value = lead.name;
-    document.getElementById('contactPhone').value = lead.phone || '';
-    document.getElementById('contactWhatsapp').value = lead.phone || '';
-    document.getElementById('contactAddress').value = lead.address || '';
+    applyLeadData(lead);
 
     // Best-effort category match from the lead's search category
     const categorySelect = document.getElementById('category');
@@ -226,16 +321,22 @@
     document.getElementById('statusMsg').innerHTML = `<div class="status-msg success">Loaded "${escapeHtml(lead.name)}" — fill in the remaining details below (colors, tagline, services) then generate.</div>`;
   }
 
-  async function generateSite() {
-    const statusEl = document.getElementById('statusMsg');
-    const btn = document.getElementById('generateBtn');
-
+  function buildSpecFromForm() {
     const services = Array.from(document.querySelectorAll('.service-row')).map(row => ({
       name: row.querySelector('.svc-name').value.trim(),
       description: row.querySelector('.svc-desc').value.trim(),
     })).filter(s => s.name);
 
-    const spec = {
+    const testimonials = Array.from(document.querySelectorAll('.testimonial-row')).map(row => ({
+      quote: row.querySelector('.tst-quote').value.trim(),
+      author: row.querySelector('.tst-author').value.trim(),
+    })).filter(t => t.quote && t.author);
+
+    const gallery = Array.from(document.querySelectorAll('.gallery-row'))
+      .map(row => row.querySelector('.gal-label').value.trim())
+      .filter(Boolean);
+
+    return {
       businessName: document.getElementById('businessName').value.trim(),
       category: document.getElementById('category').value,
       package: selectedTier,
@@ -251,8 +352,63 @@
         tagline: document.getElementById('tagline').value.trim(),
         about: document.getElementById('about').value.trim(),
         services,
+        testimonials,
+        gallery,
       },
     };
+  }
+
+  async function updatePreview() {
+    const spec = buildSpecFromForm();
+    const statusEl = document.getElementById('statusMsg');
+    const previewStatus = document.getElementById('previewStatus');
+    const btn = document.getElementById('previewBtn');
+    const placeholder = document.getElementById('previewPlaceholder');
+    const frame = document.getElementById('previewFrame');
+
+    if (!spec.businessName) {
+      statusEl.innerHTML = '<div class="status-msg error">Enter a business name first.</div>';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Loading preview...';
+    previewStatus.textContent = 'Generating...';
+
+    try {
+      const resp = await fetch('/.netlify/functions/generate-site?preview=true', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(spec),
+      });
+      const data = await resp.json();
+
+      if (!resp.ok) {
+        statusEl.innerHTML = `<div class="status-msg error">${escapeHtml(data.error || 'Preview failed')}</div>`;
+        previewStatus.textContent = 'Failed';
+        btn.disabled = false;
+        btn.textContent = '👁 Update Preview';
+        return;
+      }
+
+      placeholder.style.display = 'none';
+      frame.style.display = 'block';
+      frame.srcdoc = data.files['index.html'];
+      previewStatus.textContent = `Updated ${new Date().toLocaleTimeString()}`;
+      statusEl.innerHTML = '';
+    } catch (e) {
+      statusEl.innerHTML = `<div class="status-msg error">${escapeHtml(e.message)}</div>`;
+      previewStatus.textContent = 'Failed';
+    }
+
+    btn.disabled = false;
+    btn.textContent = '👁 Update Preview';
+  }
+
+  async function generateSite() {
+    const statusEl = document.getElementById('statusMsg');
+    const btn = document.getElementById('generateBtn');
+    const spec = buildSpecFromForm();
 
     if (!spec.businessName) {
       statusEl.innerHTML = '<div class="status-msg error">Business name is required.</div>';
