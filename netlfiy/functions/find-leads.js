@@ -1,9 +1,6 @@
-// A&A Creations — Lead Finder (serverless version)
+// A&A Creations — Lead Finder (Google Places API)
 // Runs server-side on Netlify so the Google Places API key stays secret.
-// Mirrors the logic in lead_finder.py, but parallelized to fit Netlify's
-// ~10 second function timeout on the free tier.
-// Results are also persisted into Netlify Blobs so leads accumulate across
-// searches instead of disappearing when you close the page.
+// Set GOOGLE_PLACES_API_KEY under Site configuration -> Environment variables.
 
 const { getStore } = require("@netlify/blobs");
 
@@ -15,22 +12,14 @@ async function loadAllLeads() {
   const data = await store.get(LEADS_KEY, { type: "json" });
   return data || [];
 }
-
 async function saveAllLeads(leads) {
   const store = getStore({ name: LEADS_STORE, consistency: "strong" });
   await store.setJSON(LEADS_KEY, leads);
 }
-
-// Merge freshly-found leads into the persistent store.
-// - New leads are added with status "New"
-// - Leads seen before are refreshed (score/signals/website) but KEEP their
-//   existing status — a repeat search should never un-mark a lead you
-//   already contacted back to "New"
 async function mergeIntoStore(freshLeads) {
   const existing = await loadAllLeads();
   const byId = new Map(existing.map((l) => [l.id, l]));
   const now = new Date().toISOString();
-
   for (const lead of freshLeads) {
     const prior = byId.get(lead.id);
     if (prior) {
@@ -39,12 +28,10 @@ async function mergeIntoStore(freshLeads) {
       byId.set(lead.id, { ...lead, status: "New", foundAt: now, lastSeenAt: now });
     }
   }
-
   const merged = Array.from(byId.values());
   await saveAllLeads(merged);
   return merged;
 }
-
 
 const PLATFORM_MAP = [
   [["restaurant", "cafe", "coffee", "bakery", "food", "dining", "dhaba", "bar"], "Zomato, Swiggy, Google Business"],
@@ -56,7 +43,6 @@ const PLATFORM_MAP = [
   [["retail", "boutique", "shop", "store", "clothing", "jewellery", "jewelry"], "Instagram Shop, WhatsApp Catalog, Google Business"],
   [["school", "tutor", "coaching", "institute", "academy"], "Justdial, Google Business, UrbanPro"],
 ];
-
 function suggestPlatforms(query) {
   const q = query.toLowerCase();
   for (const [keywords, platforms] of PLATFORM_MAP) {
@@ -65,22 +51,14 @@ function suggestPlatforms(query) {
   return "Justdial, IndiaMART, Google Business";
 }
 
-const FREE_BUILDER_DOMAINS = [
-  "wixsite.com", "weebly.com", "business.site", "sites.google.com",
-  "godaddysites.com", "square.site", "webs.com", "yolasite.com",
-  "jimdofree.com", "webnode.com", "strikingly.com", "carrd.co",
-  "blogspot.com", "wordpress.com",
-];
+const FREE_BUILDER_DOMAINS = ["wixsite.com", "weebly.com", "business.site", "sites.google.com", "godaddysites.com", "square.site", "webs.com", "yolasite.com", "jimdofree.com", "webnode.com", "strikingly.com", "carrd.co", "blogspot.com", "wordpress.com"];
+const USER_AGENT = "AA-Creations-LeadFinder/1.0 (+contact: aacreations114119201@gmail.com)";
 
-const USER_AGENT = "AA-Creations-LeadFinder/1.0 (+contact: hello@aacreations.com)";
-
-// Fetch with a hard timeout so one slow/dead site can't blow the whole function's budget
 async function fetchWithTimeout(url, options = {}, timeoutMs = 4000) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const res = await fetch(url, { ...options, signal: controller.signal });
-    return res;
+    return await fetch(url, { ...options, signal: controller.signal });
   } finally {
     clearTimeout(id);
   }
@@ -89,30 +67,16 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 4000) {
 async function analyzeWebsite(url) {
   const signals = [];
   let score = 0;
-
-  if (!url) {
-    return { score: 0, signals: ["no website listed — hot lead for a full build or platform onboarding"] };
-  }
+  if (!url) return { score: 0, signals: ["no website listed — hot lead for a full build or platform onboarding"] };
 
   let parsed;
-  try {
-    parsed = new URL(url);
-  } catch {
-    return { score: 20, signals: ["invalid/malformed website URL on listing"] };
-  }
+  try { parsed = new URL(url); } catch { return { score: 20, signals: ["invalid/malformed website URL on listing"] }; }
 
   const domain = parsed.hostname.toLowerCase();
   for (const builder of FREE_BUILDER_DOMAINS) {
-    if (domain.includes(builder)) {
-      score += 25;
-      signals.push(`hosted on free builder (${builder})`);
-      break;
-    }
+    if (domain.includes(builder)) { score += 25; signals.push(`hosted on free builder (${builder})`); break; }
   }
-  if (parsed.protocol !== "https:") {
-    score += 15;
-    signals.push("no SSL (http:// only)");
-  }
+  if (parsed.protocol !== "https:") { score += 15; signals.push("no SSL (http:// only)"); }
 
   let html = "";
   try {
@@ -125,43 +89,21 @@ async function analyzeWebsite(url) {
   }
 
   const htmlLower = html.toLowerCase();
-
-  if (!htmlLower.includes('name="viewport"') && !htmlLower.includes("name='viewport'")) {
-    score += 20;
-    signals.push("no mobile viewport meta tag (likely not mobile-friendly)");
-  }
+  if (!htmlLower.includes('name="viewport"') && !htmlLower.includes("name='viewport'")) { score += 20; signals.push("no mobile viewport meta tag (likely not mobile-friendly)"); }
   const tableCount = (htmlLower.match(/<table/g) || []).length;
-  if (tableCount >= 3) {
-    score += 15;
-    signals.push(`table-based layout detected (${tableCount} <table> tags)`);
-  }
+  if (tableCount >= 3) { score += 15; signals.push(`table-based layout detected (${tableCount} <table> tags)`); }
   const internalLinks = (htmlLower.match(/href=['"](?:\.\/|\/(?!\/)|#)/g) || []).length;
-  if (internalLinks <= 3) {
-    score += 15;
-    signals.push("very few internal links (likely a single-page site)");
-  }
+  if (internalLinks <= 3) { score += 15; signals.push("very few internal links (likely a single-page site)"); }
   const textOnly = html.replace(/<[^>]+>/g, " ");
   const wordCount = textOnly.split(/\s+/).filter(Boolean).length;
-  if (wordCount < 150) {
-    score += 10;
-    signals.push(`very little content (${wordCount} words on homepage)`);
-  }
+  if (wordCount < 150) { score += 10; signals.push(`very little content (${wordCount} words on homepage)`); }
   const yearMatches = [...htmlLower.matchAll(/(?:©|copyright)\D{0,6}(20\d{2})/g)].map((m) => parseInt(m[1]));
   if (yearMatches.length) {
     const oldest = Math.min(...yearMatches);
-    if (oldest <= 2019) {
-      score += 10;
-      signals.push(`footer copyright year is ${oldest}`);
-    }
+    if (oldest <= 2019) { score += 10; signals.push(`footer copyright year is ${oldest}`); }
   }
-  if (!htmlLower.includes('rel="icon"') && !htmlLower.includes('rel="shortcut icon"')) {
-    score += 5;
-    signals.push("no favicon set");
-  }
-  if (htmlLower.includes("<frameset") || htmlLower.includes(".swf")) {
-    score += 20;
-    signals.push("uses frames or Flash — very outdated");
-  }
+  if (!htmlLower.includes('rel="icon"') && !htmlLower.includes('rel="shortcut icon"')) { score += 5; signals.push("no favicon set"); }
+  if (htmlLower.includes("<frameset") || htmlLower.includes(".swf")) { score += 20; signals.push("uses frames or Flash — very outdated"); }
 
   return { score: Math.min(score, 100), signals };
 }
@@ -189,13 +131,13 @@ exports.handler = async (event) => {
 
   const apiKey = process.env.GOOGLE_PLACES_API_KEY;
   if (!apiKey) {
-    return { statusCode: 500, headers, body: JSON.stringify({ error: "GOOGLE_PLACES_API_KEY is not set on this Netlify site. Add it under Site settings -> Environment variables, then redeploy." }) };
+    return { statusCode: 500, headers, body: JSON.stringify({ error: "GOOGLE_PLACES_API_KEY is not set on this Netlify site. Add it under Site configuration -> Environment variables, then redeploy." }) };
   }
 
   const params = event.queryStringParameters || {};
   const query = (params.query || "").trim();
   const location = (params.location || "Mumbai, India").trim();
-  const maxResults = Math.min(parseInt(params.max_results || "15", 10), 20); // capped for function timeout safety
+  const maxResults = Math.min(parseInt(params.max_results || "15", 10), 20);
 
   if (!query) {
     return { statusCode: 400, headers, body: JSON.stringify({ error: "Missing 'query' parameter." }) };
@@ -203,12 +145,9 @@ exports.handler = async (event) => {
 
   try {
     const places = await googleTextSearch(query, location, apiKey, maxResults);
-
     const platforms = suggestPlatforms(query);
 
-    const detailResults = await Promise.all(
-      places.map((p) => getPlaceDetails(p.place_id, apiKey).catch(() => ({})))
-    );
+    const detailResults = await Promise.all(places.map((p) => getPlaceDetails(p.place_id, apiKey).catch(() => ({}))));
 
     const leads = await Promise.all(
       detailResults.map(async (details, i) => {
@@ -234,8 +173,6 @@ exports.handler = async (event) => {
 
     leads.sort((a, b) => b.score - a.score);
 
-    // Persist into the accumulating database — failures here shouldn't break
-    // the search response itself, just log and continue.
     let storedCount = leads.length;
     try {
       const merged = await mergeIntoStore(leads);

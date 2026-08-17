@@ -32,6 +32,14 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers, body: JSON.stringify({ error: result.errors.join("; ") }) };
   }
 
+  // Preview mode: return the generated HTML directly (as JSON) so the
+  // frontend can render it in an iframe before committing to a download —
+  // uses the exact same engine, so what you preview is what you get.
+  const params = event.queryStringParameters || {};
+  if (params.preview === "true") {
+    return { statusCode: 200, headers, body: JSON.stringify({ files: result.files }) };
+  }
+
   try {
     const zip = new JSZip();
     for (const [filename, content] of Object.entries(result.files)) {
