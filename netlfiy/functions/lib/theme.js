@@ -45,6 +45,7 @@ function buildTheme(spec) {
     line: "#e2e4df",
     primary,
     primaryDim: tint(primary, 0.92),
+    primaryDark: mix(primary, "#000000", 0.28), // gradient end — richer, not just flat
     accent,
   };
 }

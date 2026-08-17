@@ -86,9 +86,14 @@ ${C.footerHtml(spec)}`;
 }
 
 function buildGalleryPage(spec, theme, pages) {
+  const hasGallery = spec.content.gallery && spec.content.gallery.length;
+  const hasTestimonials = spec.content.testimonials && spec.content.testimonials.length;
+  const emptyState = `<section class="section" style="text-align:center;">
+  <div class="wrap"><p style="color:var(--slate);">Photos coming soon — check back shortly, or follow us for updates.</p></div>
+</section>`;
   const body = `${C.navHtml(spec, pages)}
-${C.galleryHtml(spec)}
-${C.testimonialsHtml(spec)}
+${hasGallery ? C.galleryHtml(spec) : emptyState}
+${hasTestimonials ? C.testimonialsHtml(spec) : ""}
 ${C.footerHtml(spec)}`;
   return C.pageShell({
     title: `${spec.category_data.galleryLabel} — ${spec.businessName}`,
@@ -138,7 +143,14 @@ function buildSite(rawSpec) {
     files["contact.html"] = buildContactPage(spec, theme, pages);
   }
 
-  files["robots.txt"] = "User-agent: *\nAllow: /\n";
+  const domain = spec.domain ? spec.domain.replace(/\/$/, "") : "https://REPLACE-WITH-YOUR-DOMAIN.com";
+  const pageList = Object.keys(files).filter((f) => f.endsWith(".html"));
+  files["sitemap.xml"] = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${pageList.map((f) => `  <url><loc>${domain}/${f}</loc></url>`).join("\n")}
+</urlset>`;
+
+  files["robots.txt"] = "User-agent: *\nAllow: /\nSitemap: sitemap.xml\n";
 
   return { files, errors: [] };
 }

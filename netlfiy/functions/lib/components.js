@@ -17,27 +17,36 @@ function baseStyles(theme) {
   :root{
     --ink:${theme.ink}; --paper:${theme.paper}; --paper-dim:${theme.paperDim};
     --slate:${theme.slate}; --line:${theme.line};
-    --primary:${theme.primary}; --primary-dim:${theme.primaryDim}; --accent:${theme.accent};
+    --primary:${theme.primary}; --primary-dim:${theme.primaryDim}; --primary-dark:${theme.primaryDark}; --accent:${theme.accent};
   }
   *{box-sizing:border-box;}
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.6;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.6;overflow-x:hidden;}
   h1,h2,h3{font-family:'Poppins',sans-serif;margin:0;letter-spacing:-0.01em;}
   a{color:inherit;}
   img{max-width:100%;display:block;}
   .wrap{max-width:1140px;margin:0 auto;padding:0 24px;}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:8px;font-family:'Poppins',sans-serif;font-weight:600;font-size:15px;text-decoration:none;cursor:pointer;border:none;transition:transform .15s ease, box-shadow .15s ease;}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:8px;font-family:'Poppins',sans-serif;font-weight:600;font-size:15px;text-decoration:none;cursor:pointer;border:none;transition:transform .2s ease, box-shadow .2s ease;}
   .btn:hover{transform:translateY(-2px);}
-  .btn-primary{background:var(--primary);color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.15);}
+  .btn-primary{background:linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);color:#fff;box-shadow:0 8px 20px -4px color-mix(in srgb, var(--primary) 45%, transparent);}
+  .btn-primary:hover{box-shadow:0 12px 28px -4px color-mix(in srgb, var(--primary) 55%, transparent);}
   .btn-ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line);}
 
-  nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+  nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);transition:box-shadow .3s ease;}
+  nav.nav-scrolled{box-shadow:0 4px 20px rgba(0,0,0,.06);}
   nav .wrap{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;}
   .logo{font-family:'Poppins',sans-serif;font-weight:700;font-size:19px;}
   .navlinks{display:flex;gap:28px;font-size:14px;font-weight:500;}
-  .navlinks a{text-decoration:none;opacity:.85;}
+  .navlinks a{text-decoration:none;opacity:.85;transition:opacity .2s ease;}
+  .navlinks a:hover{opacity:1;}
   @media (max-width:800px){.navlinks{display:none;}}
 
-  .hero{padding:64px 0 48px;background:linear-gradient(180deg, var(--primary-dim), var(--paper) 60%);}
+  .hero{
+    padding:72px 0 56px;position:relative;overflow:hidden;
+    background:radial-gradient(circle at 15% 20%, var(--primary-dim) 0%, transparent 45%),
+               radial-gradient(circle at 85% 0%, color-mix(in srgb, var(--accent) 18%, transparent) 0%, transparent 40%),
+               var(--paper);
+  }
+  .hero .wrap{position:relative;z-index:1;}
   .hero h1{font-size:clamp(30px,4.6vw,50px);line-height:1.08;max-width:760px;}
   .hero p.lede{font-size:17px;color:var(--slate);max-width:540px;margin-top:18px;}
   .hero .actions{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap;}
@@ -45,41 +54,56 @@ function baseStyles(theme) {
   .trust-strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:20px 0;background:#fff;}
   .trust-grid{display:flex;justify-content:center;gap:36px;flex-wrap:wrap;}
   .trust-item{font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:8px;}
-  .trust-item::before{content:"✓";color:var(--primary);font-weight:700;}
+  .trust-item::before{content:"✓";width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg, var(--primary), var(--primary-dark));color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 
-  .section{padding:72px 0;}
-  .section-tight{padding:56px 0;}
-  .section-head{max-width:600px;margin:0 auto 40px;text-align:center;}
+  .section{padding:80px 0;}
+  .section-tight{padding:60px 0;}
+  .section-head{max-width:600px;margin:0 auto 44px;text-align:center;}
   .section-head h2{font-size:clamp(26px,3.2vw,36px);}
   .section-head p{color:var(--slate);margin-top:12px;font-size:16px;}
 
-  .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-  .service-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:26px;}
+  .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .service-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px;transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;}
+  .service-card:hover{transform:translateY(-5px);box-shadow:0 16px 32px -12px rgba(20,22,31,.15);border-color:var(--primary);}
   .service-card h3{font-size:18px;margin-bottom:10px;}
   .service-card p{font-size:14px;color:var(--slate);margin:0;}
   @media (max-width:800px){.services-grid{grid-template-columns:1fr;}}
 
   .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-  .gallery-item{aspect-ratio:4/3;background:var(--paper-dim);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--slate);font-size:12px;text-transform:uppercase;letter-spacing:0.4px;}
+  .gallery-item{aspect-ratio:4/3;background:linear-gradient(135deg, var(--primary-dim), var(--paper-dim));border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--slate);font-size:12px;text-transform:uppercase;letter-spacing:0.4px;overflow:hidden;transition:transform .3s ease;}
+  .gallery-item:hover{transform:scale(1.03);}
   @media (max-width:800px){.gallery-grid{grid-template-columns:1fr 1fr;}}
 
-  .testimonial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-  .testimonial-card{background:var(--paper-dim);border-radius:12px;padding:24px;}
-  .testimonial-card p.quote{font-size:14.5px;font-style:italic;margin:0 0 14px;}
-  .testimonial-card .author{font-weight:600;font-size:13.5px;}
+  .testimonial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .testimonial-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px;position:relative;transition:transform .25s ease, box-shadow .25s ease;}
+  .testimonial-card:hover{transform:translateY(-4px);box-shadow:0 14px 28px -10px rgba(20,22,31,.12);}
+  .testimonial-card::before{content:"\\201C";position:absolute;top:14px;right:20px;font-family:Georgia,serif;font-size:48px;color:var(--primary-dim);line-height:1;}
+  .testimonial-card p.quote{font-size:14.5px;font-style:italic;margin:0 0 14px;position:relative;z-index:1;}
+  .testimonial-card .author{font-weight:600;font-size:13.5px;color:var(--primary-dark);}
   @media (max-width:800px){.testimonial-grid{grid-template-columns:1fr;}}
 
-  .cta-band{background:var(--ink);color:#fff;border-radius:20px;padding:52px 40px;text-align:center;}
+  .cta-band{
+    background:linear-gradient(150deg, var(--ink) 0%, color-mix(in srgb, var(--primary) 22%, var(--ink)) 100%);
+    color:#fff;border-radius:22px;padding:56px 40px;text-align:center;position:relative;overflow:hidden;
+  }
   .cta-band h2{font-size:clamp(24px,3vw,32px);color:#fff;}
   .cta-band p{color:#aab0c0;margin-top:10px;}
   .cta-form{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:24px;}
-  .cta-form input{background:#1f222c;border:1px solid #343848;color:#fff;padding:13px 16px;border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;min-width:200px;}
+  .cta-form input{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#fff;padding:13px 16px;border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;min-width:200px;}
+  .cta-form input::placeholder{color:rgba(255,255,255,.55);}
 
-  .whatsapp-fab{position:fixed;bottom:20px;right:20px;width:54px;height:54px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(37,211,102,.4);z-index:80;}
+  .whatsapp-fab{position:fixed;bottom:20px;right:20px;width:54px;height:54px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(37,211,102,.4);z-index:80;transition:transform .2s ease;}
+  .whatsapp-fab:hover{transform:scale(1.08);}
   .whatsapp-fab svg{width:26px;height:26px;color:#fff;}
 
   footer{padding:40px 0;border-top:1px solid var(--line);background:#fff;}
   .footer-grid{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;font-size:13.5px;color:var(--slate);}
+
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.is-visible{opacity:1;transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+  }
   `;
 }
 
@@ -123,7 +147,7 @@ function trustStripHtml(spec) {
 function servicesHtml(spec) {
   const cat = spec.category_data;
   const services = (spec.content.services && spec.content.services.length ? spec.content.services : cat.defaultServices);
-  return `<section class="section" id="services">
+  return `<section class="section reveal" id="services">
   <div class="wrap">
     <div class="section-head">
       <h2>${esc(cat.servicesLabel)}</h2>
@@ -138,12 +162,13 @@ function servicesHtml(spec) {
 
 function galleryHtml(spec) {
   const cat = spec.category_data;
-  const items = spec.content.gallery && spec.content.gallery.length ? spec.content.gallery : ["Photo 1", "Photo 2", "Photo 3", "Photo 4", "Photo 5", "Photo 6"];
-  return `<section class="section section-tight" style="background:var(--paper-dim);">
+  const items = spec.content.gallery || [];
+  if (!items.length) return ""; // never show "Photo 1" placeholders to real visitors
+  return `<section class="section section-tight reveal" style="background:var(--paper-dim);">
   <div class="wrap">
     <div class="section-head"><h2>${esc(cat.galleryLabel)}</h2></div>
     <div class="gallery-grid">
-      ${items.slice(0, 6).map((label) => `<div class="gallery-item">${esc(typeof label === "string" ? label : "Add photo")}</div>`).join("\n      ")}
+      ${items.slice(0, 6).map((label) => `<div class="gallery-item">${esc(typeof label === "string" ? label : "Photo")}</div>`).join("\n      ")}
     </div>
   </div>
 </section>`;
@@ -151,18 +176,13 @@ function galleryHtml(spec) {
 
 function testimonialsHtml(spec) {
   const cat = spec.category_data;
-  const testimonials = spec.content.testimonials && spec.content.testimonials.length
-    ? spec.content.testimonials
-    : [
-        { quote: "Add a real client quote here once you have one.", author: "Client name" },
-        { quote: "Add a real client quote here once you have one.", author: "Client name" },
-        { quote: "Add a real client quote here once you have one.", author: "Client name" },
-      ];
-  return `<section class="section">
+  const testimonials = spec.content.testimonials || [];
+  if (!testimonials.length) return ""; // never show real customers a "add a real quote" placeholder
+  return `<section class="section reveal">
   <div class="wrap">
     <div class="section-head"><h2>${esc(cat.testimonialIntro)}</h2></div>
     <div class="testimonial-grid">
-      ${testimonials.map((t) => `<div class="testimonial-card"><p class="quote">"${esc(t.quote)}"</p><div class="author">— ${esc(t.author)}</div></div>`).join("\n      ")}
+      ${testimonials.map((t) => `<div class="testimonial-card"><p class="quote">${esc(t.quote)}</p><div class="author">— ${esc(t.author)}</div></div>`).join("\n      ")}
     </div>
   </div>
 </section>`;
@@ -171,7 +191,7 @@ function testimonialsHtml(spec) {
 function contactHtml(spec) {
   const cat = spec.category_data;
   const whatsapp = (spec.contact.whatsapp || "").replace(/[^0-9]/g, "");
-  return `<section class="section" id="contact">
+  return `<section class="section reveal" id="contact">
   <div class="wrap">
     <div class="cta-band">
       <h2>${esc(cat.contactHeading)}</h2>
@@ -207,7 +227,52 @@ function footerHtml(spec) {
 </footer>`;
 }
 
-function pageShell({ title, description, theme, bodyHtml, spec }) {
+function schemaScript(spec) {
+  const whatsapp = (spec.contact.whatsapp || "").replace(/[^0-9]/g, "");
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: spec.businessName,
+    description: spec.content.about || spec.content.tagline || `${spec.businessName} — ${spec.category_data.label}`,
+  };
+  if (spec.contact.phone) schema.telephone = spec.contact.phone;
+  if (spec.contact.email) schema.email = spec.contact.email;
+  if (spec.contact.address) {
+    schema.address = { "@type": "PostalAddress", streetAddress: spec.contact.address };
+  }
+  if (whatsapp) schema.sameAs = [`https://wa.me/${whatsapp}`];
+  return `<script type="application/ld+json">${JSON.stringify(schema)}</script>`;
+}
+
+function animationScript() {
+  return `<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  if (typeof gsap === "undefined") return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  gsap.registerPlugin(ScrollTrigger);
+  document.addEventListener("DOMContentLoaded", function(){
+    document.querySelectorAll(".reveal").forEach(function(el){
+      gsap.fromTo(el, {opacity:0, y:24}, {opacity:1, y:0, duration:0.7, ease:"power3.out",
+        scrollTrigger:{trigger:el, start:"top 88%"}});
+    });
+    document.querySelectorAll(".services-grid, .testimonial-grid, .gallery-grid").forEach(function(grid){
+      var cards = grid.children;
+      if (!cards.length) return;
+      gsap.fromTo(cards, {opacity:0, y:20}, {opacity:1, y:0, duration:0.5, ease:"power2.out", stagger:0.08,
+        scrollTrigger:{trigger:grid, start:"top 88%"}});
+    });
+    var nav = document.querySelector("nav");
+    if (nav) {
+      ScrollTrigger.create({start:"top -60", end:99999, toggleClass:{className:"nav-scrolled", targets:nav}});
+    }
+  });
+})();
+</script>`;
+}
+
+function pageShell({ title, description, theme, bodyHtml, spec, filename }) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -215,13 +280,18 @@ function pageShell({ title, description, theme, bodyHtml, spec }) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(description)}">
+<meta property="og:type" content="business.business">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>${baseStyles(theme)}</style>
+${schemaScript(spec)}
 </head>
 <body>
 ${bodyHtml}
 ${whatsappFab(spec)}
+${animationScript()}
 </body>
 </html>`;
 }
