@@ -9,6 +9,28 @@ if (document.readyState === 'complete') {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // ===== Netlify Forms AJAX submit (contact page) =====
+  const auditForm = document.getElementById('auditForm');
+  if (auditForm) {
+    auditForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const formData = new FormData(auditForm);
+      fetch('/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: new URLSearchParams(formData).toString()
+      })
+      .then(() => {
+        auditForm.style.display = 'none';
+        const success = document.getElementById('formSuccess');
+        if (success) success.style.display = 'flex';
+      })
+      .catch(() => {
+        alert("Something went wrong sending that — please email aacreations@gmail.com directly instead.");
+      });
+    });
+  }
+
   // ===== Scroll progress bar =====
   const progressBar = document.createElement('div');
   progressBar.className = 'scroll-progress';

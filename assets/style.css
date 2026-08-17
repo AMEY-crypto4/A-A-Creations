@@ -44,7 +44,7 @@
   }
   .btn:hover{transform:translateY(-2px);}
   .btn:focus-visible{outline:3px solid var(--amber);outline-offset:2px;}
-  .btn-primary{background:var(--cobalt);color:#fff;box-shadow:0 6px 20px rgba(47,95,255,.28);}
+  .btn-primary{background:linear-gradient(135deg, var(--cobalt) 0%, #5b7fff 100%);color:#fff;box-shadow:0 6px 20px rgba(47,95,255,.32);}
   .btn-primary:hover{box-shadow:0 10px 26px rgba(47,95,255,.36);}
   .btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line-dark);}
   .btn-ghost.light{border-color:var(--line);color:var(--charcoal);}
@@ -55,8 +55,14 @@
     position:sticky;top:0;z-index:50;
     background:rgba(245,246,243,0.86);backdrop-filter:blur(10px);
     border-bottom:1px solid var(--line);
+    transition:box-shadow .3s ease, background .3s ease;
   }
-  nav .wrap{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;}
+  nav.nav-scrolled{
+    background:rgba(245,246,243,0.97);
+    box-shadow:0 4px 24px rgba(20,22,31,.06);
+  }
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;transition:padding .3s ease;}
+  nav.nav-scrolled .wrap{padding:11px 24px;}
   .logo{font-family:'Fredoka',sans-serif;font-weight:700;font-size:19px;letter-spacing:-0.02em;display:flex;align-items:center;gap:8px;}
   .logo .dot{width:8px;height:8px;border-radius:2px;background:var(--amber);display:inline-block;}
   .navlinks{display:flex;gap:28px;font-size:14px;font-weight:500;}
@@ -189,7 +195,7 @@
     padding:32px 26px;background:var(--ink);color:#e9eaf0;
     display:flex;flex-direction:column;
   }
-  .price-card.featured{background:var(--cobalt);border-color:var(--cobalt);position:relative;}
+  .price-card.featured{background:linear-gradient(160deg, var(--cobalt) 0%, #1d3fc4 100%);border-color:var(--cobalt);position:relative;}
   .price-card .plan-name{font-family:'Fredoka',sans-serif;font-weight:600;font-size:19px;}
   .price-card .plan-for{font-size:13px;color:#9ba3b8;margin-top:4px;}
   .price-card.featured .plan-for{color:rgba(255,255,255,.75);}
@@ -201,6 +207,8 @@
   .price-card.featured li{color:rgba(255,255,255,.92);}
   .price-card li::before{content:"→";color:var(--amber);font-size:12px;margin-top:1px;}
   .price-card .btn{width:100%;justify-content:center;}
+  .price-card .btn-ghost{color:#fff;border-color:#4a4d5a;}
+  .price-card .btn-ghost:hover{background:rgba(255,255,255,0.08);}
   .price-card .pill{position:absolute;top:-12px;right:24px;background:var(--amber);color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:11px;padding:4px 10px;border-radius:999px;font-weight:600;}
   @media (max-width:900px){.pricing-grid{grid-template-columns:1fr;}}
 
@@ -276,7 +284,7 @@
   .faq-a p{font-size:14.5px;color:var(--slate);margin:0 0 22px;max-width:760px;line-height:1.6;}
 
   /* CTA */
-  .cta-band{background:var(--ink);color:#fff;border-radius:24px;padding:60px 48px;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;}
+  .cta-band{background:linear-gradient(150deg, var(--ink) 0%, #1f2740 100%);color:#fff;border-radius:24px;padding:60px 48px;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;position:relative;overflow:hidden;}
   .cta-band h2{font-size:clamp(26px,3.4vw,36px);max-width:480px;}
   .cta-band p{color:#9ba3b8;margin-top:10px;max-width:440px;}
   .cta-form{display:flex;gap:10px;flex-wrap:wrap;}
@@ -501,3 +509,23 @@ body.loaded{opacity:1;}
 /* Trust strip icon micro-bounce */
 .trust-item svg{transition:transform .25s ease;}
 .trust-item:hover svg{transform:translateY(-2px) scale(1.08);}
+
+/* Floating WhatsApp button */
+.whatsapp-fab{
+  position:fixed;bottom:22px;right:22px;width:56px;height:56px;border-radius:50%;
+  background:#25D366;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 24px rgba(37,211,102,.45);z-index:80;transition:transform .2s ease, box-shadow .2s ease;
+}
+.whatsapp-fab:hover{transform:scale(1.08);box-shadow:0 10px 30px rgba(37,211,102,.6);}
+.whatsapp-fab svg{width:28px;height:28px;color:#fff;}
+@media (max-width:600px){
+  .whatsapp-fab{bottom:16px;right:16px;width:50px;height:50px;}
+  .whatsapp-fab svg{width:24px;height:24px;}
+}
+
+/* Netlify form success state */
+.form-success{
+  align-items:center;gap:12px;background:rgba(26,158,92,.12);color:#dcf3e6;
+  padding:16px 20px;border-radius:10px;font-size:14.5px;font-weight:600;
+}
+.form-success svg{width:22px;height:22px;color:#4ade80;flex-shrink:0;}
