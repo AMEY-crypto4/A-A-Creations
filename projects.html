@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Projects — Internal Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .tool-wrap{max-width:1200px;margin:0 auto;padding:32px 24px 80px;}
+  .tool-header{display:flex;align-items:center;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--line);margin-bottom:32px;flex-wrap:wrap;gap:10px;}
+  .gate{max-width:360px;margin:120px auto;text-align:center;}
+  .gate input{width:100%;padding:13px 16px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:15px;margin:16px 0;}
+  .gate p{color:var(--slate);font-size:13px;}
+  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+  .stat-chip{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+  .stat-chip .num{font-size:20px;font-weight:700;color:var(--ink);}
+  .stat-chip .lbl{font-size:11px;color:var(--slate);text-transform:uppercase;}
+  .toolbar{display:flex;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+  .status-badge{padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:600;white-space:nowrap;}
+  .status-Lead{background:#f0f1ed;color:var(--slate);}
+  .status-Audit-Sent{background:#fff4de;color:#8a5a00;}
+  .status-Quoted{background:var(--cobalt-dim);color:var(--cobalt);}
+  .status-Deposit-Paid{background:#e9e6ff;color:#5b3ff2;}
+  .status-In-Progress{background:#ffe9d6;color:#b25900;}
+  .status-Review{background:#fef3c7;color:#92720a;}
+  .status-Delivered{background:#dcf3e6;color:#1a7a48;}
+  .status-Fully-Paid{background:#e6f7ee;color:#1a9e5c;}
+  .status-Lost{background:#fdeceb;color:#c0342a;}
+  table.results{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13px;}
+  table.results th{background:var(--ink);color:#fff;padding:10px 12px;text-align:left;font-size:11.5px;text-transform:uppercase;}
+  table.results td{padding:10px 12px;border-bottom:1px solid var(--line);}
+  .status-select-sm{padding:5px 8px;border-radius:6px;border:1px solid var(--line-dark);font-size:12px;}
+  .del-btn{background:none;border:none;cursor:pointer;color:var(--slate);font-size:15px;}
+  .del-btn:hover{color:#c0342a;}
+  .modal-overlay{position:fixed;inset:0;background:rgba(20,22,31,.5);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:#fff;border-radius:14px;padding:28px;max-width:480px;width:100%;}
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+  .field label{font-size:12px;font-weight:600;color:var(--slate);}
+  .field input, .field select, .field textarea{padding:10px 13px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:14px;}
+  .status-msg{padding:12px 16px;border-radius:8px;margin:12px 0;font-size:13.5px;}
+  .status-msg.error{background:#fdeceb;color:#c0342a;}
+  .status-msg.success{background:#e6f7ee;color:#1a9e5c;}
+</style>
+</head>
+<body class="loaded">
+
+<div id="gateScreen" class="gate">
+  <h2>🔒 Internal Tool</h2>
+  <p>This page isn't part of the public site — enter the passcode to continue.</p>
+  <input type="password" id="passcodeInput" placeholder="Passcode">
+  <button class="btn btn-primary" onclick="checkPasscode()" style="width:100%;justify-content:center;">Enter</button>
+  <p id="gateError" style="color:#c0342a;display:none;">Incorrect passcode.</p>
+</div>
+
+<div id="toolScreen" style="display:none;">
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <div style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;">
+        <span style="width:8px;height:8px;border-radius:2px;background:var(--amber);display:inline-block;"></span>
+        A&amp;A Creations — Projects <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--slate);font-weight:400;">INTERNAL</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a href="leads-tool.html" class="btn btn-ghost" style="padding:8px 16px;font-size:13px;">Lead Finder →</a>
+        <a href="site-builder.html" class="btn btn-ghost" style="padding:8px 16px;font-size:13px;">Site Builder →</a>
+        <a href="invoices.html" class="btn btn-ghost" style="padding:8px 16px;font-size:13px;">Invoicing →</a>
+      </div>
+    </div>
+
+    <div class="stats-row" id="statsRow"></div>
+
+    <div class="toolbar">
+      <select id="filterStatus" onchange="loadProjects()">
+        <option value="">All statuses</option>
+        <option>Lead</option><option>Audit Sent</option><option>Quoted</option><option>Deposit Paid</option>
+        <option>In Progress</option><option>Review</option><option>Delivered</option><option>Fully Paid</option><option>Lost</option>
+      </select>
+      <button class="btn btn-primary" onclick="openModal()">+ New Project</button>
+    </div>
+
+    <div id="tableContainer"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle" style="margin:0 0 16px;">New Project</h2>
+    <input type="hidden" id="projectId">
+    <div class="field"><label>Client / Business Name *</label><input type="text" id="fClient"></div>
+    <div class="field"><label>Contact</label><input type="text" id="fContact" placeholder="phone or email"></div>
+    <div class="field"><label>Package</label>
+      <select id="fPackage"><option>Starter</option><option>Growth</option><option>Custom</option><option>Add-on only</option></select>
+    </div>
+    <div class="field"><label>Price (₹)</label><input type="number" id="fPrice"></div>
+    <div class="field"><label>Status</label>
+      <select id="fStatus">
+        <option>Lead</option><option>Audit Sent</option><option>Quoted</option><option>Deposit Paid</option>
+        <option>In Progress</option><option>Review</option><option>Delivered</option><option>Fully Paid</option><option>Lost</option>
+      </select>
+    </div>
+    <div class="field"><label>Notes</label><textarea id="fNotes" style="min-height:60px;"></textarea></div>
+    <div id="modalStatusMsg"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveProject()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const PASSCODE = "aacreations2026";
+  function checkPasscode() {
+    if (document.getElementById('passcodeInput').value === PASSCODE) {
+      document.getElementById('gateScreen').style.display = 'none';
+      document.getElementById('toolScreen').style.display = 'block';
+      sessionStorage.setItem('aa_gate_passed', '1');
+      loadProjects();
+    } else { document.getElementById('gateError').style.display = 'block'; }
+  }
+  if (sessionStorage.getItem('aa_gate_passed') === '1') {
+    document.getElementById('gateScreen').style.display = 'none';
+    document.getElementById('toolScreen').style.display = 'block';
+    loadProjects();
+  }
+  document.getElementById('passcodeInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPasscode(); });
+
+  function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+  function fmtINR(n) { return '₹' + (Number(n) || 0).toLocaleString('en-IN'); }
+
+  let allProjects = [];
+
+  async function loadProjects() {
+    const container = document.getElementById('tableContainer');
+    container.innerHTML = '<div class="status-msg">Loading...</div>';
+    try {
+      const resp = await fetch('/.netlify/functions/projects');
+      const data = await resp.json();
+      allProjects = data.projects;
+      document.getElementById('statsRow').innerHTML = `
+        <div class="stat-chip"><div class="num">${data.stats.activeCount}</div><div class="lbl">Active Projects</div></div>
+        <div class="stat-chip"><div class="num">${fmtINR(data.stats.pipelineValue)}</div><div class="lbl">Pipeline Value</div></div>
+        <div class="stat-chip"><div class="num">${fmtINR(data.stats.paidValue)}</div><div class="lbl">Total Paid</div></div>
+        <div class="stat-chip"><div class="num">${data.stats.total}</div><div class="lbl">Total Logged</div></div>`;
+
+      const filterVal = document.getElementById('filterStatus').value;
+      const filtered = filterVal ? allProjects.filter(p => p.status === filterVal) : allProjects;
+
+      if (!filtered.length) {
+        container.innerHTML = '<div class="status-msg">No projects yet — click "New Project" to add one.</div>';
+        return;
+      }
+      const rows = filtered.map(p => `
+        <tr>
+          <td><b>${escapeHtml(p.client)}</b><br><span style="color:var(--slate);font-size:11px;">${escapeHtml(p.contact)}</span></td>
+          <td>${escapeHtml(p.package)}</td>
+          <td>${fmtINR(p.price)}</td>
+          <td><select class="status-select-sm" onchange="updateStatus('${p.id}', this.value)">
+            ${['Lead','Audit Sent','Quoted','Deposit Paid','In Progress','Review','Delivered','Fully Paid','Lost'].map(s => `<option ${s===p.status?'selected':''}>${s}</option>`).join('')}
+          </select></td>
+          <td><button class="btn btn-ghost" style="padding:5px 10px;font-size:12px;" onclick="openModal('${p.id}')">Edit</button></td>
+          <td><button class="del-btn" onclick="deleteProject('${p.id}')">🗑</button></td>
+        </tr>`).join('');
+      container.innerHTML = `<table class="results"><thead><tr><th>Client</th><th>Package</th><th>Price</th><th>Status</th><th></th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+    } catch (e) {
+      container.innerHTML = `<div class="status-msg error">${escapeHtml(e.message)}</div>`;
+    }
+  }
+
+  async function updateStatus(id, status) {
+    await fetch('/.netlify/functions/projects', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id, status }) });
+    loadProjects();
+  }
+
+  function openModal(id) {
+    const p = id ? allProjects.find(x => x.id === id) : null;
+    document.getElementById('modalTitle').textContent = p ? 'Edit Project' : 'New Project';
+    document.getElementById('projectId').value = p ? p.id : '';
+    document.getElementById('fClient').value = p ? p.client : '';
+    document.getElementById('fContact').value = p ? p.contact : '';
+    document.getElementById('fPackage').value = p ? p.package : 'Starter';
+    document.getElementById('fPrice').value = p ? p.price : '';
+    document.getElementById('fStatus').value = p ? p.status : 'Lead';
+    document.getElementById('fNotes').value = p ? p.notes : '';
+    document.getElementById('modalStatusMsg').innerHTML = '';
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+  async function saveProject() {
+    const id = document.getElementById('projectId').value;
+    const client = document.getElementById('fClient').value.trim();
+    const msgEl = document.getElementById('modalStatusMsg');
+    if (!client) { msgEl.innerHTML = '<div class="status-msg error">Client name is required.</div>'; return; }
+    const body = {
+      ...(id ? { id } : {}),
+      client,
+      contact: document.getElementById('fContact').value.trim(),
+      package: document.getElementById('fPackage').value,
+      price: parseFloat(document.getElementById('fPrice').value) || 0,
+      status: document.getElementById('fStatus').value,
+      notes: document.getElementById('fNotes').value.trim(),
+    };
+    const resp = await fetch('/.netlify/functions/projects', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    if (!resp.ok) {
+      const data = await resp.json();
+      msgEl.innerHTML = `<div class="status-msg error">${escapeHtml(data.error)}</div>`;
+      return;
+    }
+    closeModal();
+    loadProjects();
+  }
+
+  async function deleteProject(id) {
+    if (!confirm('Delete this project?')) return;
+    await fetch(`/.netlify/functions/projects?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+    loadProjects();
+  }
+</script>
+
+</body>
+</html>

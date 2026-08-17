@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Invoicing — Internal Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .tool-wrap{max-width:1200px;margin:0 auto;padding:32px 24px 80px;}
+  .tool-header{display:flex;align-items:center;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--line);margin-bottom:32px;}
+  .gate{max-width:360px;margin:120px auto;text-align:center;}
+  .gate input{width:100%;padding:13px 16px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:15px;margin:16px 0;}
+  .gate p{color:var(--slate);font-size:13px;}
+
+  .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+  .stat-chip{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+  .stat-chip .num{font-size:20px;font-weight:700;color:var(--ink);}
+  .stat-chip .lbl{font-size:11px;color:var(--slate);text-transform:uppercase;letter-spacing:0.3px;margin-top:2px;}
+  .stat-chip.paid .num{color:#1a9e5c;}
+  .stat-chip.outstanding .num{color:#c0342a;}
+
+  .tabs{display:flex;gap:4px;margin-bottom:24px;border-bottom:1px solid var(--line);}
+  .tab-btn{padding:10px 18px;background:none;border:none;cursor:pointer;font-family:'Fredoka',sans-serif;font-weight:600;font-size:14px;color:var(--slate);border-bottom:2px solid transparent;margin-bottom:-1px;}
+  .tab-btn.active{color:var(--cobalt);border-bottom-color:var(--cobalt);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  .form-section{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;margin-bottom:20px;}
+  .form-section h3{font-size:14px;text-transform:uppercase;letter-spacing:0.4px;color:var(--cobalt);margin:0 0 16px;}
+  .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+  .field label{font-size:12px;font-weight:600;color:var(--slate);}
+  .field input, .field select, .field textarea{padding:11px 14px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:14px;}
+
+  .line-item-row{display:grid;grid-template-columns:2fr 70px 110px auto;gap:10px;margin-bottom:10px;align-items:center;}
+  .remove-btn{background:#fdeceb;color:#c0342a;border:none;border-radius:6px;width:32px;height:32px;cursor:pointer;font-size:14px;}
+  .add-btn{background:var(--paper-dim);border:1px dashed var(--line-dark);border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:var(--slate);}
+  .quick-add-row{display:flex;gap:10px;margin-bottom:16px;}
+  .quick-add-row select{flex:1;}
+
+  .totals-box{background:var(--paper-dim);border-radius:10px;padding:16px 20px;margin-top:16px;}
+  .totals-row{display:flex;justify-content:space-between;font-size:14px;padding:4px 0;}
+  .totals-row.grand{font-weight:700;font-size:17px;color:var(--cobalt);border-top:1px solid var(--line-dark);margin-top:8px;padding-top:10px;}
+
+  .status-msg{padding:14px 18px;border-radius:8px;margin:16px 0;font-size:14px;}
+  .status-msg.error{background:#fdeceb;color:#c0342a;}
+  .status-msg.loading{background:var(--cobalt-dim);color:var(--cobalt);}
+  .status-msg.success{background:#e6f7ee;color:#1a9e5c;}
+
+  table.results{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13px;}
+  table.results th{background:var(--ink);color:#fff;padding:10px 12px;text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:0.3px;}
+  table.results td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  table.results tr:last-child td{border-bottom:none;}
+  .status-badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:600;}
+  .status-Draft{background:#f0f1ed;color:var(--slate);}
+  .status-Sent{background:var(--cobalt-dim);color:var(--cobalt);}
+  .status-Paid{background:#e6f7ee;color:#1a9e5c;}
+  .status-Overdue{background:#fdeceb;color:#c0342a;}
+  .status-Cancelled{background:#f0f1ed;color:var(--slate);text-decoration:line-through;}
+  .status-select-sm{padding:5px 8px;border-radius:6px;border:1px solid var(--line-dark);font-size:12px;}
+  .view-btn{background:none;border:1px solid var(--line-dark);border-radius:6px;padding:4px 10px;font-size:11.5px;cursor:pointer;color:var(--cobalt);font-weight:600;}
+  .del-btn{background:none;border:none;cursor:pointer;color:var(--slate);font-size:15px;padding:4px 8px;}
+  .del-btn:hover{color:#c0342a;}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(20,22,31,.5);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .modal-overlay.open{display:flex;}
+  .print-invoice{background:#fff;border-radius:12px;padding:40px;max-width:640px;width:100%;max-height:90vh;overflow-y:auto;}
+  .print-invoice h1{font-size:22px;color:var(--cobalt);margin:0 0 4px;}
+  .print-invoice .meta{font-size:12.5px;color:var(--slate);margin-bottom:24px;}
+  .print-invoice table{width:100%;border-collapse:collapse;margin:16px 0;}
+  .print-invoice th{text-align:left;font-size:11px;text-transform:uppercase;color:var(--slate);border-bottom:2px solid var(--line);padding:6px 8px;}
+  .print-invoice td{padding:8px;border-bottom:1px solid var(--line);font-size:13.5px;}
+  .modal-close{position:absolute;top:16px;right:20px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--slate);}
+  @media print{ body *{visibility:hidden;} .print-invoice, .print-invoice *{visibility:visible;} .print-invoice{position:absolute;top:0;left:0;box-shadow:none;} .modal-close, .no-print{display:none !important;} }
+</style>
+</head>
+<body class="loaded">
+
+<div id="gateScreen" class="gate">
+  <h2>🔒 Internal Tool</h2>
+  <p>This page isn't part of the public site — enter the passcode to continue.</p>
+  <input type="password" id="passcodeInput" placeholder="Passcode">
+  <button class="btn btn-primary" onclick="checkPasscode()" style="width:100%;justify-content:center;">Enter</button>
+  <p id="gateError" style="color:#c0342a;display:none;">Incorrect passcode.</p>
+</div>
+
+<div id="toolScreen" style="display:none;">
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <div style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;">
+        <span style="width:8px;height:8px;border-radius:2px;background:var(--amber);display:inline-block;"></span>
+        A&amp;A Creations — Invoicing <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--slate);font-weight:400;">INTERNAL</span>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <a href="leads-tool.html" class="btn btn-ghost" style="padding:8px 16px;font-size:13px;">Lead Finder →</a>
+        <a href="site-builder.html" class="btn btn-ghost" style="padding:8px 16px;font-size:13px;">Site Builder →</a>
+        <a href="projects.html" class="btn btn-ghost" style="padding:8px 16px;font-size:13px;">Projects →</a>
+      </div>
+    </div>
+
+    <div class="stats-bar" id="statsBar"></div>
+
+    <div class="tabs">
+      <button class="tab-btn active" id="tabBtnNew" onclick="switchTab('new')">＋ New Invoice</button>
+      <button class="tab-btn" id="tabBtnList" onclick="switchTab('list')">📋 All Invoices</button>
+    </div>
+
+    <div id="panelNew" class="tab-panel active">
+      <div class="form-section">
+        <h3>Client Details</h3>
+        <div class="field-grid">
+          <div class="field"><label>Invoice Type</label>
+            <select id="invoiceType" onchange="recalcTotals()">
+              <option>Quote</option>
+              <option>Deposit Invoice</option>
+              <option>Final Invoice</option>
+              <option selected>Full Payment Invoice</option>
+              <option>Custom</option>
+            </select>
+          </div>
+          <div class="field"><label>Client / Business Name *</label><input type="text" id="clientName" placeholder="Spice Route Cafe"></div>
+          <div class="field"><label>Link to a stored lead (optional)</label>
+            <select id="leadPicker"><option value="">— None —</option></select>
+          </div>
+          <div class="field"><label>Phone</label><input type="text" id="clientPhone" placeholder="+91 98765 43210"></div>
+          <div class="field"><label>Email</label><input type="text" id="clientEmail" placeholder="client@example.com"></div>
+          <div class="field"><label>Due Date</label><input type="date" id="dueDate"></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Line Items</h3>
+        <div class="quick-add-row">
+          <select id="quickAddSelect"><option value="">— Quick add from package/add-on pricing —</option></select>
+          <button class="btn btn-ghost" style="font-size:13px;padding:9px 16px;" onclick="quickAddLineItem()">+ Add</button>
+        </div>
+        <div id="lineItemsContainer"></div>
+        <button class="add-btn" onclick="addLineItemRow()">+ Add Blank Line Item</button>
+
+        <div class="field-grid" style="margin-top:16px;">
+          <div class="field"><label>Discount %</label><input type="number" id="discountPct" value="0" min="0" max="100" oninput="recalcTotals()"></div>
+          <div class="field"><label>Tax % (GST if applicable)</label><input type="number" id="taxPct" value="0" min="0" max="100" oninput="recalcTotals()"></div>
+        </div>
+
+        <div class="totals-box">
+          <div id="typeNote" style="font-size:12px;color:var(--cobalt);font-weight:600;margin-bottom:8px;"></div>
+          <div class="totals-row"><span>Subtotal</span><span id="totalSubtotal">₹0</span></div>
+          <div class="totals-row"><span>Discount</span><span id="totalDiscount">−₹0</span></div>
+          <div class="totals-row"><span>Tax</span><span id="totalTax">+₹0</span></div>
+          <div class="totals-row grand"><span>Total</span><span id="totalGrand">₹0</span></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Notes (optional)</h3>
+        <textarea id="invoiceNotes" placeholder="Payment terms, thank you note, etc." style="width:100%;min-height:60px;padding:11px 14px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;"></textarea>
+      </div>
+
+      <div id="statusMsg"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:16px;font-size:16px;" onclick="createInvoice()" id="createBtn">Create Invoice (Draft)</button>
+    </div>
+
+    <div id="panelList" class="tab-panel">
+      <div class="filter-row" style="display:flex;gap:10px;margin-bottom:16px;">
+        <select id="filterStatus" onchange="loadInvoices()">
+          <option value="">All statuses</option>
+          <option>Draft</option><option>Sent</option><option>Paid</option><option>Overdue</option><option>Cancelled</option>
+        </select>
+        <button class="btn btn-ghost" style="padding:9px 16px;font-size:13px;" onclick="loadInvoices()">↻ Refresh</button>
+      </div>
+      <div id="invoicesContainer"></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-overlay" id="printModal">
+  <div class="print-invoice" id="printContent" style="position:relative;">
+    <button class="modal-close no-print" onclick="document.getElementById('printModal').classList.remove('open')">✕</button>
+    <div id="printBody"></div>
+    <button class="btn btn-primary no-print" style="margin-top:20px;" onclick="window.print()">🖨 Print / Save as PDF</button>
+  </div>
+</div>
+
+<script>
+  const PASSCODE = "aacreations2026"; // same deterrent note as the other internal tools
+
+  function checkPasscode() {
+    if (document.getElementById('passcodeInput').value === PASSCODE) {
+      document.getElementById('gateScreen').style.display = 'none';
+      document.getElementById('toolScreen').style.display = 'block';
+      sessionStorage.setItem('aa_gate_passed', '1');
+      init();
+    } else {
+      document.getElementById('gateError').style.display = 'block';
+    }
+  }
+  if (sessionStorage.getItem('aa_gate_passed') === '1') {
+    document.getElementById('gateScreen').style.display = 'none';
+    document.getElementById('toolScreen').style.display = 'block';
+  }
+  document.getElementById('passcodeInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPasscode(); });
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+  function fmtINR(n) {
+    return '₹' + (Number(n) || 0).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  }
+
+  function switchTab(tab) {
+    document.getElementById('tabBtnNew').classList.toggle('active', tab === 'new');
+    document.getElementById('tabBtnList').classList.toggle('active', tab === 'list');
+    document.getElementById('panelNew').classList.toggle('active', tab === 'new');
+    document.getElementById('panelList').classList.toggle('active', tab === 'list');
+    if (tab === 'list') loadInvoices();
+  }
+
+  let pricingData = { packages: [], addons: [] };
+  let leadsData = [];
+
+  async function init() {
+    loadStats();
+    try {
+      const resp = await fetch('/.netlify/functions/invoices?pricing=true');
+      pricingData = await resp.json();
+      const select = document.getElementById('quickAddSelect');
+      select.innerHTML = '<option value="">— Quick add from package/add-on pricing —</option>' +
+        '<optgroup label="Packages">' + pricingData.packages.map((p, i) => `<option value="pkg:${i}">${escapeHtml(p.name)} — ${fmtINR(p.price)}</option>`).join('') + '</optgroup>' +
+        '<optgroup label="Add-ons">' + pricingData.addons.map((a, i) => `<option value="addon:${i}">${escapeHtml(a.name)} — ${fmtINR(a.price)}</option>`).join('') + '</optgroup>';
+    } catch (e) { /* pricing quick-add is optional, don't block the form if it fails */ }
+
+    try {
+      const resp = await fetch('/.netlify/functions/leads-store');
+      const data = await resp.json();
+      leadsData = data.leads || [];
+      const picker = document.getElementById('leadPicker');
+      picker.innerHTML = '<option value="">— None —</option>' +
+        leadsData.map((l, i) => `<option value="${i}">${escapeHtml(l.name)}</option>`).join('');
+      picker.addEventListener('change', () => {
+        const idx = picker.value;
+        if (idx === '') return;
+        const lead = leadsData[idx];
+        document.getElementById('clientName').value = lead.name;
+        document.getElementById('clientPhone').value = lead.phone || '';
+      });
+    } catch (e) { /* lead linking is optional too */ }
+  }
+  if (sessionStorage.getItem('aa_gate_passed') === '1') init();
+
+  // ===== Line items =====
+  function addLineItemRow(description = '', qty = 1, unitPrice = 0) {
+    const container = document.getElementById('lineItemsContainer');
+    const row = document.createElement('div');
+    row.className = 'line-item-row';
+    row.innerHTML = `
+      <input type="text" placeholder="Description" class="li-desc" value="${escapeHtml(description)}">
+      <input type="number" placeholder="Qty" class="li-qty" value="${qty}" min="1" oninput="recalcTotals()">
+      <input type="number" placeholder="Unit Price" class="li-price" value="${unitPrice}" min="0" oninput="recalcTotals()">
+      <button class="remove-btn" onclick="this.parentElement.remove(); recalcTotals();">✕</button>
+    `;
+    container.appendChild(row);
+    recalcTotals();
+  }
+  addLineItemRow();
+
+  function quickAddLineItem() {
+    const val = document.getElementById('quickAddSelect').value;
+    if (!val) return;
+    const [type, idx] = val.split(':');
+    const item = type === 'pkg' ? pricingData.packages[idx] : pricingData.addons[idx];
+    addLineItemRow(item.name, 1, item.price);
+    document.getElementById('quickAddSelect').value = '';
+  }
+
+  function typeMultiplier() {
+    const type = document.getElementById('invoiceType').value;
+    return (type === 'Deposit Invoice' || type === 'Final Invoice') ? 0.5 : 1;
+  }
+
+  function recalcTotals() {
+    const rows = document.querySelectorAll('.line-item-row');
+    let subtotal = 0;
+    rows.forEach(row => {
+      const qty = parseFloat(row.querySelector('.li-qty').value) || 0;
+      const price = parseFloat(row.querySelector('.li-price').value) || 0;
+      subtotal += qty * price;
+    });
+    subtotal = subtotal * typeMultiplier();
+    const discountPct = parseFloat(document.getElementById('discountPct').value) || 0;
+    const taxPct = parseFloat(document.getElementById('taxPct').value) || 0;
+    const discountAmt = subtotal * (discountPct / 100);
+    const afterDiscount = subtotal - discountAmt;
+    const taxAmt = afterDiscount * (taxPct / 100);
+    const total = afterDiscount + taxAmt;
+
+    const type = document.getElementById('invoiceType').value;
+    const noteEl = document.getElementById('typeNote');
+    if (noteEl) noteEl.textContent = (type === 'Deposit Invoice' || type === 'Final Invoice') ? '50% of line items applied for ' + type : '';
+
+    document.getElementById('totalSubtotal').textContent = fmtINR(subtotal);
+    document.getElementById('totalDiscount').textContent = '−' + fmtINR(discountAmt);
+    document.getElementById('totalTax').textContent = '+' + fmtINR(taxAmt);
+    document.getElementById('totalGrand').textContent = fmtINR(total);
+  }
+
+  async function createInvoice() {
+    const statusEl = document.getElementById('statusMsg');
+    const btn = document.getElementById('createBtn');
+    const clientName = document.getElementById('clientName').value.trim();
+
+    const mult = typeMultiplier();
+    const lineItems = Array.from(document.querySelectorAll('.line-item-row')).map(row => ({
+      description: row.querySelector('.li-desc').value.trim(),
+      qty: parseFloat(row.querySelector('.li-qty').value) || 0,
+      unitPrice: (parseFloat(row.querySelector('.li-price').value) || 0) * mult,
+    })).filter(li => li.description);
+
+    if (!clientName) {
+      statusEl.innerHTML = '<div class="status-msg error">Client name is required.</div>';
+      return;
+    }
+    if (!lineItems.length) {
+      statusEl.innerHTML = '<div class="status-msg error">Add at least one line item.</div>';
+      return;
+    }
+
+    const leadIdx = document.getElementById('leadPicker').value;
+    const spec = {
+      clientName,
+      clientPhone: document.getElementById('clientPhone').value.trim(),
+      clientEmail: document.getElementById('clientEmail').value.trim(),
+      leadId: leadIdx !== '' ? leadsData[leadIdx].id : null,
+      invoiceType: document.getElementById('invoiceType').value,
+      lineItems,
+      discountPct: parseFloat(document.getElementById('discountPct').value) || 0,
+      taxPct: parseFloat(document.getElementById('taxPct').value) || 0,
+      dueDate: document.getElementById('dueDate').value,
+      notes: document.getElementById('invoiceNotes').value.trim(),
+    };
+
+    btn.disabled = true;
+    btn.textContent = 'Creating...';
+
+    try {
+      const resp = await fetch('/.netlify/functions/invoices', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(spec),
+      });
+      const data = await resp.json();
+      if (!resp.ok) {
+        statusEl.innerHTML = `<div class="status-msg error">${escapeHtml(data.error || 'Failed to create invoice')}</div>`;
+      } else {
+        statusEl.innerHTML = `<div class="status-msg success">Created ${escapeHtml(data.invoice.invoiceNumber)} for ${escapeHtml(clientName)} — ${fmtINR(data.invoice.total)}</div>`;
+        loadStats();
+        switchTab('list');
+      }
+    } catch (e) {
+      statusEl.innerHTML = `<div class="status-msg error">${escapeHtml(e.message)}</div>`;
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Create Invoice (Draft)';
+  }
+
+  async function loadStats() {
+    try {
+      const resp = await fetch('/.netlify/functions/invoices');
+      const data = await resp.json();
+      document.getElementById('statsBar').innerHTML = `
+        <div class="stat-chip"><div class="num">${data.stats.total}</div><div class="lbl">Total Invoices</div></div>
+        <div class="stat-chip"><div class="num">${fmtINR(data.stats.totalInvoiced)}</div><div class="lbl">Total Invoiced</div></div>
+        <div class="stat-chip paid"><div class="num">${fmtINR(data.stats.totalPaid)}</div><div class="lbl">Total Paid</div></div>
+        <div class="stat-chip outstanding"><div class="num">${fmtINR(data.stats.totalOutstanding)}</div><div class="lbl">Outstanding</div></div>
+      `;
+    } catch (e) { /* stats are supplementary */ }
+  }
+
+  let allInvoices = [];
+
+  async function loadInvoices() {
+    const container = document.getElementById('invoicesContainer');
+    container.innerHTML = '<div class="status-msg loading">Loading...</div>';
+    const status = document.getElementById('filterStatus').value;
+    const params = new URLSearchParams();
+    if (status) params.set('status', status);
+
+    try {
+      const resp = await fetch(`/.netlify/functions/invoices?${params.toString()}`);
+      const data = await resp.json();
+      allInvoices = data.invoices;
+      renderInvoicesTable(data.invoices);
+      loadStats();
+    } catch (e) {
+      container.innerHTML = `<div class="status-msg error">${escapeHtml(e.message)}</div>`;
+    }
+  }
+
+  function renderInvoicesTable(invoices) {
+    const container = document.getElementById('invoicesContainer');
+    if (!invoices.length) {
+      container.innerHTML = '<div class="status-msg error">No invoices yet — create one from the "New Invoice" tab.</div>';
+      return;
+    }
+    const statuses = ['Draft', 'Sent', 'Paid', 'Overdue', 'Cancelled'];
+    const rows = invoices.map(inv => `
+      <tr>
+        <td><b>${escapeHtml(inv.invoiceNumber)}</b></td>
+        <td>${escapeHtml(inv.clientName)}</td>
+        <td>${fmtINR(inv.total)}</td>
+        <td>${inv.dueDate ? escapeHtml(inv.dueDate) : '—'}</td>
+        <td>
+          <select class="status-select-sm" onchange="updateInvoiceStatus('${inv.id}', this.value)">
+            ${statuses.map(s => `<option value="${s}" ${s === inv.status ? 'selected' : ''}>${s}</option>`).join('')}
+          </select>
+        </td>
+        <td><button class="view-btn" onclick="viewInvoice('${inv.id}')">View / Print</button></td>
+        <td><button class="del-btn" onclick="deleteInvoice('${inv.id}', '${escapeHtml(inv.invoiceNumber)}')">🗑</button></td>
+      </tr>
+    `).join('');
+
+    container.innerHTML = `
+      <table class="results">
+        <thead><tr><th>Invoice #</th><th>Client</th><th>Total</th><th>Due</th><th>Status</th><th></th><th></th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  async function updateInvoiceStatus(id, status) {
+    try {
+      await fetch('/.netlify/functions/invoices', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, action: 'update', status }),
+      });
+      loadInvoices();
+    } catch (e) { alert('Failed to update status: ' + e.message); }
+  }
+
+  async function deleteInvoice(id, invoiceNumber) {
+    if (!confirm(`Delete invoice ${invoiceNumber}? This can't be undone.`)) return;
+    try {
+      await fetch(`/.netlify/functions/invoices?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+      loadInvoices();
+    } catch (e) { alert('Failed to delete: ' + e.message); }
+  }
+
+  function viewInvoice(id) {
+    const inv = allInvoices.find(i => i.id === id);
+    if (!inv) return;
+    const rows = inv.lineItems.map(li => `
+      <tr><td>${escapeHtml(li.description)}</td><td>${li.qty}</td><td>${fmtINR(li.unitPrice)}</td><td>${fmtINR(li.qty * li.unitPrice)}</td></tr>
+    `).join('');
+    document.getElementById('printBody').innerHTML = `
+      <h1>${escapeHtml((inv.invoiceType || 'INVOICE').toUpperCase())} — ${escapeHtml(inv.invoiceNumber)}</h1>
+      <div class="meta">
+        A&amp;A Creations · aacreations114119201@gmail.com · +91 8454 021 541<br>
+        Billed to: <b>${escapeHtml(inv.clientName)}</b> ${inv.clientPhone ? '· ' + escapeHtml(inv.clientPhone) : ''}<br>
+        Date: ${escapeHtml(inv.createdAt.slice(0,10))} ${inv.dueDate ? '· Due: ' + escapeHtml(inv.dueDate) : ''} · Status: ${escapeHtml(inv.status)}
+      </div>
+      <table>
+        <thead><tr><th>Description</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div style="text-align:right;font-size:13.5px;line-height:1.8;">
+        Subtotal: ${fmtINR(inv.subtotal)}<br>
+        ${inv.discountPct ? `Discount (${inv.discountPct}%): −${fmtINR(inv.discountAmt)}<br>` : ''}
+        ${inv.taxPct ? `Tax (${inv.taxPct}%): +${fmtINR(inv.taxAmt)}<br>` : ''}
+        <b style="font-size:16px;color:var(--cobalt);">Total: ${fmtINR(inv.total)}</b><br>
+        ${inv.amountPaid ? `Paid: ${fmtINR(inv.amountPaid)}<br>Balance: ${fmtINR(inv.total - inv.amountPaid)}` : ''}
+      </div>
+      ${inv.notes ? `<p style="margin-top:20px;font-size:13px;color:var(--slate);">${escapeHtml(inv.notes)}</p>` : ''}
+    `;
+    document.getElementById('printModal').classList.add('open');
+  }
+</script>
+
+</body>
+</html>

@@ -2,5 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /leads-tool.html
 Disallow: /site-builder.html
+Disallow: /invoices.html
+Disallow: /projects.html
 
 Sitemap: https://aacreations.netlify.app/sitemap.xml

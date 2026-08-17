@@ -11,3 +11,13 @@
   for = "/site-builder.html"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/invoices.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/projects.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

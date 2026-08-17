@@ -73,6 +73,8 @@
         A&amp;A Creations — Site Builder <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--slate);font-weight:400;">INTERNAL</span>
       </div>
       <a href="leads-tool.html" class="btn btn-ghost" style="padding:8px 16px;font-size:13px;">Lead Finder →</a>
+      <a href="invoices.html" class="btn btn-ghost" style="padding:8px 16px;font-size:13px;">Invoicing →</a>
+        <a href="projects.html" class="btn btn-ghost" style="padding:8px 16px;font-size:13px;">Projects →</a>
     </div>
 
     <div class="builder-layout">
@@ -131,6 +133,7 @@
         <div class="field"><label>WhatsApp Number</label><input type="text" id="contactWhatsapp" placeholder="+91 98765 43210"></div>
         <div class="field"><label>Email</label><input type="text" id="contactEmail" placeholder="hello@business.com"></div>
         <div class="field"><label>Address</label><input type="text" id="contactAddress" placeholder="Bandra West, Mumbai"></div>
+        <div class="field"><label>Domain (optional, once known — used in sitemap.xml)</label><input type="text" id="siteDomain" placeholder="https://theirbusiness.com"></div>
       </div>
     </div>
 
@@ -342,6 +345,7 @@
       package: selectedTier,
       primaryColor: document.getElementById('primaryColor').value,
       accentColor: document.getElementById('accentColor').value,
+      domain: document.getElementById('siteDomain').value.trim(),
       contact: {
         phone: document.getElementById('contactPhone').value.trim(),
         whatsapp: document.getElementById('contactWhatsapp').value.trim(),
