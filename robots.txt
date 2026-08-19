@@ -4,5 +4,10 @@ Disallow: /leads-tool.html
 Disallow: /site-builder.html
 Disallow: /invoices.html
 Disallow: /projects.html
+Disallow: /internal-dashboard.html
+Disallow: /qr-tool.html
+Disallow: /logo-generator.html
+Disallow: /competitor-snapshot.html
+Disallow: /review-templates.html
 
 Sitemap: https://aacreations.netlify.app/sitemap.xml

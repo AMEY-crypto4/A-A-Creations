@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Review Templates — Internal Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .tool-wrap{max-width:900px;margin:0 auto;padding:32px 24px 80px;}
+  .tool-header{display:flex;align-items:center;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--line);margin-bottom:32px;}
+  .gate{max-width:360px;margin:120px auto;text-align:center;}
+  .gate input{width:100%;padding:13px 16px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:15px;margin:16px 0;}
+  .gate p{color:var(--slate);font-size:13px;}
+
+  .filter-row{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
+  .filter-row select, .filter-row input{padding:10px 14px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:13.5px;}
+
+  .template-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:14px;}
+  .template-meta{display:flex;gap:8px;margin-bottom:10px;}
+  .badge{font-size:10.5px;font-weight:700;text-transform:uppercase;padding:3px 9px;border-radius:12px;letter-spacing:0.3px;}
+  .badge-platform{background:var(--cobalt-dim);color:var(--cobalt);}
+  .badge-scenario{background:var(--paper-dim);color:var(--slate);}
+  .template-text{font-size:14px;color:var(--charcoal);line-height:1.6;white-space:pre-wrap;}
+  .template-actions{margin-top:12px;display:flex;gap:8px;}
+  .btn-sm{font-size:11.5px;padding:6px 12px;border-radius:6px;border:1px solid var(--line-dark);background:#fff;cursor:pointer;color:var(--slate);}
+  .btn-sm:hover{background:var(--paper-dim);}
+  .btn-sm.copy{color:var(--cobalt);border-color:var(--cobalt);}
+
+  .add-form{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;margin-top:28px;}
+  .add-form h3{font-size:14px;text-transform:uppercase;letter-spacing:0.4px;color:var(--cobalt);margin:0 0 16px;}
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+  .field label{font-size:12px;font-weight:600;color:var(--slate);}
+  .field input, .field select, .field textarea{padding:11px 14px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:14px;}
+  .field textarea{min-height:80px;resize:vertical;}
+  .status-msg{padding:12px 16px;border-radius:8px;margin:12px 0;font-size:13.5px;}
+  .status-msg.error{background:#fdeceb;color:#c0342a;}
+  .status-msg.success{background:#e6f7ee;color:#1a9e5c;}
+</style>
+</head>
+<body class="loaded">
+
+<div id="gateScreen" class="gate">
+  <h2>🔒 Internal Tool</h2>
+  <p>This page isn't part of the public site — enter the passcode to continue.</p>
+  <input type="password" id="passcodeInput" placeholder="Passcode">
+  <button class="btn btn-primary" onclick="checkPasscode()" style="width:100%;justify-content:center;">Enter</button>
+  <p id="gateError" style="color:#c0342a;display:none;">Incorrect passcode.</p>
+</div>
+
+<div id="toolScreen" style="display:none;">
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <div style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;">
+        <span style="width:8px;height:8px;border-radius:2px;background:var(--amber);display:inline-block;"></span>
+        A&amp;A Creations — Review Templates <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--slate);font-weight:400;">INTERNAL</span>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <select id="filterPlatform" onchange="renderTemplates()">
+        <option value="">All platforms</option>
+        <option>Google</option><option>Zomato</option><option>Swiggy</option><option>General</option>
+      </select>
+      <select id="filterScenario" onchange="renderTemplates()">
+        <option value="">All scenarios</option>
+        <option>Positive</option><option>Food Quality</option><option>Packaging/Delivery</option><option>Service</option><option>Mixed/Neutral</option>
+      </select>
+    </div>
+
+    <div id="templatesContainer"></div>
+
+    <div class="add-form">
+      <h3>Add Your Own Template</h3>
+      <div class="field"><label>Platform</label>
+        <select id="newPlatform"><option>Google</option><option>Zomato</option><option>Swiggy</option><option>General</option></select>
+      </div>
+      <div class="field"><label>Scenario</label>
+        <select id="newScenario"><option>Positive</option><option>Food Quality</option><option>Packaging/Delivery</option><option>Service</option><option>Mixed/Neutral</option></select>
+      </div>
+      <div class="field"><label>Response Text</label><textarea id="newText" placeholder="Use [Name] and [Business Name] as placeholders..."></textarea></div>
+      <div id="addStatusMsg"></div>
+      <button class="btn btn-primary" onclick="addTemplate()">Save Template</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const PASSCODE = "aacreations2026";
+  function checkPasscode() {
+    if (document.getElementById('passcodeInput').value === PASSCODE) {
+      document.getElementById('gateScreen').style.display = 'none';
+      document.getElementById('toolScreen').style.display = 'block';
+      sessionStorage.setItem('aa_gate_passed', '1');
+      loadCustomTemplates();
+    } else { document.getElementById('gateError').style.display = 'block'; }
+  }
+  if (sessionStorage.getItem('aa_gate_passed') === '1') {
+    document.getElementById('gateScreen').style.display = 'none';
+    document.getElementById('toolScreen').style.display = 'block';
+    loadCustomTemplates();
+  }
+
+  function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+
+  const DEFAULT_TEMPLATES = [
+    { platform: "General", scenario: "Positive", text: "Thank you so much, [Name]! We're really glad you enjoyed your experience with [Business Name]. Hope to see you again soon!" },
+    { platform: "General", scenario: "Food Quality", text: "Hi [Name], thank you for the honest feedback, and I'm sorry this didn't meet the mark. We'd like to make this right — please reach out to us directly at [contact] so we can look into what happened." },
+    { platform: "Zomato", scenario: "Packaging/Delivery", text: "Hi [Name], really sorry the packaging let the food down on this order. We've flagged this internally and are improving our packaging for exactly this reason. Would love another chance to get it right." },
+    { platform: "Swiggy", scenario: "Packaging/Delivery", text: "Hi [Name], apologies for the experience with this delivery. This isn't the standard we aim for, and we're taking steps to fix the packaging issue you've flagged. Thank you for letting us know." },
+    { platform: "Google", scenario: "Service", text: "Hi [Name], thank you for taking the time to share this. We're sorry the service didn't reflect what we aim for, and we're addressing this with our team directly. We'd welcome the chance to make it right." },
+    { platform: "General", scenario: "Mixed/Neutral", text: "Thanks for the feedback, [Name] — glad to hear [positive part] worked well, and noted on [the concern] too. We're always working to improve, appreciate you taking the time." },
+  ];
+
+  let customTemplates = [];
+
+  async function loadCustomTemplates() {
+    try {
+      const resp = await fetch('/.netlify/functions/review-templates');
+      const data = await resp.json();
+      customTemplates = data.templates || [];
+    } catch (e) { customTemplates = []; }
+    renderTemplates();
+  }
+
+  function renderTemplates() {
+    const platform = document.getElementById('filterPlatform').value;
+    const scenario = document.getElementById('filterScenario').value;
+    const all = [...DEFAULT_TEMPLATES.map(t => ({ ...t, isDefault: true })), ...customTemplates.map(t => ({ ...t, isDefault: false }))];
+    const filtered = all.filter(t => (!platform || t.platform === platform) && (!scenario || t.scenario === scenario));
+
+    const container = document.getElementById('templatesContainer');
+    if (!filtered.length) {
+      container.innerHTML = '<div class="status-msg">No templates match this filter.</div>';
+      return;
+    }
+    container.innerHTML = filtered.map((t, i) => `
+      <div class="template-card">
+        <div class="template-meta">
+          <span class="badge badge-platform">${escapeHtml(t.platform)}</span>
+          <span class="badge badge-scenario">${escapeHtml(t.scenario)}</span>
+        </div>
+        <div class="template-text">${escapeHtml(t.text)}</div>
+        <div class="template-actions">
+          <button class="btn-sm copy" onclick="copyTemplate(this, ${JSON.stringify(t.text)})">📋 Copy</button>
+          ${!t.isDefault ? `<button class="btn-sm" onclick="deleteTemplate('${t.id}')">🗑 Delete</button>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function copyTemplate(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      const original = btn.textContent;
+      btn.textContent = '✓ Copied';
+      setTimeout(() => { btn.textContent = original; }, 1500);
+    });
+  }
+
+  async function addTemplate() {
+    const platform = document.getElementById('newPlatform').value;
+    const scenario = document.getElementById('newScenario').value;
+    const text = document.getElementById('newText').value.trim();
+    const statusEl = document.getElementById('addStatusMsg');
+
+    if (!text) {
+      statusEl.innerHTML = '<div class="status-msg error">Enter the response text.</div>';
+      return;
+    }
+
+    try {
+      const resp = await fetch('/.netlify/functions/review-templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ platform, scenario, text }),
+      });
+      if (!resp.ok) {
+        const data = await resp.json();
+        statusEl.innerHTML = `<div class="status-msg error">${escapeHtml(data.error)}</div>`;
+        return;
+      }
+      document.getElementById('newText').value = '';
+      statusEl.innerHTML = '<div class="status-msg success">Template saved.</div>';
+      loadCustomTemplates();
+    } catch (e) {
+      statusEl.innerHTML = `<div class="status-msg error">${escapeHtml(e.message)}</div>`;
+    }
+  }
+
+  async function deleteTemplate(id) {
+    if (!confirm('Delete this template?')) return;
+    await fetch(`/.netlify/functions/review-templates?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+    loadCustomTemplates();
+  }
+</script>
+<script src="assets/admin-shell.js"></script>
+</body>
+</html>

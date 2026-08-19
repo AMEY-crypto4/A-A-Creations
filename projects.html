@@ -62,11 +62,6 @@
         <span style="width:8px;height:8px;border-radius:2px;background:var(--amber);display:inline-block;"></span>
         A&amp;A Creations — Projects <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--slate);font-weight:400;">INTERNAL</span>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <a href="leads-tool.html" class="btn btn-ghost" style="padding:8px 16px;font-size:13px;">Lead Finder →</a>
-        <a href="site-builder.html" class="btn btn-ghost" style="padding:8px 16px;font-size:13px;">Site Builder →</a>
-        <a href="invoices.html" class="btn btn-ghost" style="padding:8px 16px;font-size:13px;">Invoicing →</a>
-      </div>
     </div>
 
     <div class="stats-row" id="statsRow"></div>
@@ -85,11 +80,20 @@
 </div>
 
 <div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
+  <div class="modal" style="max-width:560px;max-height:88vh;overflow-y:auto;">
     <h2 id="modalTitle" style="margin:0 0 16px;">New Project</h2>
     <input type="hidden" id="projectId">
     <div class="field"><label>Client / Business Name *</label><input type="text" id="fClient"></div>
     <div class="field"><label>Contact</label><input type="text" id="fContact" placeholder="phone or email"></div>
+    <div class="field"><label>Project Type</label>
+      <select id="fProjectType" onchange="onProjectTypeChange()">
+        <option>Website</option>
+        <option>Platform Onboarding</option>
+        <option>Ads Setup</option>
+        <option>Growth Retainer</option>
+        <option>Other</option>
+      </select>
+    </div>
     <div class="field"><label>Package</label>
       <select id="fPackage"><option>Starter</option><option>Growth</option><option>Custom</option><option>Add-on only</option></select>
     </div>
@@ -101,6 +105,13 @@
       </select>
     </div>
     <div class="field"><label>Notes</label><textarea id="fNotes" style="min-height:60px;"></textarea></div>
+
+    <div class="field" id="checklistField" style="display:none;">
+      <label>Onboarding Checklist <span id="checklistProgress" style="font-weight:400;color:var(--slate);"></span></label>
+      <div id="checklistContainer" style="border:1px solid var(--line);border-radius:8px;padding:10px 14px;max-height:220px;overflow-y:auto;"></div>
+      <button type="button" class="btn btn-ghost" style="margin-top:8px;font-size:12.5px;padding:6px 12px;" onclick="addChecklistItem()">+ Add step</button>
+    </div>
+
     <div id="modalStatusMsg"></div>
     <div style="display:flex;gap:10px;justify-content:flex-end;">
       <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
@@ -151,9 +162,13 @@
         container.innerHTML = '<div class="status-msg">No projects yet — click "New Project" to add one.</div>';
         return;
       }
-      const rows = filtered.map(p => `
+      const rows = filtered.map(p => {
+        const hasChecklist = Array.isArray(p.checklist) && p.checklist.length > 0;
+        const doneCount = hasChecklist ? p.checklist.filter(c => c.done).length : 0;
+        const progressBadge = hasChecklist ? `<br><span style="font-size:10.5px;color:var(--cobalt);font-weight:600;">${doneCount}/${p.checklist.length} steps done</span>` : '';
+        return `
         <tr>
-          <td><b>${escapeHtml(p.client)}</b><br><span style="color:var(--slate);font-size:11px;">${escapeHtml(p.contact)}</span></td>
+          <td><b>${escapeHtml(p.client)}</b><br><span style="color:var(--slate);font-size:11px;">${escapeHtml(p.contact)}</span>${progressBadge}</td>
           <td>${escapeHtml(p.package)}</td>
           <td>${fmtINR(p.price)}</td>
           <td><select class="status-select-sm" onchange="updateStatus('${p.id}', this.value)">
@@ -161,7 +176,8 @@
           </select></td>
           <td><button class="btn btn-ghost" style="padding:5px 10px;font-size:12px;" onclick="openModal('${p.id}')">Edit</button></td>
           <td><button class="del-btn" onclick="deleteProject('${p.id}')">🗑</button></td>
-        </tr>`).join('');
+        </tr>`;
+      }).join('');
       container.innerHTML = `<table class="results"><thead><tr><th>Client</th><th>Package</th><th>Price</th><th>Status</th><th></th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
     } catch (e) {
       container.innerHTML = `<div class="status-msg error">${escapeHtml(e.message)}</div>`;
@@ -173,17 +189,95 @@
     loadProjects();
   }
 
+  const ONBOARDING_TEMPLATE = [
+    "Resolve FSSAI / business-name compliance mismatch",
+    "Collect KYC documents (FSSAI, PAN, GST, bank details, Aadhaar)",
+    "Finalize menu & confirm prices in writing",
+    "Pricing strategy — build commission/fees into platform prices",
+    "Zomato: submit application",
+    "Zomato: approved & live",
+    "Swiggy: submit application",
+    "Swiggy: approved & live",
+    "Social media activation (Instagram + Facebook)",
+    "Google Business Profile setup",
+    "Launch configuration (discount, delivery radius, packaging)",
+    "Go-live verification — place test orders",
+  ];
+
+  const ADS_SETUP_TEMPLATE = [
+    "Confirm ad budget and platform (Meta / Google) with client",
+    "Confirm target audience / location / goal with client",
+    "Set up Meta Business Manager / Google Ads account access",
+    "Install tracking (Meta Pixel / Google Tag) on the site",
+    "Build first campaign (creative, copy, targeting)",
+    "Client sign-off on creative and copy before launch",
+    "Launch campaign",
+    "Confirm campaign is spending correctly (first 48 hours)",
+    "Handover: client can see and control their own budget",
+  ];
+
+  const GROWTH_RETAINER_TEMPLATE = [
+    "Confirm monthly scope with client (what's included)",
+    "Set up monthly reporting template for this client",
+    "Week 1: baseline check (ratings, listing accuracy, socials)",
+    "Ongoing: weekly monitoring checkpoint",
+    "Month-end: reconciliation against last report",
+    "Month-end: send client report + next month's plan",
+  ];
+
+  const CHECKLIST_TEMPLATES = {
+    "Platform Onboarding": ONBOARDING_TEMPLATE,
+    "Ads Setup": ADS_SETUP_TEMPLATE,
+    "Growth Retainer": GROWTH_RETAINER_TEMPLATE,
+  };
+
+  let currentChecklist = [];
+
+  function onProjectTypeChange() {
+    const type = document.getElementById('fProjectType').value;
+    const template = CHECKLIST_TEMPLATES[type];
+    document.getElementById('checklistField').style.display = template ? 'block' : 'none';
+    if (template && currentChecklist.length === 0) {
+      currentChecklist = template.map(task => ({ task, done: false }));
+      renderChecklist();
+    }
+  }
+
+  function renderChecklist() {
+    const container = document.getElementById('checklistContainer');
+    const doneCount = currentChecklist.filter(c => c.done).length;
+    document.getElementById('checklistProgress').textContent = currentChecklist.length ? `(${doneCount}/${currentChecklist.length})` : '';
+    if (!currentChecklist.length) {
+      container.innerHTML = '<div style="color:var(--slate);font-size:12.5px;padding:6px 0;">No steps yet — click "+ Add step" or switch type to load a template.</div>';
+      return;
+    }
+    container.innerHTML = currentChecklist.map((item, i) => `
+      <div style="display:flex;align-items:center;gap:8px;padding:5px 0;">
+        <input type="checkbox" ${item.done ? 'checked' : ''} onchange="toggleChecklistItem(${i}, this.checked)">
+        <input type="text" value="${escapeHtml(item.task)}" oninput="renameChecklistItem(${i}, this.value)" style="flex:1;border:none;font-family:'Fredoka',sans-serif;font-size:13px;${item.done ? 'text-decoration:line-through;color:var(--slate);' : ''}">
+        <button type="button" onclick="removeChecklistItem(${i})" style="background:none;border:none;color:var(--slate);cursor:pointer;font-size:13px;">✕</button>
+      </div>`).join('');
+  }
+  function toggleChecklistItem(i, done) { currentChecklist[i].done = done; renderChecklist(); }
+  function renameChecklistItem(i, val) { currentChecklist[i].task = val; }
+  function removeChecklistItem(i) { currentChecklist.splice(i, 1); renderChecklist(); }
+  function addChecklistItem() { currentChecklist.push({ task: '', done: false }); renderChecklist(); }
+
   function openModal(id) {
     const p = id ? allProjects.find(x => x.id === id) : null;
     document.getElementById('modalTitle').textContent = p ? 'Edit Project' : 'New Project';
     document.getElementById('projectId').value = p ? p.id : '';
     document.getElementById('fClient').value = p ? p.client : '';
     document.getElementById('fContact').value = p ? p.contact : '';
+    document.getElementById('fProjectType').value = p ? (p.projectType || 'Website') : 'Website';
     document.getElementById('fPackage').value = p ? p.package : 'Starter';
     document.getElementById('fPrice').value = p ? p.price : '';
     document.getElementById('fStatus').value = p ? p.status : 'Lead';
     document.getElementById('fNotes').value = p ? p.notes : '';
     document.getElementById('modalStatusMsg').innerHTML = '';
+    currentChecklist = p && Array.isArray(p.checklist) ? p.checklist.slice() : [];
+    document.getElementById('checklistField').style.display = CHECKLIST_TEMPLATES[p ? (p.projectType || 'Website') : 'Website'] ? 'block' : 'none';
+    renderChecklist();
     document.getElementById('modalOverlay').classList.add('open');
   }
   function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
@@ -197,10 +291,12 @@
       ...(id ? { id } : {}),
       client,
       contact: document.getElementById('fContact').value.trim(),
+      projectType: document.getElementById('fProjectType').value,
       package: document.getElementById('fPackage').value,
       price: parseFloat(document.getElementById('fPrice').value) || 0,
       status: document.getElementById('fStatus').value,
       notes: document.getElementById('fNotes').value.trim(),
+      checklist: currentChecklist.filter(c => c.task.trim()),
     };
     const resp = await fetch('/.netlify/functions/projects', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
     if (!resp.ok) {
@@ -219,5 +315,6 @@
   }
 </script>
 
+<script src="assets/admin-shell.js"></script>
 </body>
 </html>

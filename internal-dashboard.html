@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Internal Dashboard — A&amp;A Creations</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .tool-wrap{max-width:1100px;margin:0 auto;padding:32px 24px 80px;}
+  .gate{max-width:360px;margin:120px auto;text-align:center;}
+  .gate input{width:100%;padding:13px 16px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:15px;margin:16px 0;}
+  .gate p{color:var(--slate);font-size:13px;}
+  .welcome h1{font-size:26px;margin:0 0 6px;}
+  .welcome p{color:var(--slate);margin:0 0 32px;}
+  .stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:36px;}
+  .stat-chip{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px;}
+  .stat-chip .num{font-size:24px;font-weight:700;color:var(--ink);}
+  .stat-chip .lbl{font-size:11.5px;color:var(--slate);text-transform:uppercase;letter-spacing:0.3px;margin-top:4px;}
+  .tools-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+  .tool-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px;text-decoration:none;color:var(--ink);display:block;transition:transform .2s ease, box-shadow .2s ease;}
+  .tool-card:hover{transform:translateY(-4px);box-shadow:0 16px 32px -12px rgba(20,22,31,.15);}
+  .tool-card .icon{font-size:28px;margin-bottom:12px;display:block;}
+  .tool-card h3{font-size:17px;margin:0 0 6px;}
+  .tool-card p{font-size:13.5px;color:var(--slate);margin:0;}
+  @media (max-width:700px){.stats-row{grid-template-columns:1fr 1fr;} .tools-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body class="loaded">
+
+<div id="gateScreen" class="gate">
+  <h2>🔒 Internal Tools</h2>
+  <p>Enter the passcode to continue.</p>
+  <input type="password" id="passcodeInput" placeholder="Passcode">
+  <button class="btn btn-primary" onclick="checkPasscode()" style="width:100%;justify-content:center;">Enter</button>
+  <p id="gateError" style="color:#c0342a;display:none;">Incorrect passcode.</p>
+</div>
+
+<div id="toolScreen" style="display:none;">
+  <div class="tool-wrap">
+    <div class="welcome">
+      <h1>Welcome back 👋</h1>
+      <p>Everything for running A&amp;A Creations, in one place.</p>
+    </div>
+
+    <div class="stats-row" id="statsRow">
+      <div class="stat-chip"><div class="num">—</div><div class="lbl">Total Leads</div></div>
+      <div class="stat-chip"><div class="num">—</div><div class="lbl">Active Projects</div></div>
+      <div class="stat-chip"><div class="num">—</div><div class="lbl">Total Invoiced</div></div>
+      <div class="stat-chip"><div class="num">—</div><div class="lbl">Outstanding</div></div>
+      <div class="stat-chip"><div class="num">—</div><div class="lbl">Logos Saved</div></div>
+    </div>
+
+    <div class="tools-grid">
+      <a href="leads-tool.html" class="tool-card">
+        <span class="icon">🔍</span>
+        <h3>Lead Finder</h3>
+        <p>Search Google Places for local businesses with weak or no online presence, scored and stored.</p>
+      </a>
+      <a href="site-builder.html" class="tool-card">
+        <span class="icon">⚡</span>
+        <h3>Site Builder</h3>
+        <p>Generate a complete, ready-to-deploy client website from a stored lead in minutes.</p>
+      </a>
+      <a href="invoices.html" class="tool-card">
+        <span class="icon">🧾</span>
+        <h3>Invoicing</h3>
+        <p>Quotes, deposit invoices, final invoices — auto-priced from your package/add-on list.</p>
+      </a>
+      <a href="projects.html" class="tool-card">
+        <span class="icon">📊</span>
+        <h3>Projects</h3>
+        <p>Track every client from Lead through Fully Paid, with pipeline value at a glance.</p>
+      </a>
+      <a href="qr-tool.html" class="tool-card">
+        <span class="icon">▦</span>
+        <h3>QR Generator</h3>
+        <p>WhatsApp, UPI payment, Google review, or digital business card QR codes — instant, downloadable.</p>
+      </a>
+      <a href="logo-generator.html" class="tool-card">
+        <span class="icon">🎨</span>
+        <h3>Logo Generator</h3>
+        <p>6 logo styles generated instantly from a business name and colors — saved to a real library, not lost per tab.</p>
+      </a>
+      <a href="competitor-snapshot.html" class="tool-card">
+        <span class="icon">🔬</span>
+        <h3>Competitor Snapshot</h3>
+        <p>Score any single website on the spot, mid-conversation — same engine as the Lead Finder.</p>
+      </a>
+      <a href="review-templates.html" class="tool-card">
+        <span class="icon">💬</span>
+        <h3>Review Templates</h3>
+        <p>Ready response templates for Google, Zomato, and Swiggy reviews — plus save your own.</p>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const PASSCODE = "aacreations2026";
+  function checkPasscode() {
+    if (document.getElementById('passcodeInput').value === PASSCODE) {
+      document.getElementById('gateScreen').style.display = 'none';
+      document.getElementById('toolScreen').style.display = 'block';
+      sessionStorage.setItem('aa_gate_passed', '1');
+      loadStats();
+    } else { document.getElementById('gateError').style.display = 'block'; }
+  }
+  if (sessionStorage.getItem('aa_gate_passed') === '1') {
+    document.getElementById('gateScreen').style.display = 'none';
+    document.getElementById('toolScreen').style.display = 'block';
+    loadStats();
+  }
+  document.getElementById('passcodeInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPasscode(); });
+
+  function fmtINR(n) { return '₹' + (Number(n) || 0).toLocaleString('en-IN'); }
+
+  async function loadStats() {
+    const chips = document.querySelectorAll('.stat-chip .num');
+    try {
+      const [leadsRes, projectsRes, invoicesRes, logosRes] = await Promise.all([
+        fetch('/.netlify/functions/leads-store').then(r => r.json()).catch(() => null),
+        fetch('/.netlify/functions/projects').then(r => r.json()).catch(() => null),
+        fetch('/.netlify/functions/invoices').then(r => r.json()).catch(() => null),
+        fetch('/.netlify/functions/logo-library').then(r => r.json()).catch(() => null),
+      ]);
+      if (leadsRes) chips[0].textContent = leadsRes.stats.total;
+      if (projectsRes) chips[1].textContent = projectsRes.stats.activeCount;
+      if (invoicesRes) {
+        chips[2].textContent = fmtINR(invoicesRes.stats.totalInvoiced);
+        chips[3].textContent = fmtINR(invoicesRes.stats.totalOutstanding);
+      }
+      if (logosRes) chips[4].textContent = logosRes.logos.length;
+    } catch (e) { /* stats are supplementary, don't block the dashboard */ }
+  }
+</script>
+<script src="assets/admin-shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Logo Generator — Internal Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/logo-gen-engine.js"></script>
+<style>
+  .tool-wrap{max-width:1100px;margin:0 auto;padding:32px 24px 80px;}
+  .tool-header{display:flex;align-items:center;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--line);margin-bottom:32px;}
+  .gate{max-width:360px;margin:120px auto;text-align:center;}
+  .gate input{width:100%;padding:13px 16px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:15px;margin:16px 0;}
+  .gate p{color:var(--slate);font-size:13px;}
+
+  .tabs{display:flex;gap:4px;margin-bottom:24px;border-bottom:1px solid var(--line);}
+  .tab-btn{padding:10px 18px;background:none;border:none;cursor:pointer;font-family:'Fredoka',sans-serif;font-weight:600;font-size:14px;color:var(--slate);border-bottom:2px solid transparent;margin-bottom:-1px;}
+  .tab-btn.active{color:var(--cobalt);border-bottom-color:var(--cobalt);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  .form-row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin-bottom:28px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field label{font-size:12px;font-weight:600;color:var(--slate);}
+  .field input[type=text]{padding:11px 14px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:14px;min-width:220px;}
+  .color-row{display:flex;align-items:center;gap:8px;}
+  .color-row input[type=color]{width:44px;height:38px;padding:2px;border-radius:6px;border:1px solid var(--line-dark);cursor:pointer;}
+
+  .logo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  @media (max-width:800px){.logo-grid{grid-template-columns:1fr 1fr;}}
+  @media (max-width:520px){.logo-grid{grid-template-columns:1fr;}}
+  .logo-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;text-align:center;}
+  .logo-card .preview{width:120px;height:120px;margin:0 auto 14px;}
+  .logo-card .preview svg{width:100%;height:100%;border-radius:16px;}
+  .logo-card .style-name{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:12px;text-transform:capitalize;}
+  .logo-card .btn-row{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;}
+  .logo-card .btn-sm{font-size:11px;padding:6px 10px;border-radius:6px;border:1px solid var(--line-dark);background:#fff;cursor:pointer;color:var(--slate);}
+  .logo-card .btn-sm:hover{background:var(--paper-dim);}
+  .logo-card .btn-sm.save{color:var(--cobalt);border-color:var(--cobalt);}
+
+  .lib-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  @media (max-width:700px){.lib-grid{grid-template-columns:1fr 1fr;}}
+  .lib-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;text-align:center;}
+  .lib-card .preview{width:70px;height:70px;margin:0 auto 10px;}
+  .lib-card .preview svg{width:100%;height:100%;border-radius:12px;}
+  .lib-card .name{font-size:12px;font-weight:600;}
+  .lib-card .meta{font-size:10.5px;color:var(--slate);margin:2px 0 8px;}
+
+  .status-msg{padding:12px 16px;border-radius:8px;margin:12px 0;font-size:13.5px;}
+  .status-msg.error{background:#fdeceb;color:#c0342a;}
+  .status-msg.success{background:#e6f7ee;color:#1a9e5c;}
+</style>
+</head>
+<body class="loaded">
+
+<div id="gateScreen" class="gate">
+  <h2>🔒 Internal Tool</h2>
+  <p>This page isn't part of the public site — enter the passcode to continue.</p>
+  <input type="password" id="passcodeInput" placeholder="Passcode">
+  <button class="btn btn-primary" onclick="checkPasscode()" style="width:100%;justify-content:center;">Enter</button>
+  <p id="gateError" style="color:#c0342a;display:none;">Incorrect passcode.</p>
+</div>
+
+<div id="toolScreen" style="display:none;">
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <div style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;">
+        <span style="width:8px;height:8px;border-radius:2px;background:var(--amber);display:inline-block;"></span>
+        A&amp;A Creations — Logo Generator <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--slate);font-weight:400;">INTERNAL</span>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" id="tabBtnGen" onclick="switchTab('gen')">✨ Generate</button>
+      <button class="tab-btn" id="tabBtnLib" onclick="switchTab('lib')">📚 Saved Library</button>
+    </div>
+
+    <div id="panelGen" class="tab-panel active">
+      <div class="form-row">
+        <div class="field"><label>Business Name</label><input type="text" id="businessName" placeholder="Spice Route Cafe"></div>
+        <div class="field"><label>Primary Color</label><div class="color-row"><input type="color" id="primaryColor" value="#2f5fff"></div></div>
+        <div class="field"><label>Accent Color</label><div class="color-row"><input type="color" id="accentColor" value="#ffb338"></div></div>
+        <button class="btn btn-primary" onclick="generateLogos()">✨ Generate Logos</button>
+      </div>
+      <div id="genStatusMsg"></div>
+      <div class="logo-grid" id="logoGrid"></div>
+    </div>
+
+    <div id="panelLib" class="tab-panel">
+      <div id="libStatusMsg"></div>
+      <div class="lib-grid" id="libGrid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const PASSCODE = "aacreations2026";
+  function checkPasscode() {
+    if (document.getElementById('passcodeInput').value === PASSCODE) {
+      document.getElementById('gateScreen').style.display = 'none';
+      document.getElementById('toolScreen').style.display = 'block';
+      sessionStorage.setItem('aa_gate_passed', '1');
+    } else { document.getElementById('gateError').style.display = 'block'; }
+  }
+  if (sessionStorage.getItem('aa_gate_passed') === '1') {
+    document.getElementById('gateScreen').style.display = 'none';
+    document.getElementById('toolScreen').style.display = 'block';
+  }
+  document.getElementById('passcodeInput').addEventListener('keydown', e => { if (e.key === 'Enter') generateLogos(); });
+
+  function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+
+  // Each style template hardcodes its own gradient id (g1, g2, ...). That's
+  // fine for one SVG alone, but the Library view can show several saved
+  // logos of the SAME style side by side — duplicate ids in one HTML
+  // document make the browser apply the FIRST definition's colors to
+  // every element referencing that id, silently showing wrong colors on
+  // every card after the first. Suffix every id+reference with something
+  // unique per rendered card before inserting into the page.
+  function uniquifySvgIds(svg, suffix) {
+    const ids = new Set();
+    const idRegex = /id="([a-zA-Z0-9_-]+)"/g;
+    let m;
+    while ((m = idRegex.exec(svg)) !== null) ids.add(m[1]);
+    let result = svg;
+    ids.forEach(id => {
+      const newId = `${id}_${suffix}`;
+      result = result.split(`id="${id}"`).join(`id="${newId}"`);
+      result = result.split(`url(#${id})`).join(`url(#${newId})`);
+    });
+    return result;
+  }
+
+  function switchTab(tab) {
+    document.getElementById('tabBtnGen').classList.toggle('active', tab === 'gen');
+    document.getElementById('tabBtnLib').classList.toggle('active', tab === 'lib');
+    document.getElementById('panelGen').classList.toggle('active', tab === 'gen');
+    document.getElementById('panelLib').classList.toggle('active', tab === 'lib');
+    if (tab === 'lib') loadLibrary();
+  }
+
+  let currentResults = {};
+  let currentSpec = {};
+
+  function generateLogos() {
+    const businessName = document.getElementById('businessName').value.trim();
+    const primaryColor = document.getElementById('primaryColor').value;
+    const accentColor = document.getElementById('accentColor').value;
+    const statusEl = document.getElementById('genStatusMsg');
+    const grid = document.getElementById('logoGrid');
+
+    if (!businessName) {
+      statusEl.innerHTML = '<div class="status-msg error">Enter a business name first.</div>';
+      return;
+    }
+
+    const result = LogoGen.generate({ businessName, primaryColor, accentColor });
+    if (result.error) {
+      statusEl.innerHTML = `<div class="status-msg error">${escapeHtml(result.error)}</div>`;
+      return;
+    }
+    statusEl.innerHTML = '';
+    currentResults = result.results;
+    currentSpec = result.spec;
+
+    grid.innerHTML = Object.entries(result.results).map(([style, svg]) => `
+      <div class="logo-card">
+        <div class="preview">${uniquifySvgIds(svg, 'gen_' + style)}</div>
+        <div class="style-name">${style.replace('-', ' ')}</div>
+        <div class="btn-row">
+          <button class="btn-sm" onclick="downloadSVG('${style}')">⬇ SVG</button>
+          <button class="btn-sm" onclick="downloadPNG('${style}')">⬇ PNG</button>
+          <button class="btn-sm save" onclick="saveLogo('${style}')">💾 Save</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function downloadSVG(style) {
+    const svg = currentResults[style];
+    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${currentSpec.businessName.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}-${style}.svg`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function downloadPNG(style) {
+    const svg = currentResults[style];
+    const svgBlob = new Blob([svg], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(svgBlob);
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512; canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, 512, 512);
+      URL.revokeObjectURL(url);
+      canvas.toBlob((blob) => {
+        const pngUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = pngUrl;
+        a.download = `${currentSpec.businessName.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}-${style}.png`;
+        a.click();
+        URL.revokeObjectURL(pngUrl);
+      });
+    };
+    img.src = url;
+  }
+
+  async function saveLogo(style) {
+    const statusEl = document.getElementById('genStatusMsg');
+    try {
+      const resp = await fetch('/.netlify/functions/logo-library', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessName: currentSpec.businessName,
+          style,
+          primaryColor: currentSpec.primaryColor,
+          accentColor: currentSpec.accentColor,
+          svg: currentResults[style],
+        }),
+      });
+      if (!resp.ok) {
+        const data = await resp.json();
+        statusEl.innerHTML = `<div class="status-msg error">${escapeHtml(data.error)}</div>`;
+        return;
+      }
+      statusEl.innerHTML = `<div class="status-msg success">Saved "${escapeHtml(currentSpec.businessName)}" (${style}) to your library.</div>`;
+    } catch (e) {
+      statusEl.innerHTML = `<div class="status-msg error">${escapeHtml(e.message)}</div>`;
+    }
+  }
+
+  async function loadLibrary() {
+    const container = document.getElementById('libGrid');
+    const statusEl = document.getElementById('libStatusMsg');
+    container.innerHTML = '<div class="status-msg">Loading...</div>';
+    try {
+      const resp = await fetch('/.netlify/functions/logo-library');
+      const data = await resp.json();
+      if (!data.logos.length) {
+        container.innerHTML = '';
+        statusEl.innerHTML = '<div class="status-msg">No saved logos yet — generate one and hit Save.</div>';
+        return;
+      }
+      statusEl.innerHTML = '';
+      container.innerHTML = data.logos.map(l => `
+        <div class="lib-card">
+          <div class="preview">${uniquifySvgIds(l.svg, l.id)}</div>
+          <div class="name">${escapeHtml(l.businessName)}</div>
+          <div class="meta">${escapeHtml(l.style)}</div>
+          <button class="btn-sm" onclick="deleteLibraryLogo('${l.id}')">🗑 Delete</button>
+        </div>
+      `).join('');
+    } catch (e) {
+      statusEl.innerHTML = `<div class="status-msg error">${escapeHtml(e.message)}</div>`;
+    }
+  }
+
+  async function deleteLibraryLogo(id) {
+    if (!confirm('Delete this saved logo?')) return;
+    await fetch(`/.netlify/functions/logo-library?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+    loadLibrary();
+  }
+</script>
+<script src="assets/admin-shell.js"></script>
+</body>
+</html>

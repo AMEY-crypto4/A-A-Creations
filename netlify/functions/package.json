@@ -1,0 +1,8 @@
+{
+  "name": "aa-creations-functions",
+  "private": true,
+  "dependencies": {
+    "@netlify/blobs": "^8.0.0",
+    "jszip": "^3.10.1"
+  }
+}

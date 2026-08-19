@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>QR Generator — Internal Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  .tool-wrap{max-width:900px;margin:0 auto;padding:32px 24px 80px;}
+  .tool-header{display:flex;align-items:center;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--line);margin-bottom:32px;}
+  .gate{max-width:360px;margin:120px auto;text-align:center;}
+  .gate input{width:100%;padding:13px 16px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:15px;margin:16px 0;}
+  .gate p{color:var(--slate);font-size:13px;}
+
+  .qr-layout{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start;}
+  @media (max-width:800px){.qr-layout{grid-template-columns:1fr;}}
+
+  .type-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;}
+  .type-tab{padding:9px 16px;border-radius:20px;border:1.5px solid var(--line-dark);background:#fff;cursor:pointer;font-family:'Fredoka',sans-serif;font-size:13px;font-weight:600;color:var(--slate);}
+  .type-tab.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+  .form-section{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;}
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+  .field label{font-size:12px;font-weight:600;color:var(--slate);}
+  .field input, .field select, .field textarea{padding:11px 14px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:14px;}
+  .field textarea{min-height:70px;resize:vertical;}
+  .field-hint{font-size:11.5px;color:var(--slate);}
+
+  .preview-box{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;text-align:center;position:sticky;top:24px;}
+  #qrcodeCanvas{display:flex;align-items:center;justify-content:center;min-height:220px;}
+  #qrcodeCanvas img, #qrcodeCanvas canvas{margin:0 auto;border-radius:8px;}
+  .preview-empty{color:var(--slate);font-size:13px;padding:60px 20px;}
+  .preview-label{font-size:12.5px;color:var(--slate);margin-top:14px;word-break:break-all;}
+</style>
+</head>
+<body class="loaded">
+
+<div id="gateScreen" class="gate">
+  <h2>🔒 Internal Tool</h2>
+  <p>This page isn't part of the public site — enter the passcode to continue.</p>
+  <input type="password" id="passcodeInput" placeholder="Passcode">
+  <button class="btn btn-primary" onclick="checkPasscode()" style="width:100%;justify-content:center;">Enter</button>
+  <p id="gateError" style="color:#c0342a;display:none;">Incorrect passcode.</p>
+</div>
+
+<div id="toolScreen" style="display:none;">
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <div style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;">
+        <span style="width:8px;height:8px;border-radius:2px;background:var(--amber);display:inline-block;"></span>
+        A&amp;A Creations — QR Generator <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--slate);font-weight:400;">INTERNAL</span>
+      </div>
+    </div>
+
+    <div class="type-tabs">
+      <button class="type-tab active" data-type="whatsapp" onclick="switchType('whatsapp')">💬 WhatsApp Chat</button>
+      <button class="type-tab" data-type="review" onclick="switchType('review')">⭐ Google Review</button>
+      <button class="type-tab" data-type="upi" onclick="switchType('upi')">💳 UPI Payment</button>
+      <button class="type-tab" data-type="link" onclick="switchType('link')">🔗 Website / Menu Link</button>
+      <button class="type-tab" data-type="vcard" onclick="switchType('vcard')">👤 Digital Business Card</button>
+      <button class="type-tab" data-type="custom" onclick="switchType('custom')">✏️ Custom Text</button>
+    </div>
+
+    <div class="qr-layout">
+      <div class="form-section" id="formSection"></div>
+
+      <div class="preview-box">
+        <div id="qrcodeCanvas"><span class="preview-empty">Fill in the details, QR appears here automatically.</span></div>
+        <div class="preview-label" id="previewLabel"></div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:14px;" onclick="downloadQR()" id="downloadBtn" disabled>⬇ Download PNG</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const PASSCODE = "aacreations2026";
+  function checkPasscode() {
+    if (document.getElementById('passcodeInput').value === PASSCODE) {
+      document.getElementById('gateScreen').style.display = 'none';
+      document.getElementById('toolScreen').style.display = 'block';
+      sessionStorage.setItem('aa_gate_passed', '1');
+      switchType('whatsapp');
+    } else { document.getElementById('gateError').style.display = 'block'; }
+  }
+  if (sessionStorage.getItem('aa_gate_passed') === '1') {
+    document.getElementById('gateScreen').style.display = 'none';
+    document.getElementById('toolScreen').style.display = 'block';
+  }
+  document.getElementById('passcodeInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPasscode(); });
+
+  let currentType = 'whatsapp';
+  let qrInstance = null;
+
+  const FORMS = {
+    whatsapp: `
+      <div class="field"><label>WhatsApp Number (with country code, digits only)</label><input type="text" id="f1" placeholder="918454021541" oninput="updateQR()"></div>
+      <div class="field"><label>Pre-filled message (optional)</label><textarea id="f2" placeholder="Hi! I'd like to know more..." oninput="updateQR()"></textarea></div>
+    `,
+    review: `
+      <div class="field"><label>Google Review Link</label><input type="text" id="f1" placeholder="Paste your 'Write a review' link from Google Business Profile" oninput="updateQR()"></div>
+      <div class="field-hint">Find this in your Google Business Profile → Ask for reviews → Copy link.</div>
+    `,
+    upi: `
+      <div class="field"><label>UPI ID</label><input type="text" id="f1" placeholder="business@upi" oninput="updateQR()"></div>
+      <div class="field"><label>Payee Name</label><input type="text" id="f2" placeholder="Business Name" oninput="updateQR()"></div>
+      <div class="field"><label>Amount (optional — leave blank for customer to enter)</label><input type="number" id="f3" placeholder="e.g. 500" oninput="updateQR()"></div>
+    `,
+    link: `
+      <div class="field"><label>URL</label><input type="text" id="f1" placeholder="https://yourbusiness.com/menu" oninput="updateQR()"></div>
+    `,
+    vcard: `
+      <div class="field"><label>Full Name</label><input type="text" id="f1" placeholder="Amey Parab" oninput="updateQR()"></div>
+      <div class="field"><label>Business Name</label><input type="text" id="f2" placeholder="A&A Creations" oninput="updateQR()"></div>
+      <div class="field"><label>Phone</label><input type="text" id="f3" placeholder="+91 84540 21541" oninput="updateQR()"></div>
+      <div class="field"><label>Email</label><input type="text" id="f4" placeholder="aacreations114119201@gmail.com" oninput="updateQR()"></div>
+    `,
+    custom: `
+      <div class="field"><label>Any text or URL</label><textarea id="f1" placeholder="Type anything to encode..." oninput="updateQR()"></textarea></div>
+    `,
+  };
+
+  function switchType(type) {
+    currentType = type;
+    document.querySelectorAll('.type-tab').forEach(t => t.classList.toggle('active', t.dataset.type === type));
+    document.getElementById('formSection').innerHTML = FORMS[type];
+    clearQR();
+  }
+
+  function clearQR() {
+    document.getElementById('qrcodeCanvas').innerHTML = '<span class="preview-empty">Fill in the details, QR appears here automatically.</span>';
+    document.getElementById('previewLabel').textContent = '';
+    document.getElementById('downloadBtn').disabled = true;
+    qrInstance = null;
+  }
+
+  function buildPayload() {
+    const v = id => (document.getElementById(id) || {}).value || '';
+    switch (currentType) {
+      case 'whatsapp': {
+        const num = v('f1').replace(/[^0-9]/g, '');
+        if (!num) return null;
+        const msg = v('f2');
+        return `https://wa.me/${num}${msg ? '?text=' + encodeURIComponent(msg) : ''}`;
+      }
+      case 'review':
+        return v('f1').trim() || null;
+      case 'upi': {
+        const upiId = v('f1').trim();
+        if (!upiId) return null;
+        const name = v('f2').trim();
+        const amt = v('f3').trim();
+        let url = `upi://pay?pa=${encodeURIComponent(upiId)}`;
+        if (name) url += `&pn=${encodeURIComponent(name)}`;
+        if (amt) url += `&am=${encodeURIComponent(amt)}`;
+        url += `&cu=INR`;
+        return url;
+      }
+      case 'link':
+        return v('f1').trim() || null;
+      case 'vcard': {
+        const name = v('f1').trim();
+        if (!name) return null;
+        return `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nORG:${v('f2')}\nTEL:${v('f3')}\nEMAIL:${v('f4')}\nEND:VCARD`;
+      }
+      case 'custom':
+        return v('f1').trim() || null;
+      default:
+        return null;
+    }
+  }
+
+  function updateQR() {
+    const payload = buildPayload();
+    const container = document.getElementById('qrcodeCanvas');
+    const label = document.getElementById('previewLabel');
+    const btn = document.getElementById('downloadBtn');
+
+    if (!payload) { clearQR(); return; }
+
+    container.innerHTML = '';
+    qrInstance = new QRCode(container, {
+      text: payload,
+      width: 220,
+      height: 220,
+      colorDark: '#14161f',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H,
+    });
+    label.textContent = payload.length > 90 ? payload.slice(0, 90) + '...' : payload;
+    btn.disabled = false;
+  }
+
+  function downloadQR() {
+    const container = document.getElementById('qrcodeCanvas');
+    const canvas = container.querySelector('canvas');
+    const img = container.querySelector('img');
+    const source = canvas || img;
+    if (!source) return;
+
+    const link = document.createElement('a');
+    link.download = `qr-${currentType}-${Date.now()}.png`;
+    link.href = canvas ? canvas.toDataURL('image/png') : img.src;
+    link.click();
+  }
+</script>
+<script src="assets/admin-shell.js"></script>
+</body>
+</html>

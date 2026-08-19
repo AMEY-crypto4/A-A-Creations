@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Competitor Snapshot — Internal Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .tool-wrap{max-width:800px;margin:0 auto;padding:32px 24px 80px;}
+  .tool-header{display:flex;align-items:center;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--line);margin-bottom:32px;}
+  .gate{max-width:360px;margin:120px auto;text-align:center;}
+  .gate input{width:100%;padding:13px 16px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:15px;margin:16px 0;}
+  .gate p{color:var(--slate);font-size:13px;}
+
+  .search-row{display:flex;gap:10px;margin-bottom:28px;}
+  .search-row input{flex:1;padding:13px 16px;border-radius:8px;border:1px solid var(--line-dark);font-family:'Fredoka',sans-serif;font-size:15px;}
+
+  .status-msg{padding:14px 18px;border-radius:8px;margin:16px 0;font-size:14px;}
+  .status-msg.error{background:#fdeceb;color:#c0342a;}
+  .status-msg.loading{background:var(--cobalt-dim);color:var(--cobalt);}
+
+  .result-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px;}
+  .score-display{display:flex;align-items:center;gap:20px;margin-bottom:20px;}
+  .score-circle{width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#fff;flex-shrink:0;}
+  .score-high{background:#c0342a;}
+  .score-mid{background:#b25900;}
+  .score-low{background:#1a9e5c;}
+  .verdict{font-size:17px;font-weight:600;color:var(--ink);}
+  .verdict-url{font-size:12.5px;color:var(--slate);margin-top:4px;word-break:break-all;}
+  .signals-list{list-style:none;padding:0;margin:0;}
+  .signals-list li{padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px;color:var(--charcoal);}
+  .signals-list li:last-child{border-bottom:none;}
+  .signals-list li::before{content:"→ ";color:var(--cobalt);font-weight:700;}
+  .pitch-box{background:var(--paper-dim);border-radius:10px;padding:16px 20px;margin-top:20px;font-size:13px;color:var(--slate);}
+  .pitch-box b{color:var(--ink);}
+</style>
+</head>
+<body class="loaded">
+
+<div id="gateScreen" class="gate">
+  <h2>🔒 Internal Tool</h2>
+  <p>This page isn't part of the public site — enter the passcode to continue.</p>
+  <input type="password" id="passcodeInput" placeholder="Passcode">
+  <button class="btn btn-primary" onclick="checkPasscode()" style="width:100%;justify-content:center;">Enter</button>
+  <p id="gateError" style="color:#c0342a;display:none;">Incorrect passcode.</p>
+</div>
+
+<div id="toolScreen" style="display:none;">
+  <div class="tool-wrap">
+    <div class="tool-header">
+      <div style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;">
+        <span style="width:8px;height:8px;border-radius:2px;background:var(--amber);display:inline-block;"></span>
+        A&amp;A Creations — Competitor Snapshot <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--slate);font-weight:400;">INTERNAL</span>
+      </div>
+    </div>
+
+    <p style="color:var(--slate);font-size:14px;margin-top:0;">Point this at any business's website — a prospect's own site, or a competitor of theirs — to build a quick "here's what's costing you customers" case on the spot, mid-conversation.</p>
+
+    <div class="search-row">
+      <input type="text" id="urlInput" placeholder="e.g. somebusiness.com" onkeydown="if(event.key==='Enter') runSnapshot()">
+      <button class="btn btn-primary" onclick="runSnapshot()" id="snapshotBtn">Analyze</button>
+    </div>
+
+    <div id="statusMsg"></div>
+    <div id="resultContainer"></div>
+  </div>
+</div>
+
+<script>
+  const PASSCODE = "aacreations2026";
+  function checkPasscode() {
+    if (document.getElementById('passcodeInput').value === PASSCODE) {
+      document.getElementById('gateScreen').style.display = 'none';
+      document.getElementById('toolScreen').style.display = 'block';
+      sessionStorage.setItem('aa_gate_passed', '1');
+    } else { document.getElementById('gateError').style.display = 'block'; }
+  }
+  if (sessionStorage.getItem('aa_gate_passed') === '1') {
+    document.getElementById('gateScreen').style.display = 'none';
+    document.getElementById('toolScreen').style.display = 'block';
+  }
+
+  function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+  function scoreClass(score) {
+    if (score >= 35) return 'score-high';
+    if (score >= 15) return 'score-mid';
+    return 'score-low';
+  }
+
+  async function runSnapshot() {
+    const url = document.getElementById('urlInput').value.trim();
+    const statusEl = document.getElementById('statusMsg');
+    const container = document.getElementById('resultContainer');
+    const btn = document.getElementById('snapshotBtn');
+
+    if (!url) {
+      statusEl.innerHTML = '<div class="status-msg error">Enter a website URL first.</div>';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Analyzing...';
+    statusEl.innerHTML = '<div class="status-msg loading">Fetching and analyzing the site — a few seconds...</div>';
+    container.innerHTML = '';
+
+    try {
+      const resp = await fetch(`/.netlify/functions/competitor-snapshot?url=${encodeURIComponent(url)}`);
+      const data = await resp.json();
+
+      if (!resp.ok) {
+        statusEl.innerHTML = `<div class="status-msg error">${escapeHtml(data.error || 'Failed to analyze')}</div>`;
+        btn.disabled = false;
+        btn.textContent = 'Analyze';
+        return;
+      }
+
+      statusEl.innerHTML = '';
+      const signalsHtml = data.signals.length
+        ? `<ul class="signals-list">${data.signals.map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ul>`
+        : '<p style="color:var(--slate);font-size:13.5px;">No significant issues found.</p>';
+
+      container.innerHTML = `
+        <div class="result-card">
+          <div class="score-display">
+            <div class="score-circle ${scoreClass(data.score)}">${data.score}</div>
+            <div>
+              <div class="verdict">${escapeHtml(data.verdict)}</div>
+              <div class="verdict-url">${escapeHtml(data.url)}</div>
+            </div>
+          </div>
+          ${signalsHtml}
+          <div class="pitch-box"><b>Use this in the pitch:</b> reference 1-2 of the specific signals above — concrete and observable beats a generic "your website needs work" every time.</div>
+        </div>
+      `;
+    } catch (e) {
+      statusEl.innerHTML = `<div class="status-msg error">${escapeHtml(e.message)}</div>`;
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Analyze';
+  }
+</script>
+<script src="assets/admin-shell.js"></script>
+</body>
+</html>
