@@ -1,74 +1,58 @@
 <title>A&A Invoice</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Libre+Franklin:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:oklch(0.985 0.004 200);
-  --paper-raised:oklch(0.997 0.002 200);
-  --ink:oklch(0.2 0.02 200);
-  --ink-dim:oklch(0.48 0.015 200);
-  --line:oklch(0.86 0.012 200);
-  --line-strong:oklch(0.72 0.02 200);
-  --accent:oklch(0.5 0.13 165);
-  --accent-soft:oklch(0.5 0.13 165 / 0.12);
-  --accent-ink:oklch(0.99 0.005 90);
-  --stamp:oklch(0.55 0.17 30);
-  --stamp-soft:oklch(0.55 0.17 30 / 0.12);
-  --shadow:0 1px 2px oklch(0.2 0.02 200 / 0.08);
+  --paper:#f5f6f3;
+  --paper-raised:#ffffff;
+  --ink:#14161f;
+  --ink-dim:#5b616e;
+  --line:#dcded9;
+  --line-strong:#c7cbc3;
+  --accent:#2f5fff;
+  --accent-soft:#e7edff;
+  --accent-ink:#ffffff;
+  --stamp:#ffb338;
+  --stamp-soft:#fff3de;
+  --shadow:0 1px 2px rgba(20,22,31,.08);
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:oklch(0.16 0.014 200); --paper-raised:oklch(0.21 0.016 200);
-    --ink:oklch(0.94 0.006 200); --ink-dim:oklch(0.68 0.014 200);
-    --line:oklch(0.33 0.018 200); --line-strong:oklch(0.44 0.02 200);
-    --accent:oklch(0.72 0.12 165); --accent-soft:oklch(0.72 0.12 165 / 0.16); --accent-ink:oklch(0.15 0.02 165);
-    --stamp:oklch(0.72 0.15 30); --stamp-soft:oklch(0.72 0.15 30 / 0.16);
-    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
-  }
-}
-:root[data-theme="dark"]{
-  --paper:oklch(0.16 0.014 200); --paper-raised:oklch(0.21 0.016 200);
-  --ink:oklch(0.94 0.006 200); --ink-dim:oklch(0.68 0.014 200);
-  --line:oklch(0.33 0.018 200); --line-strong:oklch(0.44 0.02 200);
-  --accent:oklch(0.72 0.12 165); --accent-soft:oklch(0.72 0.12 165 / 0.16); --accent-ink:oklch(0.15 0.02 165);
-  --stamp:oklch(0.72 0.15 30); --stamp-soft:oklch(0.72 0.15 30 / 0.16);
-  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
-}
+
+
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:'Libre Franklin',system-ui,sans-serif}
-h1,h2,h3{font-family:'Zilla Slab',georgia,serif;margin:0;text-wrap:balance}
-.mono{font-family:'Roboto Mono',monospace;font-variant-numeric:tabular-nums}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Fredoka',system-ui,sans-serif}
+h1,h2,h3{font-family:'Fredoka',georgia,serif;margin:0;text-wrap:balance}
+.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
 .app{display:grid;grid-template-columns:400px 1fr;gap:0;min-height:100vh}
 @media(max-width:920px){.app{grid-template-columns:1fr}}
 
 /* form side */
 .form-side{padding:28px 26px;border-right:1px solid var(--line);background:var(--paper-raised)}
 .form-side h1{font-size:22px;margin-bottom:2px}
-.form-side .tag{font-family:'Roboto Mono',monospace;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+.form-side .tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
 .form-side .desc{font-size:12.5px;color:var(--ink-dim);margin:8px 0 24px;line-height:1.5}
 .field{margin-bottom:13px}
 .field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:5px;font-weight:600}
-.field input,.field select,.field textarea{width:100%;font-family:'Libre Franklin',sans-serif;font-size:13.5px;padding:8px 10px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
+.field input,.field select,.field textarea{width:100%;font-family:'Fredoka',sans-serif;font-size:13.5px;padding:8px 10px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
 .field textarea{resize:vertical;min-height:60px}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .hint{font-size:11px;color:var(--ink-dim);line-height:1.5}
 
 .item-form{border-top:1px solid var(--line);margin-top:16px;padding-top:16px}
-.item-form h3{font-size:13px;text-transform:uppercase;letter-spacing:.04em;font-family:'Libre Franklin',sans-serif;font-weight:700;margin-bottom:12px}
+.item-form h3{font-size:13px;text-transform:uppercase;letter-spacing:.04em;font-family:'Fredoka',sans-serif;font-weight:700;margin-bottom:12px}
 .item-row-edit{display:grid;grid-template-columns:1fr 78px 50px 64px 26px;gap:6px;margin-bottom:8px;align-items:center}
 .item-row-edit input,.item-row-edit select{font-size:12.5px;padding:6px 8px;border:1px solid var(--line-strong);border-radius:4px;background:var(--paper);color:var(--ink)}
 .item-row-edit input:disabled{opacity:.5}
 .item-row-edit .rm{width:26px;height:26px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink-dim);cursor:pointer}
 .item-row-edit .rm:hover{color:var(--stamp);border-color:var(--stamp)}
-.item-type-tag{display:inline-block;font-family:'Roboto Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.04em;padding:1px 6px;border-radius:8px;background:var(--accent-soft);color:var(--accent);margin-left:6px;vertical-align:middle}
+.item-type-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.04em;padding:1px 6px;border-radius:8px;background:var(--accent-soft);color:var(--accent);margin-left:6px;vertical-align:middle}
 .history-list{max-height:220px;overflow-y:auto;border:1px solid var(--line);border-radius:6px}
 .history-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:9px 11px;border-bottom:1px solid var(--line);font-size:12px}
 .history-row:last-child{border-bottom:0}
-.history-row .hv{font-family:'Roboto Mono',monospace;color:var(--accent);font-weight:600}
+.history-row .hv{font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:600}
 .history-empty{padding:16px;font-size:12px;color:var(--ink-dim);text-align:center}
 
-.btn{font-family:'Libre Franklin',sans-serif;font-weight:600;font-size:13px;padding:9px 16px;border-radius:6px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn{font-family:'Fredoka',sans-serif;font-weight:600;font-size:13px;padding:9px 16px;border-radius:6px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
 .btn-primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .btn:hover{border-color:var(--ink)}
 .btn-primary:hover{opacity:.9}
@@ -85,22 +69,22 @@ h1,h2,h3{font-family:'Zilla Slab',georgia,serif;margin:0;text-wrap:balance}
 .sheet-head h2{font-size:26px;letter-spacing:.02em}
 .sheet-head .biz{font-size:12.5px;color:var(--ink-dim);margin-top:6px;line-height:1.6}
 .sheet-head .inv-meta{text-align:right;font-size:12.5px}
-.sheet-head .inv-meta .num{font-family:'Roboto Mono',monospace;font-size:15px;font-weight:600;color:var(--accent)}
+.sheet-head .inv-meta .num{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;color:var(--accent)}
 .bill-to{display:flex;justify-content:space-between;margin-bottom:26px;font-size:13px}
 .bill-to .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-dim);margin-bottom:4px}
 table.items{width:100%;border-collapse:collapse;margin-bottom:20px}
 table.items th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);padding:8px 6px;border-bottom:2px solid var(--ink)}
 table.items td{padding:10px 6px;font-size:13px;border-bottom:1px solid var(--line)}
-table.items td.num,table.items th.num{text-align:right;font-family:'Roboto Mono',monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+table.items td.num,table.items th.num{text-align:right;font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
 .totals{display:flex;justify-content:flex-end}
 .totals table{border-collapse:collapse;font-size:13px}
 .totals td{padding:5px 4px}
 .totals td.lbl{color:var(--ink-dim);padding-right:22px}
-.totals td.val{font-family:'Roboto Mono',monospace;text-align:right;font-variant-numeric:tabular-nums}
+.totals td.val{font-family:'JetBrains Mono',monospace;text-align:right;font-variant-numeric:tabular-nums}
 .totals tr.grand td{border-top:2px solid var(--ink);padding-top:10px;font-weight:700;font-size:16px}
 .totals tr.grand td.val{color:var(--accent)}
 .sheet-notes{margin-top:28px;padding-top:16px;border-top:1px dashed var(--line);font-size:12px;color:var(--ink-dim);line-height:1.6}
-.status-stamp{display:inline-block;font-family:'Roboto Mono',monospace;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:4px 10px;border-radius:20px;background:var(--stamp-soft);color:var(--stamp);border:1px solid var(--stamp);transform:rotate(-3deg);margin-top:8px}
+.status-stamp{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:4px 10px;border-radius:20px;background:var(--stamp-soft);color:var(--stamp);border:1px solid var(--stamp);transform:rotate(-3deg);margin-top:8px}
 
 @media print{
   .form-side{display:none}

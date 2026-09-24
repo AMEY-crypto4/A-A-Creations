@@ -1,55 +1,41 @@
 <title>A&A Agreement</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=PT+Sans:wght@400;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:oklch(0.975 0.004 90);
-  --paper-raised:oklch(0.995 0.002 90);
-  --ink:oklch(0.18 0.02 260);
-  --ink-dim:oklch(0.44 0.015 260);
-  --line:oklch(0.83 0.01 260);
-  --line-strong:oklch(0.68 0.015 260);
-  --accent:oklch(0.4 0.13 20);
-  --accent-soft:oklch(0.4 0.13 20 / 0.08);
-  --accent-ink:oklch(0.99 0.005 90);
-  --shadow:0 1px 2px oklch(0.2 0.02 260 / 0.08);
+  --paper:#f5f6f3;
+  --paper-raised:#ffffff;
+  --ink:#14161f;
+  --ink-dim:#5b616e;
+  --line:#dcded9;
+  --line-strong:#c7cbc3;
+  --accent:#2f5fff;
+  --accent-soft:#e7edff;
+  --accent-ink:#ffffff;
+  --shadow:0 1px 2px rgba(20,22,31,.08);
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:oklch(0.15 0.012 260); --paper-raised:oklch(0.2 0.014 260);
-    --ink:oklch(0.94 0.006 90); --ink-dim:oklch(0.68 0.012 260);
-    --line:oklch(0.33 0.016 260); --line-strong:oklch(0.44 0.02 260);
-    --accent:oklch(0.62 0.13 20); --accent-soft:oklch(0.62 0.13 20 / 0.14); --accent-ink:oklch(0.14 0.02 20);
-    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
-  }
-}
-:root[data-theme="dark"]{
-  --paper:oklch(0.15 0.012 260); --paper-raised:oklch(0.2 0.014 260);
-  --ink:oklch(0.94 0.006 90); --ink-dim:oklch(0.68 0.012 260);
-  --line:oklch(0.33 0.016 260); --line-strong:oklch(0.44 0.02 260);
-  --accent:oklch(0.62 0.13 20); --accent-soft:oklch(0.62 0.13 20 / 0.14); --accent-ink:oklch(0.14 0.02 20);
-  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
-}
+
+
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:'PT Sans',system-ui,sans-serif}
-h1,h2,h3{font-family:'Libre Baskerville',georgia,serif;margin:0;text-wrap:balance}
-.mono{font-family:'Courier Prime',monospace}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Fredoka',system-ui,sans-serif}
+h1,h2,h3{font-family:'Fredoka',georgia,serif;margin:0;text-wrap:balance}
+.mono{font-family:'JetBrains Mono',monospace}
 .app{display:grid;grid-template-columns:400px 1fr;min-height:100vh}
 @media(max-width:920px){.app{grid-template-columns:1fr}}
 
 .form-side{padding:28px 26px;border-right:1px solid var(--line);background:var(--paper-raised)}
-.form-side .tag{font-family:'Courier Prime',monospace;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+.form-side .tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
 .form-side h1{font-size:23px;margin:4px 0 2px}
 .form-side .desc{font-size:12.5px;color:var(--ink-dim);margin:8px 0 22px;line-height:1.55}
 .field{margin-bottom:13px}
 .field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:5px;font-weight:700}
-.field input,.field select,.field textarea{width:100%;font-family:'PT Sans',sans-serif;font-size:13.5px;padding:8px 10px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
+.field input,.field select,.field textarea{width:100%;font-family:'Fredoka',sans-serif;font-size:13.5px;padding:8px 10px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
 .field textarea{resize:vertical;min-height:58px}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .hint{font-size:11px;color:var(--ink-dim);margin-top:4px;line-height:1.5}
 
-.btn{font-family:'PT Sans',sans-serif;font-weight:700;font-size:13px;padding:9px 16px;border-radius:6px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn{font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;padding:9px 16px;border-radius:6px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
 .btn-primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .btn:hover{border-color:var(--ink)}
 .btn-primary:hover{opacity:.9}
@@ -62,11 +48,11 @@ h1,h2,h3{font-family:'Libre Baskerville',georgia,serif;margin:0;text-wrap:balanc
 .sheet{width:100%;max-width:660px;background:var(--paper-raised);box-shadow:0 6px 28px oklch(0.2 0.03 260/0.16);padding:58px 54px;animation:pageIn .5s ease both}
 @keyframes pageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .doc-title{font-size:24px;text-align:center;text-transform:uppercase;letter-spacing:.06em}
-.doc-sub{text-align:center;font-size:12px;color:var(--ink-dim);margin-top:8px;font-family:'Courier Prime',monospace}
+.doc-sub{text-align:center;font-size:12px;color:var(--ink-dim);margin-top:8px;font-family:'JetBrains Mono',monospace}
 .rule{height:1px;background:var(--line);margin:26px 0}
 .doc-intro{font-size:13.5px;line-height:1.75;margin-bottom:26px}
 .clause{margin-bottom:22px;display:grid;grid-template-columns:32px 1fr;gap:10px}
-.clause .n{font-family:'Courier Prime',monospace;font-weight:700;color:var(--accent);font-size:13px}
+.clause .n{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent);font-size:13px}
 .clause h3{font-size:14.5px;text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px}
 .clause p{font-size:13.5px;line-height:1.7;color:var(--ink)}
 .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:44px}

@@ -1,64 +1,46 @@
 <title>A&A Toolkit Index</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:oklch(0.97 0.006 250); --paper-raised:oklch(0.995 0.003 250);
-  --ink:oklch(0.2 0.02 250); --ink-dim:oklch(0.46 0.015 250);
-  --line:oklch(0.87 0.008 250); --line-strong:oklch(0.72 0.015 250);
-  --accent:oklch(0.5 0.14 265); --accent-soft:oklch(0.5 0.14 265 / 0.1);
-  --good:oklch(0.5 0.12 150); --good-soft:oklch(0.5 0.12 150 / 0.13);
-  --wait:oklch(0.6 0.14 55); --wait-soft:oklch(0.6 0.14 55 / 0.13);
-  --shadow:0 1px 2px oklch(0.2 0.02 250 / 0.08);
+  --paper:#f5f6f3; --paper-raised:#ffffff;
+  --ink:#14161f; --ink-dim:#5b616e;
+  --line:#dcded9; --line-strong:#c7cbc3;
+  --accent:#2f5fff; --accent-soft:#e7edff;
+  --good:#2fa35f; --good-soft:#e3f5ea;
+  --wait:#ffb338; --wait-soft:#fff3de;
+  --shadow:0 1px 2px rgba(20,22,31,.08);
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:oklch(0.15 0.016 250); --paper-raised:oklch(0.205 0.018 250);
-    --ink:oklch(0.94 0.006 250); --ink-dim:oklch(0.68 0.014 250);
-    --line:oklch(0.33 0.02 250); --line-strong:oklch(0.44 0.026 250);
-    --accent:oklch(0.72 0.12 265); --accent-soft:oklch(0.72 0.12 265 / 0.16);
-    --good:oklch(0.7 0.12 150); --good-soft:oklch(0.7 0.12 150 / 0.16);
-    --wait:oklch(0.74 0.13 55); --wait-soft:oklch(0.74 0.13 55 / 0.16);
-    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
-  }
-}
-:root[data-theme="dark"]{
-  --paper:oklch(0.15 0.016 250); --paper-raised:oklch(0.205 0.018 250);
-  --ink:oklch(0.94 0.006 250); --ink-dim:oklch(0.68 0.014 250);
-  --line:oklch(0.33 0.02 250); --line-strong:oklch(0.44 0.026 250);
-  --accent:oklch(0.72 0.12 265); --accent-soft:oklch(0.72 0.12 265 / 0.16);
-  --good:oklch(0.7 0.12 150); --good-soft:oklch(0.7 0.12 150 / 0.16);
-  --wait:oklch(0.74 0.13 55); --wait-soft:oklch(0.74 0.13 55 / 0.16);
-  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
-}
+
+
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:'Work Sans',system-ui,sans-serif}
-h1,h2{font-family:'Fraunces',georgia,serif;font-weight:700;margin:0;text-wrap:balance}
-.mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Fredoka',system-ui,sans-serif}
+h1,h2{font-family:'Fredoka',georgia,serif;font-weight:700;margin:0;text-wrap:balance}
+.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
 .wrap{max-width:900px;margin:0 auto;padding:40px 24px 70px}
 header{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:8px}
 header h1{font-size:clamp(28px,4.5vw,38px)}
 header p{color:var(--ink-dim);font-size:14.5px;margin-top:8px;max-width:60ch;line-height:1.55}
-.updated{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.05em;margin-top:14px}
+.updated{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.05em;margin-top:14px}
 
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:24px 0}
 .stat{background:var(--paper-raised);padding:14px 16px}
-.stat .n{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600}
+.stat .n{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600}
 .stat .l{font-size:11px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
 
 .section{margin-top:30px}
-.section h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-dim);font-family:'IBM Plex Mono',monospace;font-weight:600;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.section h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-dim);font-family:'JetBrains Mono',monospace;font-weight:600;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--line)}
 .tool-row{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:14px 4px;border-bottom:1px solid var(--line)}
 .tool-row:last-child{border-bottom:0}
-.tool-name{font-family:'Fraunces',georgia,serif;font-weight:600;font-size:16px}
+.tool-name{font-family:'Fredoka',georgia,serif;font-weight:600;font-size:16px}
 .tool-name a{color:var(--ink);text-decoration:none}
 .tool-name a:hover{color:var(--accent)}
 .tool-desc{font-size:12.5px;color:var(--ink-dim);margin-top:2px;max-width:52ch;line-height:1.5}
 .status-pill{font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;text-transform:uppercase;letter-spacing:.03em}
 .status-pill.done{background:var(--good-soft);color:var(--good)}
 .status-pill.queued{background:var(--wait-soft);color:var(--wait)}
-.idea-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-dim);white-space:nowrap}
+.idea-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-dim);white-space:nowrap}
 
 footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
 footer strong{color:var(--ink)}

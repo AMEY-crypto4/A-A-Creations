@@ -1,51 +1,35 @@
 <title>Copywriting Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700&family=Red+Hat+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:oklch(0.975 0.005 250);
-  --paper-raised:oklch(0.995 0.003 250);
-  --ink:oklch(0.2 0.03 250);
-  --ink-dim:oklch(0.46 0.02 250);
-  --line:oklch(0.85 0.015 250);
-  --line-strong:oklch(0.7 0.025 250);
-  --accent:oklch(0.5 0.19 260);
-  --accent-soft:oklch(0.5 0.19 260 / 0.1);
-  --accent-ink:oklch(0.99 0.006 90);
-  --gold:oklch(0.75 0.15 78);
-  --gold-soft:oklch(0.75 0.15 78 / 0.16);
-  --shadow:0 1px 2px oklch(0.25 0.03 250 / 0.08);
+  --paper:#f5f6f3;
+  --paper-raised:#ffffff;
+  --ink:#14161f;
+  --ink-dim:#5b616e;
+  --line:#dcded9;
+  --line-strong:#c7cbc3;
+  --accent:#2f5fff;
+  --accent-soft:#e7edff;
+  --accent-ink:#ffffff;
+  --gold:#ffb338;
+  --gold-soft:#fff3de;
+  --shadow:0 1px 2px rgba(20,22,31,.08);
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:oklch(0.16 0.018 255); --paper-raised:oklch(0.21 0.02 255);
-    --ink:oklch(0.95 0.008 255); --ink-dim:oklch(0.7 0.016 255);
-    --line:oklch(0.34 0.024 255); --line-strong:oklch(0.45 0.03 255);
-    --accent:oklch(0.72 0.15 260); --accent-soft:oklch(0.72 0.15 260 / 0.16); --accent-ink:oklch(0.15 0.02 260);
-    --gold:oklch(0.78 0.13 78); --gold-soft:oklch(0.78 0.13 78 / 0.18);
-    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
-  }
-}
-:root[data-theme="dark"]{
-  --paper:oklch(0.16 0.018 255); --paper-raised:oklch(0.21 0.02 255);
-  --ink:oklch(0.95 0.008 255); --ink-dim:oklch(0.7 0.016 255);
-  --line:oklch(0.34 0.024 255); --line-strong:oklch(0.45 0.03 255);
-  --accent:oklch(0.72 0.15 260); --accent-soft:oklch(0.72 0.15 260 / 0.16); --accent-ink:oklch(0.15 0.02 260);
-  --gold:oklch(0.78 0.13 78); --gold-soft:oklch(0.78 0.13 78 / 0.18);
-  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
-}
+
+
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:'Manrope',system-ui,sans-serif}
-h1,h2,h3{font-family:'Bricolage Grotesque',sans-serif;margin:0;text-wrap:balance}
-.mono{font-family:'Red Hat Mono',monospace}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Fredoka',system-ui,sans-serif}
+h1,h2,h3{font-family:'Fredoka',sans-serif;margin:0;text-wrap:balance}
+.mono{font-family:'JetBrains Mono',monospace}
 .wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
 
 header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
 .brand{display:flex;align-items:center;gap:11px}
-.brand .mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),oklch(0.45 0.2 290));display:flex;align-items:center;justify-content:center;color:var(--accent-ink);font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px}
+.brand .mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),oklch(0.45 0.2 290));display:flex;align-items:center;justify-content:center;color:var(--accent-ink);font-family:'Fredoka',sans-serif;font-weight:800;font-size:19px}
 .brand h1{font-size:21px;font-weight:700}
-.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
 .pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
 .pricing-hint strong{color:var(--accent)}
 
@@ -56,7 +40,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding:24p
 .voice-bar a:hover{text-decoration:underline}
 
 .tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
-.tab{font-family:'Manrope',sans-serif;font-weight:700;font-size:13.5px;padding:11px 15px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab{font-family:'Fredoka',sans-serif;font-weight:700;font-size:13.5px;padding:11px 15px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
 .tab:hover{color:var(--ink)}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 .view{display:none;padding:26px 0}
@@ -70,11 +54,11 @@ header{display:flex;justify-content:space-between;align-items:center;padding:24p
 .panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
 .field{margin-bottom:13px}
 .field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
-.field input,.field select,.field textarea{width:100%;font-family:'Manrope',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:7px;background:var(--paper);color:var(--ink)}
+.field input,.field select,.field textarea{width:100%;font-family:'Fredoka',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:7px;background:var(--paper);color:var(--ink)}
 .field textarea{resize:vertical;min-height:90px;line-height:1.5}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-.btn{font-family:'Manrope',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:8px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn{font-family:'Fredoka',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:8px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
 .btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
 .btn:hover{border-color:var(--ink)}
 .btn-primary:hover{opacity:.92}
@@ -84,8 +68,8 @@ header{display:flex;justify-content:space-between;align-items:center;padding:24p
 
 .output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
 .card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.6}
-.card .n{display:inline-block;font-family:'Red Hat Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
-.card .char{float:right;font-family:'Red Hat Mono',monospace;font-size:10px;color:var(--ink-dim)}
+.card .n{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.card .char{float:right;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim)}
 .card h4{font-size:14px;margin-bottom:4px}
 .card .field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
 .output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
@@ -93,8 +77,8 @@ header{display:flex;justify-content:space-between;align-items:center;padding:24p
 .thinking-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
 
-.tag-chip{display:inline-block;font-family:'Red Hat Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--gold-soft);color:oklch(0.42 0.13 78);text-transform:uppercase;letter-spacing:.04em}
-@media (prefers-color-scheme: dark){.tag-chip{color:var(--gold)}}
+.tag-chip{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--gold-soft);color:oklch(0.42 0.13 78);text-transform:uppercase;letter-spacing:.04em}
+
 :root[data-theme="dark"] .tag-chip{color:var(--gold)}
 footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
 footer strong{color:var(--ink)}

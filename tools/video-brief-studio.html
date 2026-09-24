@@ -1,58 +1,42 @@
 <title>Video Brief Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:oklch(0.975 0.005 60);
-  --paper-raised:oklch(0.995 0.003 60);
-  --ink:oklch(0.18 0.015 250);
-  --ink-dim:oklch(0.46 0.012 250);
-  --line:oklch(0.85 0.01 60);
-  --line-strong:oklch(0.7 0.016 60);
-  --accent:oklch(0.6 0.15 45);
-  --accent-soft:oklch(0.6 0.15 45 / 0.13);
-  --accent-ink:oklch(0.16 0.03 45);
-  --navy:oklch(0.35 0.08 250);
-  --navy-soft:oklch(0.35 0.08 250 / 0.13);
-  --shadow:0 1px 2px oklch(0.2 0.02 60 / 0.08);
+  --paper:#f5f6f3;
+  --paper-raised:#ffffff;
+  --ink:#14161f;
+  --ink-dim:#5b616e;
+  --line:#dcded9;
+  --line-strong:#c7cbc3;
+  --accent:#2f5fff;
+  --accent-soft:#e7edff;
+  --accent-ink:#ffffff;
+  --navy:#ffb338;
+  --navy-soft:#fff3de;
+  --shadow:0 1px 2px rgba(20,22,31,.08);
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:oklch(0.15 0.012 250); --paper-raised:oklch(0.2 0.014 250);
-    --ink:oklch(0.94 0.008 60); --ink-dim:oklch(0.68 0.012 60);
-    --line:oklch(0.33 0.016 250); --line-strong:oklch(0.44 0.02 250);
-    --accent:oklch(0.72 0.14 45); --accent-soft:oklch(0.72 0.14 45 / 0.16); --accent-ink:oklch(0.16 0.03 45);
-    --navy:oklch(0.62 0.1 250); --navy-soft:oklch(0.62 0.1 250 / 0.16);
-    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
-  }
-}
-:root[data-theme="dark"]{
-  --paper:oklch(0.15 0.012 250); --paper-raised:oklch(0.2 0.014 250);
-  --ink:oklch(0.94 0.008 60); --ink-dim:oklch(0.68 0.012 60);
-  --line:oklch(0.33 0.016 250); --line-strong:oklch(0.44 0.02 250);
-  --accent:oklch(0.72 0.14 45); --accent-soft:oklch(0.72 0.14 45 / 0.16); --accent-ink:oklch(0.16 0.03 45);
-  --navy:oklch(0.62 0.1 250); --navy-soft:oklch(0.62 0.1 250 / 0.16);
-  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
-}
+
+
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:'Barlow',system-ui,sans-serif}
-h1,h2,h3{font-family:'Bebas Neue',sans-serif;font-weight:400;letter-spacing:.02em;text-transform:uppercase;margin:0;text-wrap:balance}
-.mono{font-family:'IBM Plex Mono',monospace}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Fredoka',system-ui,sans-serif}
+h1,h2,h3{font-family:'Fredoka',sans-serif;font-weight:400;letter-spacing:.02em;text-transform:uppercase;margin:0;text-wrap:balance}
+.mono{font-family:'JetBrains Mono',monospace}
 .wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
 
 header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
 .brand{display:flex;align-items:center;gap:11px}
-.brand .mark{width:38px;height:38px;border-radius:6px;background:var(--navy);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px}
+.brand .mark{width:38px;height:38px;border-radius:6px;background:var(--navy);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:'Fredoka',sans-serif;font-size:20px}
 .brand h1{font-size:22px;font-weight:400}
-.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
 .pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
 .pricing-hint strong{color:var(--accent)}
 .caveat{background:var(--navy-soft);border-left:3px solid var(--navy);padding:10px 12px;font-size:11.5px;line-height:1.5;border-radius:0 6px 6px 0;margin-top:16px}
 .caveat strong{color:var(--navy)}
 
 .tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
-.tab{font-family:'Barlow',sans-serif;font-weight:600;font-size:12.5px;padding:11px 13px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab{font-family:'Fredoka',sans-serif;font-weight:600;font-size:12.5px;padding:11px 13px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
 .tab:hover{color:var(--ink)}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 .view{display:none;padding:26px 0}
@@ -66,10 +50,10 @@ header{display:flex;justify-content:space-between;align-items:center;padding:24p
 .panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
 .field{margin-bottom:13px}
 .field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
-.field input,.field select,.field textarea{width:100%;font-family:'Barlow',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
+.field input,.field select,.field textarea{width:100%;font-family:'Fredoka',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
 .field textarea{resize:vertical;min-height:90px;line-height:1.5}
 
-.btn{font-family:'Barlow',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:6px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn{font-family:'Fredoka',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:6px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
 .btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
 .btn:hover{border-color:var(--ink)}
 .btn-primary:hover{opacity:.92}
@@ -79,15 +63,15 @@ header{display:flex;justify-content:space-between;align-items:center;padding:24p
 
 .output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:8px}
 .card{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
-.card .n{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent-ink);background:var(--accent-soft);padding:2px 8px;border-radius:8px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
-.prompt-block{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:pre-wrap;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:12px;line-height:1.6}
+.card .n{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent-ink);background:var(--accent-soft);padding:2px 8px;border-radius:8px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.prompt-block{font-family:'JetBrains Mono',monospace;font-size:12px;white-space:pre-wrap;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:12px;line-height:1.6}
 .field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
 .field-lbl:first-child{margin-top:0}
 .output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
 .output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-.shot-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;padding:2px 8px;border-radius:8px;background:var(--navy-soft);color:var(--navy);margin-right:6px}
+.shot-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 8px;border-radius:8px;background:var(--navy-soft);color:var(--navy);margin-right:6px}
 
-.tag-chip{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--navy-soft);color:var(--navy);text-transform:uppercase;letter-spacing:.04em}
+.tag-chip{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--navy-soft);color:var(--navy);text-transform:uppercase;letter-spacing:.04em}
 footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
 footer strong{color:var(--ink)}
 </style>
