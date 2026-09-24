@@ -1,0 +1,358 @@
+<title>Client Onboarding Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.97 0.006 250); --paper-raised:oklch(0.995 0.003 250);
+  --ink:oklch(0.2 0.02 250); --ink-dim:oklch(0.46 0.015 250);
+  --line:oklch(0.87 0.008 250); --line-strong:oklch(0.72 0.015 250);
+  --accent:oklch(0.5 0.14 265); --accent-soft:oklch(0.5 0.14 265 / 0.1); --accent-ink:oklch(0.99 0.005 90);
+  --good:oklch(0.5 0.12 150); --good-soft:oklch(0.5 0.12 150 / 0.13);
+  --shadow:0 1px 2px oklch(0.2 0.02 250 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.15 0.016 250); --paper-raised:oklch(0.205 0.018 250);
+    --ink:oklch(0.94 0.006 250); --ink-dim:oklch(0.68 0.014 250);
+    --line:oklch(0.33 0.02 250); --line-strong:oklch(0.44 0.026 250);
+    --accent:oklch(0.72 0.12 265); --accent-soft:oklch(0.72 0.12 265 / 0.16); --accent-ink:oklch(0.15 0.02 265);
+    --good:oklch(0.7 0.12 150); --good-soft:oklch(0.7 0.12 150 / 0.16);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.15 0.016 250); --paper-raised:oklch(0.205 0.018 250);
+  --ink:oklch(0.94 0.006 250); --ink-dim:oklch(0.68 0.014 250);
+  --line:oklch(0.33 0.02 250); --line-strong:oklch(0.44 0.026 250);
+  --accent:oklch(0.72 0.12 265); --accent-soft:oklch(0.72 0.12 265 / 0.16); --accent-ink:oklch(0.15 0.02 265);
+  --good:oklch(0.7 0.12 150); --good-soft:oklch(0.7 0.12 150 / 0.16);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Work Sans',system-ui,sans-serif}
+h1,h2,h3{font-family:'Fraunces',georgia,serif;font-weight:700;margin:0;text-wrap:balance}
+.mono{font-family:'IBM Plex Mono',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:2px solid var(--ink);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:18px;border-radius:6px}
+.brand h1{font-size:21px}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+.intro{font-size:13.5px;color:var(--ink-dim);max-width:70ch;margin:16px 0 0;line-height:1.6}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Work Sans',sans-serif;font-weight:600;font-size:13px;padding:11px 14px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:8px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:18px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:600}
+.field input,.field select,.field textarea{width:100%;font-family:'Work Sans',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:70px;line-height:1.5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.btn{font-family:'Work Sans',sans-serif;font-weight:600;font-size:13.5px;padding:11px 18px;border-radius:6px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:8px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+
+.timeline{position:relative;padding-left:20px}
+.timeline::before{content:'';position:absolute;left:5px;top:8px;bottom:8px;width:2px;background:var(--line)}
+.timeline-step{position:relative;margin-bottom:14px}
+.timeline-step::before{content:'';position:absolute;left:-20px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--paper-raised)}
+.timeline-step .when{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+
+.tag-chip{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--good-soft);color:var(--good);text-transform:uppercase;letter-spacing:.04em}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">A&amp;A</div>
+      <div>
+        <h1>Client Onboarding Studio</h1>
+        <div class="tag">A&amp;A Creations · Bonus tool</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Works with <strong>every business</strong><br>in this toolkit</div>
+  </header>
+  <p class="intro">Not one of the original 50 ledger ideas — this is connective tissue. Whichever side hustle you picked from the others in this suite, a new client needs the same four things: a welcome, a way to give you their info, a sense of what happens next, and answers to the questions they haven't asked yet. Pick your service type once, generate all four.</p>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="welcome">Welcome Email</button>
+    <button class="tab" data-tab="intake">Intake Questions</button>
+    <button class="tab" data-tab="timeline">What Happens Next</button>
+    <button class="tab" data-tab="faq">New-Client FAQ</button>
+  </div>
+
+  <!-- WELCOME EMAIL -->
+  <div class="view active" id="view-welcome">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Works for any service in this toolkit — pick the closest fit.</p>
+        <div class="field"><label>Your business name</label><input type="text" id="w-biz" placeholder="e.g. A&A Creations" value="A&amp;A Creations"></div>
+        <div class="field"><label>Service type</label>
+          <select id="w-service">
+            <option>Local service business (cleaning, repair, etc.)</option>
+            <option>Creative / design / copywriting</option>
+            <option>Consulting / strategy / audits</option>
+            <option>Content / social media management</option>
+            <option>E-commerce / Shopify support</option>
+            <option>Tutoring / coaching</option>
+            <option>Other freelance service</option>
+          </select>
+        </div>
+        <div class="field"><label>Client's name</label><input type="text" id="w-client" placeholder="e.g. Jordan Reyes"></div>
+        <button class="btn btn-primary btn-block" id="w-btn" onclick="genWelcome()">Draft welcome email</button>
+      </div>
+      <div class="panel">
+        <h3>Welcome email</h3>
+        <p class="sub">The first thing a new client sees after they sign or book.</p>
+        <div id="w-output"><div class="output-empty">Fill in the fields and draft.</div></div>
+        <div class="output-status" id="w-status"></div>
+        <div class="output-actions" id="w-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('w-output')">Copy text</button>
+          <button class="btn btn-sm" onclick="genWelcome(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTAKE QUESTIONS -->
+  <div class="view" id="view-intake">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">The questions that save you a round of back-and-forth later.</p>
+        <div class="field"><label>Service type</label>
+          <select id="i-service">
+            <option>Local service business (cleaning, repair, etc.)</option>
+            <option>Creative / design / copywriting</option>
+            <option>Consulting / strategy / audits</option>
+            <option>Content / social media management</option>
+            <option>E-commerce / Shopify support</option>
+            <option>Tutoring / coaching</option>
+            <option>Other freelance service</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-block" id="i-btn" onclick="genIntake()">Generate intake questions</button>
+      </div>
+      <div class="panel">
+        <h3>Client intake questionnaire</h3>
+        <p class="sub">Send this before your first real work session.</p>
+        <div id="i-output"><div class="output-empty">Pick a service type and generate.</div></div>
+        <div class="output-status" id="i-status"></div>
+        <div class="output-actions" id="i-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('i-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genIntake(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHAT HAPPENS NEXT -->
+  <div class="view" id="view-timeline">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A simple timeline so the client knows what to expect and when.</p>
+        <div class="field"><label>Service type</label>
+          <select id="t-service">
+            <option>Local service business (cleaning, repair, etc.)</option>
+            <option>Creative / design / copywriting</option>
+            <option>Consulting / strategy / audits</option>
+            <option>Content / social media management</option>
+            <option>E-commerce / Shopify support</option>
+            <option>Tutoring / coaching</option>
+            <option>Other freelance service</option>
+          </select>
+        </div>
+        <div class="field"><label>Rough timeline (total)</label><input type="text" id="t-duration" placeholder="e.g. 2 weeks, or ongoing monthly"></div>
+        <button class="btn btn-primary btn-block" id="t-btn" onclick="genTimeline()">Generate timeline</button>
+      </div>
+      <div class="panel">
+        <h3>What happens next</h3>
+        <p class="sub">Share this right after they sign — it heads off "so... what now?" messages.</p>
+        <div id="t-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="t-status"></div>
+        <div class="output-actions" id="t-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genTimeline(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW-CLIENT FAQ -->
+  <div class="view" id="view-faq">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">The questions new clients ask but rarely say out loud.</p>
+        <div class="field"><label>Service type</label>
+          <select id="f-service">
+            <option>Local service business (cleaning, repair, etc.)</option>
+            <option>Creative / design / copywriting</option>
+            <option>Consulting / strategy / audits</option>
+            <option>Content / social media management</option>
+            <option>E-commerce / Shopify support</option>
+            <option>Tutoring / coaching</option>
+            <option>Other freelance service</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-block" id="f-btn" onclick="genFaq()">Generate new-client FAQ</button>
+      </div>
+      <div class="panel">
+        <h3>New-client FAQ</h3>
+        <p class="sub">Put this on your website, or send it with the welcome email.</p>
+        <div id="f-output"><div class="output-empty">Pick a service type and generate.</div></div>
+        <div class="output-status" id="f-status"></div>
+        <div class="output-actions" id="f-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('f-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genFaq(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. Pairs naturally with the Console's lead tracker, the Proposal builder, and the Invoice tool already in this toolkit.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + t.dataset.tab));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function runSample(promptText, btnId, statusId, outputId, actionsId, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const out = document.getElementById(outputId);
+  const actions = document.getElementById(actionsId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = '';
+  actions.style.display = 'none';
+  out.innerHTML = `<div class="card">Thinking…</div>`;
+  try{
+    const { text } = await sample(promptText, {
+      modelTier: 'default',
+      cache: regenerate ? false : true,
+      onText: ({text}) => { out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`; }
+    });
+    out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`;
+    actions.style.display = 'flex';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      empty_completion: 'Nothing came back — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function genWelcome(regenerate){
+  const biz = document.getElementById('w-biz').value.trim() || 'the business';
+  const service = document.getElementById('w-service').value;
+  const client = document.getElementById('w-client').value.trim();
+  const prompt = `Write a warm, professional welcome email from "${biz}" (a ${service.toLowerCase()}) to a new client${client ? ' named ' + client : ''}. Thank them for choosing to work together, briefly set expectations that more details are coming (intake questions, timeline), and give one clear next step. Under 150 words. Output only the email text.`;
+  runSample(prompt, 'w-btn', 'w-status', 'w-output', 'w-actions', regenerate);
+}
+
+function genIntake(regenerate){
+  const service = document.getElementById('i-service').value;
+  const prompt = `Write a client intake questionnaire for a "${service}" business's new clients — the questions that prevent back-and-forth later. Reply with only a JSON array of 6-9 strings, each one clear question.`;
+  runSampleJson(prompt, 'i-btn', 'i-status', (items) => {
+    const wrap = document.getElementById('i-output');
+    wrap.innerHTML = `<div class="card"><ol style="margin:0;padding-left:20px">${(Array.isArray(items)?items:[]).map(q => `<li style="margin-bottom:8px">${escapeHtml(q)}</li>`).join('')}</ol></div>` || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('i-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function genTimeline(regenerate){
+  const service = document.getElementById('t-service').value;
+  const duration = document.getElementById('t-duration').value.trim();
+  const prompt = `Create a simple "what happens next" timeline for a new client of a "${service}" business. Total duration: "${duration || 'a typical engagement'}".
+Reply with only a JSON array of 4-6 {"when": string (e.g. "Today", "Within 48 hours", "Week 1"), "what": string} objects.`;
+  runSampleJson(prompt, 't-btn', 't-status', (items) => {
+    const wrap = document.getElementById('t-output');
+    wrap.innerHTML = `<div class="timeline">${(Array.isArray(items)?items:[]).map(it => `<div class="timeline-step"><div class="when">${escapeHtml(it.when||'')}</div>${escapeHtml(it.what||'')}</div>`).join('')}</div>` || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('t-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function genFaq(regenerate){
+  const service = document.getElementById('f-service').value;
+  const prompt = `Write a new-client FAQ for a "${service}" business — the practical questions new clients have but often don't ask directly (payment timing, communication expectations, what if I need to reschedule/change scope, how revisions work). Never invent specific prices or policies. Reply with only a JSON array of 5-7 {"q": string, "a": string} objects, with generic bracketed placeholders like "[your typical turnaround]" where a business-specific answer is needed.`;
+  runSampleJson(prompt, 'f-btn', 'f-status', (items) => {
+    const wrap = document.getElementById('f-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map(it => `<div class="card"><strong>${escapeHtml(it.q||'')}</strong><br>${escapeHtml(it.a||'')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('f-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function copyOut(id){
+  const text = Array.from(document.querySelectorAll('#' + id + ' .card')).map(c => c.textContent).join('\n\n')
+    || document.querySelector('#' + id + ' .card')?.textContent || '';
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+</script>

@@ -1,0 +1,267 @@
+<title>Ad Performance Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Epilogue:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.006 230);
+  --paper-raised:oklch(0.995 0.003 230);
+  --ink:oklch(0.2 0.02 230);
+  --ink-dim:oklch(0.46 0.015 230);
+  --line:oklch(0.85 0.012 230);
+  --line-strong:oklch(0.7 0.02 230);
+  --accent:oklch(0.55 0.18 255);
+  --accent-soft:oklch(0.55 0.18 255 / 0.1);
+  --accent-ink:oklch(0.99 0.005 90);
+  --lime:oklch(0.8 0.16 125);
+  --lime-soft:oklch(0.8 0.16 125 / 0.18);
+  --lime-ink:oklch(0.32 0.08 125);
+  --bad:oklch(0.55 0.16 25);
+  --bad-soft:oklch(0.55 0.16 25 / 0.13);
+  --shadow:0 1px 2px oklch(0.25 0.02 230 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.16 0.016 230); --paper-raised:oklch(0.21 0.018 230);
+    --ink:oklch(0.95 0.008 230); --ink-dim:oklch(0.7 0.014 230);
+    --line:oklch(0.34 0.02 230); --line-strong:oklch(0.45 0.026 230);
+    --accent:oklch(0.72 0.15 255); --accent-soft:oklch(0.72 0.15 255 / 0.16); --accent-ink:oklch(0.15 0.02 255);
+    --lime:oklch(0.82 0.15 125); --lime-soft:oklch(0.82 0.15 125 / 0.18); --lime-ink:oklch(0.85 0.15 125);
+    --bad:oklch(0.72 0.15 25); --bad-soft:oklch(0.72 0.15 25 / 0.16);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.16 0.016 230); --paper-raised:oklch(0.21 0.018 230);
+  --ink:oklch(0.95 0.008 230); --ink-dim:oklch(0.7 0.014 230);
+  --line:oklch(0.34 0.02 230); --line-strong:oklch(0.45 0.026 230);
+  --accent:oklch(0.72 0.15 255); --accent-soft:oklch(0.72 0.15 255 / 0.16); --accent-ink:oklch(0.15 0.02 255);
+  --lime:oklch(0.82 0.15 125); --lime-soft:oklch(0.82 0.15 125 / 0.18); --lime-ink:oklch(0.85 0.15 125);
+  --bad:oklch(0.72 0.15 25); --bad-soft:oklch(0.72 0.15 25 / 0.16);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Epilogue',system-ui,sans-serif}
+h1,h2,h3{font-family:'Instrument Serif',georgia,serif;font-style:italic;font-weight:400;margin:0;text-wrap:balance}
+.mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:8px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-family:'Epilogue',sans-serif;font-weight:800;font-size:16px}
+.brand h1{font-size:22px;font-style:italic}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Epilogue',sans-serif;font-weight:600;font-size:13px;padding:11px 14px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:10px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:20px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Epilogue',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:7px;background:var(--paper);color:var(--ink)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:640px){.three-col{grid-template-columns:1fr}}
+
+.btn{font-family:'Epilogue',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:8px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}
+@media(max-width:760px){.metric-grid{grid-template-columns:repeat(2,1fr)}}
+.metric-tile{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px;text-align:center}
+.metric-tile .val{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;color:var(--accent)}
+.metric-tile .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-top:4px}
+.metric-tile.warn .val{color:var(--bad)}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.severity-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;padding:2px 8px;border-radius:8px;text-transform:uppercase;letter-spacing:.04em}
+.severity-tag.high{background:var(--bad-soft);color:var(--bad)}
+.severity-tag.medium{background:var(--lime-soft);color:var(--lime-ink)}
+
+.tag-chip{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--lime-soft);color:var(--lime-ink);text-transform:uppercase;letter-spacing:.04em}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">Ad</div>
+      <div>
+        <h1>Ad Performance Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 20</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Per audit: <strong>$150–$500</strong><br>Management: <strong>% of spend or $1k–$6k/mo</strong></div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="metrics">Metrics Calculator</button>
+    <button class="tab" data-tab="diagnosis">AI Diagnosis</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- METRICS CALCULATOR -->
+  <div class="view active" id="view-metrics">
+    <div class="panel" style="max-width:760px">
+      <h3>Real ad math</h3>
+      <p class="sub">Enter your raw numbers — every metric below is calculated directly, not estimated.</p>
+      <div class="three-col">
+        <div class="field"><label>Spend ($)</label><input type="number" id="m-spend" value="500" min="0" step="10" oninput="calc()"></div>
+        <div class="field"><label>Impressions</label><input type="number" id="m-impressions" value="42000" min="0" step="100" oninput="calc()"></div>
+        <div class="field"><label>Clicks</label><input type="number" id="m-clicks" value="630" min="0" step="1" oninput="calc()"></div>
+      </div>
+      <div class="three-col">
+        <div class="field"><label>Conversions</label><input type="number" id="m-conversions" value="18" min="0" step="1" oninput="calc()"></div>
+        <div class="field"><label>Revenue from conversions ($)</label><input type="number" id="m-revenue" value="900" min="0" step="10" oninput="calc()"></div>
+        <div class="field"><label>Industry benchmark CTR (%, optional)</label><input type="number" id="m-benchmark" value="1.5" min="0" step="0.1" oninput="calc()"></div>
+      </div>
+      <div class="metric-grid">
+        <div class="metric-tile"><div class="val mono" id="v-ctr">0%</div><div class="lbl">CTR</div></div>
+        <div class="metric-tile"><div class="val mono" id="v-cpc">$0</div><div class="lbl">Cost per click</div></div>
+        <div class="metric-tile"><div class="val mono" id="v-cpa">$0</div><div class="lbl">Cost per conversion</div></div>
+        <div class="metric-tile"><div class="val mono" id="v-roas">0.0x</div><div class="lbl">ROAS</div></div>
+      </div>
+      <p class="sub" id="v-verdict" style="margin:0"></p>
+    </div>
+  </div>
+
+  <!-- AI DIAGNOSIS -->
+  <div class="view" id="view-diagnosis">
+    <div class="panel" style="max-width:760px">
+      <h3>What's actually wrong</h3>
+      <p class="sub">Based on the numbers from the Metrics tab — run that first.</p>
+      <div class="field"><label>Campaign context (audience, ad type, offer)</label><textarea id="d-context" placeholder="e.g. Facebook carousel ad, cold audience, promoting a $50 skincare bundle" style="min-height:90px"></textarea></div>
+      <button class="btn btn-primary btn-block" id="d-btn" onclick="genDiagnosis()">Diagnose this campaign</button>
+      <div id="d-output" style="margin-top:16px"><div class="output-empty">Run the calculator, add context, then diagnose.</div></div>
+      <div class="output-status" id="d-status"></div>
+      <div class="output-actions" id="d-actions" style="display:none">
+        <button class="btn btn-sm" onclick="genDiagnosis(true)">Regenerate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Most small businesses run ads and never actually look at what's working.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Audit</span>&nbsp; $150–$500 for a one-time performance audit with a diagnosis and a prioritized fix list.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Management</span>&nbsp; A percentage of ad spend (typically 10-15%) or a flat $1k–$6k/mo retainer for ongoing optimization.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Bring real numbers</span>&nbsp; Pull these directly from Meta/Google Ads Manager — this doesn't connect to any ad account itself.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — every metric on the calculator tab is plain arithmetic from your inputs. Diagnosis uses your own Claude usage and asks permission the first time.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + t.dataset.tab));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function money(n){ return '$' + (n||0).toLocaleString('en-US',{maximumFractionDigits:2}); }
+
+let lastMetrics = {};
+function calc(){
+  const spend = parseFloat(document.getElementById('m-spend').value) || 0;
+  const impressions = parseFloat(document.getElementById('m-impressions').value) || 0;
+  const clicks = parseFloat(document.getElementById('m-clicks').value) || 0;
+  const conversions = parseFloat(document.getElementById('m-conversions').value) || 0;
+  const revenue = parseFloat(document.getElementById('m-revenue').value) || 0;
+  const benchmark = parseFloat(document.getElementById('m-benchmark').value) || 0;
+
+  const ctr = impressions > 0 ? (clicks/impressions)*100 : 0;
+  const cpc = clicks > 0 ? spend/clicks : 0;
+  const cpa = conversions > 0 ? spend/conversions : 0;
+  const roas = spend > 0 ? revenue/spend : 0;
+
+  document.getElementById('v-ctr').textContent = ctr.toFixed(2) + '%';
+  document.getElementById('v-cpc').textContent = money(cpc);
+  document.getElementById('v-cpa').textContent = money(cpa);
+  document.getElementById('v-roas').textContent = roas.toFixed(2) + 'x';
+
+  const ctrTile = document.getElementById('v-ctr').closest('.metric-tile');
+  ctrTile.classList.toggle('warn', benchmark > 0 && ctr < benchmark);
+  const roasTile = document.getElementById('v-roas').closest('.metric-tile');
+  roasTile.classList.toggle('warn', roas < 1 && spend > 0);
+
+  let verdict = '';
+  if(spend > 0){
+    if(roas >= 3) verdict = 'Strong ROAS — this campaign is working well.';
+    else if(roas >= 1) verdict = 'Profitable but thin — there\'s room to improve before scaling spend.';
+    else verdict = 'Losing money on this campaign as structured — worth pausing to diagnose before spending more.';
+  }
+  document.getElementById('v-verdict').textContent = verdict;
+
+  lastMetrics = { spend, impressions, clicks, conversions, revenue, ctr, cpc, cpa, roas };
+}
+calc();
+
+async function genDiagnosis(regenerate){
+  const context = document.getElementById('d-context').value.trim();
+  const btn = document.getElementById('d-btn');
+  const statusEl = document.getElementById('d-status');
+  const out = document.getElementById('d-output');
+  const actions = document.getElementById('d-actions');
+  if(!lastMetrics.spend){ statusEl.textContent = 'Run the calculator on the Metrics tab first.'; return; }
+
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+
+  btn.disabled = true;
+  statusEl.textContent = '';
+  actions.style.display = 'none';
+  out.innerHTML = `<div class="card">Thinking…</div>`;
+
+  const prompt = `Diagnose this ad campaign's performance using ONLY the numbers given — never invent additional data.
+CTR: ${lastMetrics.ctr.toFixed(2)}%, CPC: $${lastMetrics.cpc.toFixed(2)}, CPA: $${lastMetrics.cpa.toFixed(2)}, ROAS: ${lastMetrics.roas.toFixed(2)}x, Spend: $${lastMetrics.spend}.
+Context: "${context || 'not provided'}"
+Identify the most likely bottleneck (low CTR = creative/targeting problem, high CPC with good CTR = auction competition, low conversion rate despite clicks = landing page/offer problem) and give 2-3 specific, actionable next steps. Under 180 words.`;
+
+  try{
+    const { text } = await sample(prompt, {
+      modelTier: 'default',
+      cache: regenerate ? false : true,
+      onText: ({text}) => { out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`; }
+    });
+    out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`;
+    actions.style.display = 'flex';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      empty_completion: 'Nothing came back — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+</script>

@@ -1,0 +1,271 @@
+<title>Budget Planner Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500;600;700&family=Roboto:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.005 155);
+  --paper-raised:oklch(0.995 0.003 155);
+  --ink:oklch(0.2 0.02 200);
+  --ink-dim:oklch(0.46 0.015 200);
+  --line:oklch(0.85 0.012 155);
+  --line-strong:oklch(0.7 0.02 155);
+  --accent:oklch(0.45 0.11 160);
+  --accent-soft:oklch(0.45 0.11 160 / 0.1);
+  --accent-ink:oklch(0.99 0.005 90);
+  --navy:oklch(0.4 0.08 250);
+  --navy-soft:oklch(0.4 0.08 250 / 0.12);
+  --bad:oklch(0.55 0.16 25);
+  --bad-soft:oklch(0.55 0.16 25 / 0.13);
+  --shadow:0 1px 2px oklch(0.25 0.02 155 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.16 0.014 160); --paper-raised:oklch(0.21 0.016 160);
+    --ink:oklch(0.94 0.006 200); --ink-dim:oklch(0.68 0.012 200);
+    --line:oklch(0.33 0.018 160); --line-strong:oklch(0.44 0.024 160);
+    --accent:oklch(0.68 0.11 160); --accent-soft:oklch(0.68 0.11 160 / 0.16); --accent-ink:oklch(0.15 0.02 160);
+    --navy:oklch(0.68 0.09 250); --navy-soft:oklch(0.68 0.09 250 / 0.16);
+    --bad:oklch(0.72 0.15 25); --bad-soft:oklch(0.72 0.15 25 / 0.16);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.16 0.014 160); --paper-raised:oklch(0.21 0.016 160);
+  --ink:oklch(0.94 0.006 200); --ink-dim:oklch(0.68 0.012 200);
+  --line:oklch(0.33 0.018 160); --line-strong:oklch(0.44 0.024 160);
+  --accent:oklch(0.68 0.11 160); --accent-soft:oklch(0.68 0.11 160 / 0.16); --accent-ink:oklch(0.15 0.02 160);
+  --navy:oklch(0.68 0.09 250); --navy-soft:oklch(0.68 0.09 250 / 0.16);
+  --bad:oklch(0.72 0.15 25); --bad-soft:oklch(0.72 0.15 25 / 0.16);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Roboto',system-ui,sans-serif}
+h1,h2,h3{font-family:'Roboto Slab',georgia,serif;margin:0;text-wrap:balance}
+.mono{font-family:'Roboto Mono',monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:6px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-family:'Roboto Slab',serif;font-weight:700;font-size:19px}
+.brand h1{font-size:20px}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Roboto Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+.caveat{background:var(--navy-soft);border-left:3px solid var(--navy);padding:10px 12px;font-size:11.5px;line-height:1.5;border-radius:0 6px 6px 0;margin:16px 0 0}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Roboto',sans-serif;font-weight:600;font-size:13px;padding:11px 14px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:8px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:18px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select{width:100%;font-family:'Roboto',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.item-row-edit{display:grid;grid-template-columns:1fr 100px 26px;gap:6px;margin-bottom:8px}
+.item-row-edit input{font-size:12.5px;padding:7px 9px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
+.item-row-edit .rm{width:26px;height:26px;border:1px solid var(--line);border-radius:5px;background:var(--paper);color:var(--ink-dim);cursor:pointer}
+
+.btn{font-family:'Roboto',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:6px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+@media(max-width:600px){.metric-grid{grid-template-columns:1fr}}
+.metric-tile{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:16px;text-align:center}
+.metric-tile .val{font-family:'Roboto Mono',monospace;font-size:22px;font-weight:700;color:var(--accent)}
+.metric-tile.warn .val{color:var(--bad)}
+.metric-tile .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-top:4px}
+
+.budget-bar-row{display:grid;grid-template-columns:130px 1fr 70px;gap:10px;align-items:center;margin-bottom:10px;font-size:12.5px}
+.budget-bar-track{height:12px;background:var(--line);border-radius:6px;overflow:hidden}
+.budget-bar-fill{height:100%;background:var(--accent)}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:8px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.tag-chip{display:inline-block;font-family:'Roboto Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--navy-soft);color:var(--navy);text-transform:uppercase;letter-spacing:.04em}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">$</div>
+      <div>
+        <h1>Budget Planner Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 24</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Per session: <strong>$40–$120</strong><br>Monthly coaching: <strong>$100–$500/mo</strong></div>
+  </header>
+  <div class="caveat">Organizational budgeting math only — this is not investment, tax, or licensed financial advice. For debt, investing, or tax decisions, point clients to a licensed professional.</div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="budget">Budget Builder</button>
+    <button class="tab" data-tab="tips">Spending Insights</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- BUDGET BUILDER -->
+  <div class="view active" id="view-budget">
+    <div class="panel" style="max-width:760px">
+      <h3>Monthly budget</h3>
+      <p class="sub">Real math using the classic 50/30/20 framework as a starting reference point.</p>
+      <div class="field" style="max-width:300px"><label>Monthly take-home income ($)</label><input type="number" id="bd-income" value="4000" min="0" step="50" oninput="calcBudget()"></div>
+
+      <div class="field"><label>Expenses (one per line: name, amount)</label></div>
+      <div id="bd-rows"></div>
+      <button class="btn btn-sm" onclick="addExpense()">+ Add expense</button>
+
+      <div class="metric-grid">
+        <div class="metric-tile"><div class="val mono" id="v-total">$0</div><div class="lbl">Total expenses</div></div>
+        <div class="metric-tile" id="v-left-tile"><div class="val mono" id="v-left">$0</div><div class="lbl">Left over</div></div>
+        <div class="metric-tile"><div class="val mono" id="v-savings-rate">0%</div><div class="lbl">Savings rate</div></div>
+      </div>
+
+      <div class="field-lbl" style="margin-bottom:8px">50/30/20 reference (needs / wants / savings)</div>
+      <div id="v-503020"></div>
+    </div>
+  </div>
+
+  <!-- SPENDING INSIGHTS -->
+  <div class="view" id="view-tips">
+    <div class="panel" style="max-width:720px">
+      <h3>Spending insights</h3>
+      <p class="sub">General organizational suggestions based on the budget above — not investment or debt advice.</p>
+      <button class="btn btn-primary btn-block" id="tp-btn" onclick="genTips()">Get organizing suggestions</button>
+      <div id="tp-output" style="margin-top:16px"><div class="output-empty">Build your budget above, then get suggestions.</div></div>
+      <div class="output-status" id="tp-status"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Most people have never actually written down a budget.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Per session</span>&nbsp; $40–$120 for a one-time budget-building session with a client.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Coaching</span>&nbsp; $100–$500/mo for ongoing accountability check-ins — this is organizing and coaching, not licensed financial planning.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Stay in lane</span>&nbsp; Never give investment, tax, or debt-restructuring advice unless you're licensed to — refer out. This tool is for organizing spending, not managing assets.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — the budget math is plain arithmetic from your inputs. Insights use your own Claude usage and ask permission the first time.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + t.dataset.tab));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function money(n){ return '$' + (n||0).toLocaleString('en-US',{maximumFractionDigits:0}); }
+
+let expenses = [
+  {name:'Rent/Mortgage', amount:1400},
+  {name:'Groceries', amount:450},
+  {name:'Utilities', amount:180},
+  {name:'Transportation', amount:250},
+  {name:'Subscriptions', amount:60},
+];
+function renderExpenseForm(){
+  const wrap = document.getElementById('bd-rows');
+  wrap.innerHTML = expenses.map((e,i) => `
+    <div class="item-row-edit">
+      <input type="text" value="${e.name.replace(/"/g,'&quot;')}" data-f="name" data-i="${i}">
+      <input type="number" value="${e.amount}" min="0" step="5" data-f="amount" data-i="${i}">
+      <button class="rm" data-i="${i}">&times;</button>
+    </div>
+  `).join('');
+  wrap.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const i = +e.target.dataset.i, f = e.target.dataset.f;
+      expenses[i][f] = f === 'amount' ? (parseFloat(e.target.value)||0) : e.target.value;
+      calcBudget();
+    });
+  });
+  wrap.querySelectorAll('.rm').forEach(btn => {
+    btn.addEventListener('click', () => {
+      expenses.splice(+btn.dataset.i, 1);
+      renderExpenseForm(); calcBudget();
+    });
+  });
+}
+function addExpense(){ expenses.push({name:'New expense', amount:0}); renderExpenseForm(); calcBudget(); }
+
+function calcBudget(){
+  const income = parseFloat(document.getElementById('bd-income').value) || 0;
+  const total = expenses.reduce((s,e) => s + (e.amount||0), 0);
+  const left = income - total;
+  const savingsRate = income > 0 ? (left/income)*100 : 0;
+
+  document.getElementById('v-total').textContent = money(total);
+  document.getElementById('v-left').textContent = money(left);
+  document.getElementById('v-left-tile').classList.toggle('warn', left < 0);
+  document.getElementById('v-savings-rate').textContent = savingsRate.toFixed(0) + '%';
+
+  const needs = income * 0.5, wants = income * 0.3, savings = income * 0.2;
+  document.getElementById('v-503020').innerHTML = `
+    <div class="budget-bar-row"><span>Needs (50%)</span><div class="budget-bar-track"><div class="budget-bar-fill" style="width:100%"></div></div><span class="mono">${money(needs)}</span></div>
+    <div class="budget-bar-row"><span>Wants (30%)</span><div class="budget-bar-track"><div class="budget-bar-fill" style="width:60%"></div></div><span class="mono">${money(wants)}</span></div>
+    <div class="budget-bar-row"><span>Savings (20%)</span><div class="budget-bar-track"><div class="budget-bar-fill" style="width:40%"></div></div><span class="mono">${money(savings)}</span></div>
+  `;
+}
+renderExpenseForm();
+calcBudget();
+
+async function genTips(){
+  const income = document.getElementById('bd-income').value;
+  const total = document.getElementById('v-total').textContent;
+  const left = document.getElementById('v-left').textContent;
+  const list = expenses.map(e => `${e.name}: $${e.amount}`).join(', ');
+  const btn = document.getElementById('tp-btn');
+  const statusEl = document.getElementById('tp-status');
+  const out = document.getElementById('tp-output');
+
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+
+  btn.disabled = true;
+  statusEl.textContent = '';
+  out.innerHTML = `<div class="card">Thinking…</div>`;
+
+  const prompt = `Give general, non-licensed organizational budgeting suggestions (never investment, tax, or debt-restructuring advice — those need a licensed professional) for this monthly budget: income $${income}, total expenses ${total}, left over ${left}. Expense breakdown: ${list}.
+Suggest 2-3 specific, practical adjustments to the expense categories given. Under 150 words.`;
+
+  try{
+    const { text } = await sample(prompt, {
+      modelTier: 'default',
+      onText: ({text}) => { out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`; }
+    });
+    out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`;
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try again.',
+      empty_completion: 'Nothing came back — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+</script>

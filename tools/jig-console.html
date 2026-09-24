@@ -1,0 +1,698 @@
+<title>A&amp;A Creations Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.98 0.006 240);
+  --paper-raised:oklch(0.995 0.003 240);
+  --ink:oklch(0.22 0.03 240);
+  --ink-dim:oklch(0.46 0.02 240);
+  --line:oklch(0.85 0.02 250);
+  --line-strong:oklch(0.7 0.03 250);
+  --blue:oklch(0.5 0.15 255);
+  --blue-soft:oklch(0.93 0.03 255);
+  --blue-ink:oklch(0.99 0.005 90);
+  --amber:oklch(0.6 0.15 55);
+  --amber-soft:oklch(0.6 0.15 55 / 0.14);
+  --good:oklch(0.5 0.12 150);
+  --good-soft:oklch(0.5 0.12 150 / 0.14);
+  --bad:oklch(0.55 0.16 25);
+  --bad-soft:oklch(0.55 0.16 25 / 0.13);
+  --idle:oklch(0.55 0.01 250);
+  --idle-soft:oklch(0.55 0.01 250 / 0.12);
+  --shadow:0 1px 2px oklch(0.2 0.03 250 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.15 0.018 250); --paper-raised:oklch(0.205 0.02 250);
+    --ink:oklch(0.94 0.008 250); --ink-dim:oklch(0.68 0.016 250);
+    --line:oklch(0.34 0.024 250); --line-strong:oklch(0.46 0.03 250);
+    --blue:oklch(0.72 0.13 255); --blue-soft:oklch(0.27 0.05 255); --blue-ink:oklch(0.14 0.02 255);
+    --amber:oklch(0.74 0.14 60); --amber-soft:oklch(0.74 0.14 60 / 0.16);
+    --good:oklch(0.72 0.12 150); --good-soft:oklch(0.72 0.12 150 / 0.16);
+    --bad:oklch(0.72 0.15 25); --bad-soft:oklch(0.72 0.15 25 / 0.16);
+    --idle:oklch(0.62 0.01 250); --idle-soft:oklch(0.62 0.01 250 / 0.14);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.15 0.018 250); --paper-raised:oklch(0.205 0.02 250);
+  --ink:oklch(0.94 0.008 250); --ink-dim:oklch(0.68 0.016 250);
+  --line:oklch(0.34 0.024 250); --line-strong:oklch(0.46 0.03 250);
+  --blue:oklch(0.72 0.13 255); --blue-soft:oklch(0.27 0.05 255); --blue-ink:oklch(0.14 0.02 255);
+  --amber:oklch(0.74 0.14 60); --amber-soft:oklch(0.74 0.14 60 / 0.16);
+  --good:oklch(0.72 0.12 150); --good-soft:oklch(0.72 0.12 150 / 0.16);
+  --bad:oklch(0.72 0.15 25); --bad-soft:oklch(0.72 0.15 25 / 0.16);
+  --idle:oklch(0.62 0.01 250); --idle-soft:oklch(0.62 0.01 250 / 0.14);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Public Sans',system-ui,sans-serif}
+h1,h2,h3{font-family:'Big Shoulders Display',sans-serif;text-transform:uppercase;letter-spacing:.01em;margin:0;text-wrap:balance}
+.mono{font-family:'JetBrains Mono',monospace}
+.wrap{max-width:1000px;margin:0 auto;padding:0 22px 70px}
+
+header{display:flex;align-items:center;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--paper);z-index:5}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .mark{width:32px;height:32px;background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:13px;border-radius:4px}
+.brand .name{font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:19px}
+.brand .sub{font-size:11px;color:var(--ink-dim);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.04em}
+
+.tabs{display:flex;gap:4px;margin:20px 0 0;border-bottom:1px solid var(--line)}
+.tab{font-family:'Public Sans',sans-serif;font-weight:600;font-size:13.5px;padding:11px 16px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s ease}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.view{padding:30px 0 10px;display:none}
+.view.active{display:block;animation:slideFade .22s ease both}
+@keyframes slideFade{from{opacity:0;transform:translateX(6px)}to{opacity:1;transform:translateX(0)}}
+@keyframes flashNew{0%{background:var(--blue-soft)}100%{background:transparent}}
+.row-flash{animation:flashNew 1.2s ease}
+@media (prefers-reduced-motion: reduce){.view.active{animation:none}.row-flash{animation:none}}
+
+.panel{position:relative;background:var(--paper-raised);border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow);padding:22px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:5px;font-weight:600}
+.field input,.field select,.field textarea{width:100%;font-family:'Public Sans',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:80px}
+.hint{font-size:11.5px;color:var(--ink-dim);margin-top:4px}
+
+.btn{font-family:'Public Sans',sans-serif;font-weight:600;font-size:13.5px;padding:10px 18px;border-radius:6px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--blue);color:var(--blue-ink);border-color:var(--blue)}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.9}
+.btn-sm{padding:6px 11px;font-size:12px}
+.btn-danger{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+h2.section-title{font-size:24px;margin-bottom:4px}
+.section-desc{font-size:13px;color:var(--ink-dim);margin-bottom:22px;max-width:60ch;line-height:1.5}
+
+/* setup: services list */
+.svc-row{display:grid;grid-template-columns:1fr 130px 90px 90px 34px;gap:10px;align-items:center;margin-bottom:10px}
+.svc-row input{font-family:'Public Sans',sans-serif;font-size:13.5px;padding:8px 10px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
+.svc-row .rm{width:34px;height:34px;border-radius:5px;border:1px solid var(--line);background:var(--paper);color:var(--ink-dim);cursor:pointer;font-size:15px}
+.svc-row .rm:hover{border-color:var(--bad);color:var(--bad)}
+.svc-head{display:grid;grid-template-columns:1fr 130px 90px 90px 34px;gap:10px;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:8px;font-weight:600}
+.client-note{width:100%;font-family:'Public Sans',sans-serif;font-size:12.5px;padding:6px 8px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink);min-width:160px}
+
+.banner{display:flex;justify-content:space-between;align-items:center;gap:14px;background:var(--amber-soft);color:var(--amber);padding:12px 16px;border-radius:6px;font-size:13px;margin-bottom:22px;flex-wrap:wrap}
+.banner .btn{flex-shrink:0}
+
+/* quote result */
+.quote-out{margin-top:16px;padding:16px;border-radius:6px;background:var(--blue-soft);display:none}
+.quote-out.show{display:block}
+.quote-out .big{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:24px;color:var(--blue)}
+.quote-out .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim)}
+
+/* leads table */
+.table-toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.table-toolbar input[type=text]{font-family:'Public Sans',sans-serif;font-size:13px;padding:8px 12px;border:1px solid var(--line-strong);border-radius:6px;background:var(--paper-raised);color:var(--ink);min-width:220px}
+.table-actions{display:flex;gap:8px}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px}
+table{width:100%;border-collapse:collapse;font-size:13px;background:var(--paper-raised)}
+th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.num{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+.status-select{font-family:'Public Sans',sans-serif;font-size:11.5px;font-weight:700;padding:4px 8px;border-radius:20px;border:1px solid transparent;text-transform:uppercase;letter-spacing:.03em;cursor:pointer}
+.status-new{background:var(--blue-soft);color:var(--blue)}
+.status-contacted{background:var(--amber-soft);color:var(--amber)}
+.status-booked{background:var(--good-soft);color:var(--good)}
+.status-completed{background:var(--idle-soft);color:var(--idle)}
+.status-lost{background:var(--bad-soft);color:var(--bad)}
+.sample-tag{font-family:'JetBrains Mono',monospace;font-size:9.5px;padding:1px 6px;border-radius:10px;background:var(--idle-soft);color:var(--ink-dim);text-transform:uppercase;margin-left:6px}
+.empty-row td{text-align:center;color:var(--ink-dim);padding:32px 12px;font-size:13px}
+.del-btn{background:none;border:0;color:var(--ink-dim);cursor:pointer;font-size:15px;padding:2px 6px}
+.del-btn:hover{color:var(--bad)}
+.send-link{color:var(--blue);font-size:12px;text-decoration:none;font-weight:600}
+.send-link:hover{text-decoration:underline}
+
+/* review reply */
+.reply-out{margin-top:16px;padding:16px;border-radius:6px;background:var(--paper);border:1px solid var(--line);font-size:13.5px;line-height:1.6;white-space:pre-wrap;display:none}
+.reply-out.show{display:block}
+.reply-status{font-size:12px;color:var(--ink-dim);margin-top:10px;min-height:16px}
+.reply-actions{display:flex;gap:8px;margin-top:12px}
+
+footer{padding:36px 0 20px;border-top:1px solid var(--line);margin-top:40px;font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">A&amp;A</div>
+      <div>
+        <div class="name" id="bizNameTag">A&amp;A Creations</div>
+        <div class="sub" id="bizContactTag">8454021541</div>
+      </div>
+    </div>
+    <button class="btn btn-sm" onclick="showTab('setup')">Setup</button>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="newlead">New Lead</button>
+    <button class="tab" data-tab="leads">Leads</button>
+    <button class="tab" data-tab="clients">Clients</button>
+    <button class="tab" data-tab="followups">Follow-ups</button>
+    <button class="tab" data-tab="replies">Review Replies</button>
+    <button class="tab" data-tab="setup">Setup</button>
+  </div>
+
+  <!-- NEW LEAD -->
+  <div class="view active" id="view-newlead">
+    <h2 class="section-title">Quote &amp; booking intake</h2>
+    <p class="section-desc">What a customer fills out. Give them this tab, or use it yourself when someone calls in.</p>
+    <div class="panel">
+      <div class="grid2">
+        <div>
+          <div class="field"><label>Customer name</label><input type="text" id="nl-name" placeholder="Jordan Reyes"></div>
+          <div class="field"><label>Phone or email</label><input type="text" id="nl-contact" placeholder="(555) 010-2020"></div>
+          <div class="field"><label>Service</label><select id="nl-service"></select></div>
+        </div>
+        <div>
+          <div class="field"><label>Estimated hours / units</label><input type="number" id="nl-hours" min="0.25" step="0.25" value="2"></div>
+          <div class="field"><label>Preferred date</label><input type="date" id="nl-date"></div>
+          <div class="field"><label>Notes</label><textarea id="nl-notes" placeholder="Anything the customer mentioned"></textarea></div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="createLead()">Calculate &amp; save lead</button>
+      <div class="quote-out" id="nl-result"></div>
+    </div>
+  </div>
+
+  <!-- LEADS -->
+  <div class="view" id="view-leads">
+    <h2 class="section-title">Leads</h2>
+    <p class="section-desc">Every quote and booking request, in one list. Update status as you work them.</p>
+    <div class="banner" id="sample-banner" style="display:none">
+      You're looking at example leads so this tab isn't empty. Add a real one from "New Lead", or clear the examples.
+      <button class="btn btn-sm" onclick="clearSampleLeads()">Clear example leads</button>
+    </div>
+    <div class="table-toolbar">
+      <input type="text" id="leadSearch" placeholder="Search name, service, notes…" oninput="renderLeads()">
+      <div class="table-actions">
+        <select id="statusFilter" class="field" style="width:auto;padding:8px 10px;border:1px solid var(--line-strong);border-radius:6px;background:var(--paper-raised);font-size:13px" onchange="renderLeads()">
+          <option value="">All statuses</option>
+          <option>New</option><option>Contacted</option><option>Booked</option><option>Completed</option><option>Lost</option>
+        </select>
+        <button class="btn btn-sm" onclick="exportCsv()">Export CSV</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Customer</th><th>Service</th><th>Est. range</th><th>Preferred date</th><th>Status</th><th>Notes</th><th>Send</th><th></th>
+        </tr></thead>
+        <tbody id="leadsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CLIENTS -->
+  <div class="view" id="view-clients">
+    <h2 class="section-title">Clients</h2>
+    <p class="section-desc">Leads grouped by customer — the relationship view, not the transaction view. Add private notes that stick to a client across every job.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Customer</th><th>Contact</th><th>Jobs</th><th>Total value</th><th>Last activity</th><th>Notes</th></tr></thead>
+        <tbody id="clientsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FOLLOW-UPS -->
+  <div class="view" id="view-followups">
+    <h2 class="section-title">Follow-up emails</h2>
+    <p class="section-desc">Pick a lead — the email angle automatically matches their current status (New, Contacted, Booked, Completed, or Lost).</p>
+    <div class="panel">
+      <div class="field"><label>Lead</label><select id="fu-lead"></select></div>
+      <button class="btn btn-primary" id="fu-btn" onclick="draftFollowup()">Draft follow-up with Claude</button>
+      <div class="reply-status" id="fu-status"></div>
+      <div class="reply-out" id="fu-output"></div>
+      <div class="reply-actions" id="fu-actions" style="display:none">
+        <button class="btn btn-sm" onclick="copyFollowup()">Copy email</button>
+        <button class="btn btn-sm" onclick="draftFollowup(true)">Regenerate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEW REPLIES -->
+  <div class="view" id="view-replies">
+    <h2 class="section-title">Review reply assistant</h2>
+    <p class="section-desc">Paste a customer review, get a tailored draft reply written by Claude. Edit before you post it anywhere.</p>
+    <div class="panel">
+      <div class="field"><label>Customer review</label><textarea id="rv-input" placeholder="Paste the review text here…" style="min-height:110px"></textarea></div>
+      <div class="field"><label>Your business name (used in the reply)</label><input type="text" id="rv-bizname" placeholder="e.g. Reyes Home Cleaning"></div>
+      <button class="btn btn-primary" id="rv-btn" onclick="draftReply()">Draft reply with Claude</button>
+      <div class="reply-status" id="rv-status"></div>
+      <div class="reply-out" id="rv-output"></div>
+      <div class="reply-actions" id="rv-actions" style="display:none">
+        <button class="btn btn-sm" onclick="copyReply()">Copy reply</button>
+        <button class="btn btn-sm" onclick="draftReply(true)">Regenerate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETUP -->
+  <div class="view" id="view-setup">
+    <h2 class="section-title">Setup</h2>
+    <p class="section-desc">Your business name and service rates drive the quote calculator. Saved in this browser — no account needed.</p>
+    <div class="panel">
+      <div class="grid2" style="max-width:640px">
+        <div class="field"><label>Business name</label><input type="text" id="setup-bizname"></div>
+        <div class="field"><label>Contact phone</label><input type="text" id="setup-bizcontact"></div>
+      </div>
+      <div class="svc-head"><span>Service</span><span>Category</span><span>Rate / hr ($)</span><span>Rush fee %</span><span></span></div>
+      <div id="svc-list"></div>
+      <button class="btn btn-sm" onclick="addServiceRow()">+ Add service</button>
+      <div style="margin-top:20px;display:flex;gap:10px">
+        <button class="btn btn-primary" onclick="saveSetup()">Save setup</button>
+        <span class="hint" id="setup-saved" style="align-self:center"></span>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Everything here is saved locally in this browser (business setup, leads, service list) — it won't follow you to another device or browser automatically. Export CSV regularly if you want a backup, or ask me to add a proper synced backend once you're ready to scale past one device.<br><br>
+    Review replies use your own Claude usage and ask permission the first time you click "Draft reply."
+  </footer>
+</div>
+
+<script>
+/* ---------- tabs ---------- */
+function showTab(name){
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
+}
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
+
+/* ---------- storage ---------- */
+const BIZ_KEY = 'jig-console-business-v1';
+const LEADS_KEY = 'jig-console-leads-v1';
+
+function defaultBusiness(){
+  return {
+    name: 'A&A Creations',
+    contact: '8454021541',
+    isExample: true,
+    services: [
+      {name:'Standard service', category:'General', rate: 40, rush: 20},
+      {name:'Premium service', category:'General', rate: 65, rush: 20},
+    ]
+  };
+}
+function exampleLeads(){
+  const today = new Date();
+  const d1 = new Date(today.getTime() + 3*86400000).toISOString().slice(0,10);
+  const d2 = new Date(today.getTime() + 6*86400000).toISOString().slice(0,10);
+  return [
+    {id:'ex1', isExample:true, createdAt: Date.now()-172800000, customerName:'Sam Patel', contact:'(555) 019-4432', service:'Standard service', estLow:80, estHigh:100, date:d1, notes:'Asked about weekly recurring', status:'Contacted'},
+    {id:'ex2', isExample:true, createdAt: Date.now()-86400000, customerName:'Morgan Lee', contact:'morgan@example.com', service:'Premium service', estLow:162.5, estHigh:203, date:d2, notes:'First-time customer, referred by a friend', status:'New'},
+  ];
+}
+
+function loadBusiness(){
+  try{ const raw = localStorage.getItem(BIZ_KEY); if(raw) return JSON.parse(raw); }catch(e){}
+  return defaultBusiness();
+}
+function saveBusiness(b){ try{ localStorage.setItem(BIZ_KEY, JSON.stringify(b)); }catch(e){} }
+function loadLeads(){
+  try{ const raw = localStorage.getItem(LEADS_KEY); if(raw) return JSON.parse(raw); }catch(e){}
+  return exampleLeads();
+}
+function saveLeads(l){ try{ localStorage.setItem(LEADS_KEY, JSON.stringify(l)); }catch(e){} }
+
+let business = loadBusiness();
+let leads = loadLeads();
+
+/* ---------- setup ---------- */
+function renderSetupForm(){
+  document.getElementById('setup-bizname').value = business.name;
+  document.getElementById('setup-bizcontact').value = business.contact || '';
+  document.getElementById('bizNameTag').textContent = business.name;
+  document.getElementById('bizContactTag').textContent = business.contact || '';
+  const list = document.getElementById('svc-list');
+  list.innerHTML = '';
+  business.services.forEach((s, i) => {
+    const row = document.createElement('div');
+    row.className = 'svc-row';
+    row.innerHTML = `
+      <input type="text" value="${escapeAttr(s.name)}" data-f="name" data-i="${i}">
+      <input type="text" value="${escapeAttr(s.category || 'General')}" data-f="category" data-i="${i}" placeholder="Category">
+      <input type="number" value="${s.rate}" min="0" step="0.5" data-f="rate" data-i="${i}">
+      <input type="number" value="${s.rush}" min="0" step="5" data-f="rush" data-i="${i}">
+      <button class="rm" title="Remove" data-i="${i}">&times;</button>
+    `;
+    list.appendChild(row);
+  });
+  list.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const i = +e.target.dataset.i, f = e.target.dataset.f;
+      business.services[i][f] = (f === 'name' || f === 'category') ? e.target.value : parseFloat(e.target.value) || 0;
+    });
+  });
+  list.querySelectorAll('.rm').forEach(btn => {
+    btn.addEventListener('click', () => {
+      business.services.splice(+btn.dataset.i, 1);
+      renderSetupForm();
+    });
+  });
+}
+function addServiceRow(){
+  business.services.push({name:'New service', category:'General', rate: 30, rush: 20});
+  renderSetupForm();
+}
+function saveSetup(){
+  business.name = document.getElementById('setup-bizname').value.trim() || 'A&A Creations';
+  business.contact = document.getElementById('setup-bizcontact').value.trim();
+  business.isExample = false;
+  saveBusiness(business);
+  renderSetupForm();
+  populateServiceSelect();
+  const el = document.getElementById('setup-saved');
+  el.textContent = 'Saved.';
+  setTimeout(() => el.textContent = '', 2000);
+}
+
+function escapeAttr(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ---------- new lead ---------- */
+function populateServiceSelect(){
+  const sel = document.getElementById('nl-service');
+  const cats = {};
+  business.services.forEach(s => {
+    const cat = s.category || 'General';
+    (cats[cat] = cats[cat] || []).push(s);
+  });
+  sel.innerHTML = Object.entries(cats).map(([cat, list]) =>
+    `<optgroup label="${escapeAttr(cat)}">${list.map(s => `<option value="${escapeAttr(s.name)}">${escapeHtml(s.name)} — $${s.rate}/hr</option>`).join('')}</optgroup>`
+  ).join('');
+}
+function createLead(){
+  const name = document.getElementById('nl-name').value.trim();
+  const contact = document.getElementById('nl-contact').value.trim();
+  const serviceName = document.getElementById('nl-service').value;
+  const hours = parseFloat(document.getElementById('nl-hours').value) || 0;
+  const date = document.getElementById('nl-date').value;
+  const notes = document.getElementById('nl-notes').value.trim();
+  const svc = business.services.find(s => s.name === serviceName) || business.services[0];
+  if(!svc){ alert('Add a service in Setup first.'); return; }
+  const low = svc.rate * hours;
+  const high = low * (1 + svc.rush/100);
+
+  const lead = {
+    id: 'l' + Date.now(),
+    isExample: false,
+    createdAt: Date.now(),
+    customerName: name || 'Unnamed customer',
+    contact, service: serviceName,
+    estLow: low, estHigh: high,
+    date, notes, status: 'New'
+  };
+  leads.unshift(lead);
+  saveLeads(leads);
+  justAddedId = lead.id;
+
+  const el = document.getElementById('nl-result');
+  el.className = 'quote-out show';
+  el.innerHTML = `<span class="lbl">Saved to Leads — estimated range</span><br><span class="big">$${low.toFixed(0)} – $${high.toFixed(0)}</span>`;
+  document.getElementById('nl-name').value = '';
+  document.getElementById('nl-contact').value = '';
+  document.getElementById('nl-notes').value = '';
+  renderLeads();
+}
+
+/* ---------- cross-tool links ---------- */
+const PROPOSAL_BASE = 'https://claude.ai/code/artifact/b1f01116-85c5-4ba3-a343-0a83730dd7e0';
+const INVOICE_BASE = 'https://claude.ai/code/artifact/c9fdfe00-fbf0-440b-921a-57f87099a431';
+function proposalUrl(l){
+  const p = new URLSearchParams({ client: l.customerName, title: l.service, price: Math.round(l.estHigh) });
+  return PROPOSAL_BASE + '?' + p.toString();
+}
+function invoiceUrl(l){
+  const p = new URLSearchParams({ client: l.customerName, desc: l.service, amount: Math.round(l.estHigh) });
+  return INVOICE_BASE + '?' + p.toString();
+}
+
+/* ---------- leads table ---------- */
+let justAddedId = null;
+function renderLeads(){
+  const search = document.getElementById('leadSearch').value.trim().toLowerCase();
+  const statusFilter = document.getElementById('statusFilter').value;
+  const body = document.getElementById('leadsBody');
+  const hasExamples = leads.some(l => l.isExample);
+  document.getElementById('sample-banner').style.display = hasExamples ? 'flex' : 'none';
+
+  const filtered = leads.filter(l => {
+    if(statusFilter && l.status !== statusFilter) return false;
+    if(search){
+      const hay = (l.customerName + ' ' + l.service + ' ' + l.notes).toLowerCase();
+      if(!hay.includes(search)) return false;
+    }
+    return true;
+  });
+
+  if(!filtered.length){
+    body.innerHTML = `<tr class="empty-row"><td colspan="8">No leads match. Add one from the "New Lead" tab.</td></tr>`;
+    return;
+  }
+
+  body.innerHTML = filtered.map(l => `
+    <tr${l.id === justAddedId ? ' class="row-flash"' : ''}>
+      <td>${escapeHtml(l.customerName)}${l.isExample ? '<span class="sample-tag">Sample</span>' : ''}<br><span style="color:var(--ink-dim);font-size:11.5px">${escapeHtml(l.contact||'')}</span></td>
+      <td>${escapeHtml(l.service)}</td>
+      <td class="num">$${l.estLow.toFixed(0)}–$${l.estHigh.toFixed(0)}</td>
+      <td class="num">${l.date || '—'}</td>
+      <td><select class="status-select status-${l.status.toLowerCase()}" data-id="${l.id}">
+        ${['New','Contacted','Booked','Completed','Lost'].map(s => `<option ${s===l.status?'selected':''}>${s}</option>`).join('')}
+      </select></td>
+      <td style="max-width:220px">${escapeHtml(l.notes||'')}</td>
+      <td style="white-space:nowrap">
+        <a class="send-link" href="${proposalUrl(l)}" target="_blank" rel="noopener">Proposal</a> ·
+        <a class="send-link" href="${invoiceUrl(l)}" target="_blank" rel="noopener">Invoice</a>
+      </td>
+      <td><button class="del-btn" data-id="${l.id}" title="Delete">&times;</button></td>
+    </tr>
+  `).join('');
+
+  body.querySelectorAll('.status-select').forEach(sel => {
+    sel.addEventListener('change', e => {
+      const lead = leads.find(l => l.id === e.target.dataset.id);
+      lead.status = e.target.value;
+      saveLeads(leads);
+      renderLeads();
+    });
+  });
+  body.querySelectorAll('.del-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      leads = leads.filter(l => l.id !== btn.dataset.id);
+      saveLeads(leads);
+      renderLeads();
+    });
+  });
+  justAddedId = null;
+  renderClients();
+  populateFollowupSelect();
+}
+function clearSampleLeads(){
+  leads = leads.filter(l => !l.isExample);
+  saveLeads(leads);
+  renderLeads();
+}
+
+/* ---------- clients (derived from leads) ---------- */
+const NOTES_KEY = 'jig-console-client-notes-v1';
+let clientNotes = {};
+try{ clientNotes = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}'); }catch(e){ clientNotes = {}; }
+function saveNotes(){ try{ localStorage.setItem(NOTES_KEY, JSON.stringify(clientNotes)); }catch(e){} }
+function clientKey(l){ return (l.contact || l.customerName || '').trim().toLowerCase() || l.customerName; }
+
+function renderClients(){
+  const body = document.getElementById('clientsBody');
+  if(!body) return;
+  const groups = {};
+  leads.forEach(l => {
+    const key = clientKey(l);
+    if(!groups[key]) groups[key] = { name: l.customerName, contact: l.contact, jobs: 0, value: 0, last: 0 };
+    groups[key].jobs += 1;
+    groups[key].value += l.estHigh || 0;
+    groups[key].last = Math.max(groups[key].last, l.createdAt || 0);
+  });
+  const rows = Object.entries(groups).sort((a,b) => b[1].last - a[1].last);
+  if(!rows.length){
+    body.innerHTML = `<tr class="empty-row"><td colspan="6">No clients yet — they appear here once you save a lead.</td></tr>`;
+    return;
+  }
+  body.innerHTML = rows.map(([key, c]) => `
+    <tr>
+      <td>${escapeHtml(c.name)}</td>
+      <td>${escapeHtml(c.contact || '—')}</td>
+      <td class="num">${c.jobs}</td>
+      <td class="num">$${c.value.toFixed(0)}</td>
+      <td class="num">${c.last ? new Date(c.last).toLocaleDateString() : '—'}</td>
+      <td><input class="client-note" data-key="${escapeAttr(key)}" placeholder="Add a note…" value="${escapeAttr(clientNotes[key] || '')}"></td>
+    </tr>
+  `).join('');
+  body.querySelectorAll('.client-note').forEach(inp => {
+    inp.addEventListener('change', e => {
+      clientNotes[e.target.dataset.key] = e.target.value;
+      saveNotes();
+    });
+  });
+}
+
+/* ---------- follow-up emails ---------- */
+function populateFollowupSelect(){
+  const sel = document.getElementById('fu-lead');
+  if(!sel) return;
+  sel.innerHTML = leads.length
+    ? leads.map(l => `<option value="${l.id}">${escapeHtml(l.customerName)} — ${escapeHtml(l.service)} — ${l.status}</option>`).join('')
+    : `<option value="">No leads yet — add one first</option>`;
+}
+async function draftFollowup(regenerate){
+  const leadId = document.getElementById('fu-lead').value;
+  const lead = leads.find(l => l.id === leadId);
+  const btn = document.getElementById('fu-btn');
+  const statusEl = document.getElementById('fu-status');
+  const out = document.getElementById('fu-output');
+  const actions = document.getElementById('fu-actions');
+  if(!lead){ statusEl.textContent = 'Add a lead first, from the New Lead tab.'; return; }
+
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+
+  const stageAngle = {
+    New: 'a friendly first follow-up confirming you received their request and giving a rough next step/timeline',
+    Contacted: 'a gentle nudge since they have not booked yet — reduce friction, ask if they have questions',
+    Booked: 'a confirmation email restating the booked details and what to expect',
+    Completed: 'a thank-you email that also asks for a quick review',
+    Lost: 'a brief, no-pressure win-back note leaving the door open for the future',
+  };
+
+  btn.disabled = true;
+  out.className = 'reply-out show';
+  out.textContent = 'Thinking…';
+  actions.style.display = 'none';
+  statusEl.textContent = '';
+
+  const prompt = `Write a short follow-up email from "${business.name}" to a customer named "${lead.customerName}" about "${lead.service}". Their current status is "${lead.status}" — write ${stageAngle[lead.status] || 'an appropriate follow-up'}. Keep it under 120 words, warm but not salesy, with a clear one-line call to action. Never invent specific prices, dates, or promises beyond what's given: service "${lead.service}", estimated range $${Math.round(lead.estLow)}-$${Math.round(lead.estHigh)}${lead.date ? ', preferred date ' + lead.date : ''}. Output only the email body, no subject line.`;
+
+  try{
+    const { text } = await sample(prompt, {
+      modelTier: 'quick',
+      cache: regenerate ? false : true,
+      onText: ({text}) => { out.textContent = text; }
+    });
+    out.textContent = text;
+    actions.style.display = 'flex';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try again.',
+      empty_completion: 'Nothing came back — try again.',
+      cancelled: 'Cancelled.',
+    };
+    out.textContent = e.text || '';
+    out.className = e.text ? 'reply-out show' : 'reply-out';
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+function copyFollowup(){
+  navigator.clipboard?.writeText(document.getElementById('fu-output').textContent).catch(() => {});
+  const statusEl = document.getElementById('fu-status');
+  statusEl.textContent = 'Copied.';
+  setTimeout(() => statusEl.textContent = '', 1500);
+}
+
+/* ---------- CSV export ---------- */
+async function exportCsv(){
+  const rows = [['Customer','Contact','Service','Est. Low','Est. High','Preferred Date','Status','Notes','Created']];
+  leads.forEach(l => rows.push([l.customerName, l.contact, l.service, l.estLow.toFixed(2), l.estHigh.toFixed(2), l.date||'', l.status, l.notes||'', new Date(l.createdAt).toISOString()]));
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\r\n');
+
+  const downloads = await claude.use('downloads').catch(() => null);
+  if(!downloads){ alert('Downloads aren\'t available in this view — copy the data manually for now.'); return; }
+  try{
+    await downloads.save({ filename: 'jig-leads.csv', data: csv });
+  }catch(e){
+    if(e.code === 'declined'){ /* user said no, do nothing */ }
+    else { alert('Could not save the file (' + e.code + '). Try again in a moment.'); }
+  }
+}
+
+/* ---------- review reply (sample capability) ---------- */
+let rvController = null;
+async function draftReply(regenerate){
+  const review = document.getElementById('rv-input').value.trim();
+  const bizname = document.getElementById('rv-bizname').value.trim() || business.name;
+  const btn = document.getElementById('rv-btn');
+  const statusEl = document.getElementById('rv-status');
+  const out = document.getElementById('rv-output');
+  const actions = document.getElementById('rv-actions');
+  if(!review){ statusEl.textContent = 'Paste a review first.'; return; }
+
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){
+    statusEl.textContent = 'AI drafting isn\'t available in this view. Write your reply manually above.';
+    return;
+  }
+
+  btn.disabled = true;
+  out.className = 'reply-out show';
+  out.textContent = 'Thinking…';
+  actions.style.display = 'none';
+  statusEl.textContent = '';
+  rvController = new AbortController();
+
+  const prompt = `You are drafting a short, professional public reply from a small business named "${bizname}" to a customer review. Match the tone to the review (warm if positive, calm and solution-focused if negative, brief if neutral). Keep it under 80 words, no subject line, no signature block beyond the business name if it fits naturally. Never invent specific facts (dates, staff names, promises) not in the review.
+
+Customer review:
+"""${review}"""
+
+Write only the reply text, nothing else.`;
+
+  try{
+    const { text } = await sample(prompt, {
+      modelTier: 'quick',
+      cache: regenerate ? false : true,
+      signal: rvController.signal,
+      onText: ({text}) => { out.textContent = text; }
+    });
+    out.textContent = text;
+    actions.style.display = 'flex';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page — write the reply manually above.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined to draft this one — try rephrasing or write it manually.',
+      empty_completion: 'No reply came back — try again with a bit more review text.',
+      cancelled: 'Cancelled.',
+    };
+    out.textContent = e.text || '';
+    out.className = e.text ? 'reply-out show' : 'reply-out';
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+function copyReply(){
+  const text = document.getElementById('rv-output').textContent;
+  navigator.clipboard?.writeText(text).catch(() => {});
+  const statusEl = document.getElementById('rv-status');
+  statusEl.textContent = 'Copied.';
+  setTimeout(() => statusEl.textContent = '', 1500);
+}
+
+/* ---------- init ---------- */
+renderSetupForm();
+populateServiceSelect();
+renderLeads();
+</script>

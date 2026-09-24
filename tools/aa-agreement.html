@@ -1,0 +1,226 @@
+<title>A&A Agreement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=PT+Sans:wght@400;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.004 90);
+  --paper-raised:oklch(0.995 0.002 90);
+  --ink:oklch(0.18 0.02 260);
+  --ink-dim:oklch(0.44 0.015 260);
+  --line:oklch(0.83 0.01 260);
+  --line-strong:oklch(0.68 0.015 260);
+  --accent:oklch(0.4 0.13 20);
+  --accent-soft:oklch(0.4 0.13 20 / 0.08);
+  --accent-ink:oklch(0.99 0.005 90);
+  --shadow:0 1px 2px oklch(0.2 0.02 260 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.15 0.012 260); --paper-raised:oklch(0.2 0.014 260);
+    --ink:oklch(0.94 0.006 90); --ink-dim:oklch(0.68 0.012 260);
+    --line:oklch(0.33 0.016 260); --line-strong:oklch(0.44 0.02 260);
+    --accent:oklch(0.62 0.13 20); --accent-soft:oklch(0.62 0.13 20 / 0.14); --accent-ink:oklch(0.14 0.02 20);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.15 0.012 260); --paper-raised:oklch(0.2 0.014 260);
+  --ink:oklch(0.94 0.006 90); --ink-dim:oklch(0.68 0.012 260);
+  --line:oklch(0.33 0.016 260); --line-strong:oklch(0.44 0.02 260);
+  --accent:oklch(0.62 0.13 20); --accent-soft:oklch(0.62 0.13 20 / 0.14); --accent-ink:oklch(0.14 0.02 20);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'PT Sans',system-ui,sans-serif}
+h1,h2,h3{font-family:'Libre Baskerville',georgia,serif;margin:0;text-wrap:balance}
+.mono{font-family:'Courier Prime',monospace}
+.app{display:grid;grid-template-columns:400px 1fr;min-height:100vh}
+@media(max-width:920px){.app{grid-template-columns:1fr}}
+
+.form-side{padding:28px 26px;border-right:1px solid var(--line);background:var(--paper-raised)}
+.form-side .tag{font-family:'Courier Prime',monospace;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+.form-side h1{font-size:23px;margin:4px 0 2px}
+.form-side .desc{font-size:12.5px;color:var(--ink-dim);margin:8px 0 22px;line-height:1.55}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:5px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'PT Sans',sans-serif;font-size:13.5px;padding:8px 10px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:58px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hint{font-size:11px;color:var(--ink-dim);margin-top:4px;line-height:1.5}
+
+.btn{font-family:'PT Sans',sans-serif;font-weight:700;font-size:13px;padding:9px 16px;border-radius:6px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.9}
+.btn-block{width:100%;margin-top:8px}
+
+.legal-notice{background:var(--accent-soft);border-left:3px solid var(--accent);padding:11px 13px;font-size:11.5px;line-height:1.55;border-radius:0 4px 4px 0;margin-bottom:20px}
+
+/* preview */
+.preview-side{padding:48px;display:flex;justify-content:center}
+.sheet{width:100%;max-width:660px;background:var(--paper-raised);box-shadow:0 6px 28px oklch(0.2 0.03 260/0.16);padding:58px 54px;animation:pageIn .5s ease both}
+@keyframes pageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.doc-title{font-size:24px;text-align:center;text-transform:uppercase;letter-spacing:.06em}
+.doc-sub{text-align:center;font-size:12px;color:var(--ink-dim);margin-top:8px;font-family:'Courier Prime',monospace}
+.rule{height:1px;background:var(--line);margin:26px 0}
+.doc-intro{font-size:13.5px;line-height:1.75;margin-bottom:26px}
+.clause{margin-bottom:22px;display:grid;grid-template-columns:32px 1fr;gap:10px}
+.clause .n{font-family:'Courier Prime',monospace;font-weight:700;color:var(--accent);font-size:13px}
+.clause h3{font-size:14.5px;text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px}
+.clause p{font-size:13.5px;line-height:1.7;color:var(--ink)}
+.sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:44px}
+.sig-line{border-top:1px solid var(--ink);margin-top:44px;padding-top:6px;font-size:11.5px;color:var(--ink-dim)}
+.doc-footer{text-align:center;margin-top:40px;font-size:11px;color:var(--ink-dim);border-top:1px dashed var(--line);padding-top:16px;line-height:1.6}
+
+@media print{
+  .form-side{display:none}
+  .app{grid-template-columns:1fr}
+  .preview-side{padding:0}
+  .sheet{box-shadow:none;max-width:100%;animation:none;padding:20px 8px}
+  body{background:#fff}
+}
+</style>
+
+<div class="app">
+  <div class="form-side">
+    <span class="tag">A&amp;A Creations · Fig. 04</span>
+    <h1>Service Agreement Builder</h1>
+    <p class="desc">A short, plain-language agreement for a fixed-price build. Fill in the details — the document on the right updates live.</p>
+
+    <div class="legal-notice"><strong>Not legal advice, at any dollar amount.</strong> This builds a thorough, standard-clause template — far more complete than a bare-bones freelance contract — but no generated document can weigh your specific deal, your state's laws, or the other party's leverage. For a high-value engagement, the cost of 20 minutes with a real attorney is trivial next to what's at stake. Use this as your first draft, not your final one.</div>
+
+    <div class="field"><label>Client / business name</label><input type="text" id="f-client" placeholder="Reyes Home Cleaning"></div>
+    <div class="field"><label>Project description</label><textarea id="f-desc" placeholder="A custom instant quote and booking tool for the client's website."></textarea></div>
+    <div class="two-col">
+      <div class="field"><label>Total price ($)</label><input type="number" id="f-price" min="0" step="10" value="450"></div>
+      <div class="field"><label>Deposit (%)</label><input type="number" id="f-deposit" min="0" max="100" step="5" value="50"></div>
+    </div>
+    <div class="two-col">
+      <div class="field"><label>Delivery by</label><input type="date" id="f-delivery"></div>
+      <div class="field"><label>Revision rounds included</label><input type="number" id="f-revisions" min="0" step="1" value="2"></div>
+    </div>
+    <div class="two-col">
+      <div class="field"><label>Cancellation notice (days)</label><input type="number" id="f-cancel" min="0" step="1" value="7"></div>
+      <div class="field"><label>Agreement date</label><input type="date" id="f-date"></div>
+    </div>
+    <div class="two-col">
+      <div class="field"><label>Late fee (% per month overdue)</label><input type="number" id="f-latefee" min="0" step="0.5" value="1.5"></div>
+      <div class="field"><label>Governing state / jurisdiction</label><input type="text" id="f-jurisdiction" placeholder="e.g. California"></div>
+    </div>
+    <p class="hint">Higher-value deal? Also fill in a governing state — it's referenced in the dispute resolution clause below.</p>
+
+    <button class="btn btn-primary btn-block" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+
+  <div class="preview-side">
+    <div class="sheet">
+      <div class="doc-title">Service Agreement</div>
+      <div class="doc-sub" id="p-date">Dated —</div>
+      <div class="rule"></div>
+      <p class="doc-intro">This Service Agreement ("Agreement") is entered into by and between <strong>A&amp;A Creations</strong> ("Provider") and <strong id="p-client">the Client</strong> ("Client") for the project described below.</p>
+
+      <div class="clause"><div class="n">01</div><div><h3>Scope of work</h3><p id="c-scope">—</p></div></div>
+      <div class="clause"><div class="n">02</div><div><h3>Timeline &amp; delivery</h3><p id="c-timeline">—</p></div></div>
+      <div class="clause"><div class="n">03</div><div><h3>Payment</h3><p id="c-payment">—</p></div></div>
+      <div class="clause"><div class="n">04</div><div><h3>Revisions</h3><p id="c-revisions">—</p></div></div>
+      <div class="clause"><div class="n">05</div><div><h3>Independent contractor status</h3><p>Provider is an independent contractor, not an employee, partner, or agent of Client. Provider is responsible for its own taxes, insurance, and business expenses. Nothing in this Agreement creates a joint venture or employment relationship between the parties.</p></div></div>
+      <div class="clause"><div class="n">06</div><div><h3>Confidentiality</h3><p>Each party will keep the other's non-public business, technical, and financial information confidential, and will use it only to perform this Agreement. This obligation survives completion or termination of this Agreement and does not apply to information that is independently known, becomes public through no fault of the receiving party, or must be disclosed by law.</p></div></div>
+      <div class="clause"><div class="n">07</div><div><h3>Ownership &amp; intellectual property</h3><p>Upon receipt of full payment, all rights to the final deliverable transfer to Client. Until full payment is received, all work product remains the property of Provider. Provider retains the right to reference and display the completed work in its own portfolio unless the parties agree otherwise in writing. Each party keeps ownership of any pre-existing tools, code, or materials it brings into the project.</p></div></div>
+      <div class="clause"><div class="n">08</div><div><h3>Warranty disclaimer</h3><p>Provider will perform the work in a professional and workmanlike manner consistent with industry standards. Except as stated in this Agreement, the deliverable is provided "as is," without warranties of any kind, express or implied, including fitness for a particular purpose beyond the agreed scope.</p></div></div>
+      <div class="clause"><div class="n">09</div><div><h3>Limitation of liability &amp; indemnification</h3><p id="c-liability">—</p></div></div>
+      <div class="clause"><div class="n">10</div><div><h3>Force majeure</h3><p>Neither party is liable for delay or failure to perform caused by events beyond its reasonable control, including natural disaster, illness, internet or utility outage, or government action. The affected party will notify the other promptly and resume performance as soon as reasonably possible.</p></div></div>
+      <div class="clause"><div class="n">11</div><div><h3>Cancellation &amp; termination</h3><p id="c-cancel">—</p></div></div>
+      <div class="clause"><div class="n">12</div><div><h3>Dispute resolution &amp; governing law</h3><p id="c-dispute">—</p></div></div>
+      <div class="clause"><div class="n">13</div><div><h3>General provisions</h3><p>This Agreement, together with any signed proposal or quote it references, is the entire agreement between the parties and supersedes prior discussions on the subject. It may be amended only in writing signed by both parties. If any provision is found unenforceable, the remaining provisions stay in effect. Neither party may assign this Agreement without the other's written consent. Notices under this Agreement may be given by email to the address each party has provided.</p></div></div>
+
+      <div class="sig-grid">
+        <div><div class="sig-line">Client signature &amp; date</div></div>
+        <div><div class="sig-line">A&amp;A Creations &amp; date</div></div>
+      </div>
+
+      <div class="doc-footer">A&amp;A Creations · 8454021541<br>This is a general-purpose template, not legal advice — have an attorney review it before use on any high-value engagement.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function todayStr(offsetDays){ return new Date(Date.now() + (offsetDays||0)*86400000).toISOString().slice(0,10); }
+const STORE = 'aa-agreement-draft-v1';
+
+function defaultState(){
+  return {
+    client:'', desc:'', price:450, deposit:50, delivery: todayStr(7),
+    revisions:2, cancel:7, date: todayStr(0), latefee:1.5, jurisdiction:''
+  };
+}
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORE);
+    if(raw) return Object.assign(defaultState(), JSON.parse(raw));
+  }catch(e){}
+  const params = new URLSearchParams(location.search);
+  const s = defaultState();
+  if(params.get('client')) s.client = params.get('client');
+  if(params.get('desc')) s.desc = params.get('desc');
+  if(params.get('price')) s.price = parseFloat(params.get('price')) || s.price;
+  return s;
+}
+function saveState(){ try{ localStorage.setItem(STORE, JSON.stringify(state)); }catch(e){} }
+let state = loadState();
+
+function bindField(id, key, isNum){
+  const el = document.getElementById(id);
+  el.value = state[key];
+  el.addEventListener('input', () => { state[key] = isNum ? (parseFloat(el.value)||0) : el.value; saveState(); render(); });
+}
+bindField('f-client','client');
+bindField('f-desc','desc');
+bindField('f-price','price',true);
+bindField('f-deposit','deposit',true);
+bindField('f-delivery','delivery');
+bindField('f-revisions','revisions',true);
+bindField('f-cancel','cancel',true);
+bindField('f-date','date');
+bindField('f-latefee','latefee',true);
+bindField('f-jurisdiction','jurisdiction');
+
+function money(n){ return '$' + (n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function render(){
+  document.getElementById('p-date').textContent = 'Dated ' + (state.date || '—');
+  document.getElementById('p-client').textContent = state.client || 'the Client';
+
+  document.getElementById('c-scope').textContent = state.desc
+    ? `Provider will deliver the following: ${state.desc}.`
+    : 'Provider will deliver the project described in the accompanying proposal or quote.';
+
+  document.getElementById('c-timeline').textContent =
+    `Provider will complete and deliver the work by ${state.delivery || '[delivery date]'}, provided Client supplies necessary information and materials promptly. Delays caused by Client may extend this date accordingly.`;
+
+  const depositAmt = state.price * (state.deposit||0) / 100;
+  const balance = state.price - depositAmt;
+  const lateFeeText = state.latefee > 0
+    ? ` Amounts unpaid more than 10 days past their due date accrue a late fee of ${state.latefee}% per month on the outstanding balance.`
+    : '';
+  document.getElementById('c-payment').textContent =
+    `The total project fee is ${money(state.price)}. A deposit of ${state.deposit}% (${money(depositAmt)}) is due before work begins; the remaining balance of ${money(balance)} is due upon delivery.${lateFeeText}`;
+
+  document.getElementById('c-revisions').textContent =
+    `This fee includes ${state.revisions} round${state.revisions == 1 ? '' : 's'} of revisions within the agreed scope. Additional revisions or changes to scope will be quoted and billed separately.`;
+
+  document.getElementById('c-liability').textContent =
+    `Provider's total liability under this Agreement is limited to the total fees paid by Client for the work giving rise to the claim. Provider is not liable for indirect, incidental, special, or consequential damages, including lost profits or lost data, arising from use of the deliverable. Client will indemnify Provider against third-party claims arising from Client's misuse of the deliverable or from content, data, or instructions Client supplied.`;
+
+  document.getElementById('c-cancel').textContent =
+    `Either party may cancel this Agreement with ${state.cancel} days' written notice. Client remains responsible for payment for work completed up to the cancellation date; the deposit is non-refundable once work has begun.`;
+
+  const juris = state.jurisdiction && state.jurisdiction.trim();
+  document.getElementById('c-dispute').textContent = juris
+    ? `This Agreement is governed by the laws of ${juris}, without regard to conflict-of-law rules. The parties will first attempt to resolve any dispute informally; failing that, disputes will be resolved in the courts located in ${juris}, or through mediation if both parties agree.`
+    : `This Agreement is governed by the laws of the state where Provider is based, without regard to conflict-of-law rules. The parties will first attempt to resolve any dispute informally; failing that, disputes will be resolved in the courts of that state, or through mediation if both parties agree. [Add a specific governing state on the left for a higher-value deal.]`;
+}
+
+render();
+</script>

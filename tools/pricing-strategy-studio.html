@@ -1,0 +1,520 @@
+<title>Pricing Strategy Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chivo:wght@500;600;700;800&family=Albert+Sans:wght@400;500;600;700&family=Fragment+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.006 150);
+  --paper-raised:oklch(0.995 0.003 150);
+  --ink:oklch(0.2 0.025 150);
+  --ink-dim:oklch(0.46 0.018 150);
+  --line:oklch(0.85 0.014 150);
+  --line-strong:oklch(0.7 0.02 150);
+  --accent:oklch(0.45 0.13 155);
+  --accent-soft:oklch(0.45 0.13 155 / 0.1);
+  --accent-ink:oklch(0.99 0.005 90);
+  --tag:oklch(0.68 0.15 60);
+  --tag-soft:oklch(0.68 0.15 60 / 0.15);
+  --bad:oklch(0.55 0.16 25);
+  --bad-soft:oklch(0.55 0.16 25 / 0.13);
+  --shadow:0 1px 2px oklch(0.25 0.02 150 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.16 0.016 150); --paper-raised:oklch(0.21 0.018 150);
+    --ink:oklch(0.95 0.008 150); --ink-dim:oklch(0.7 0.014 150);
+    --line:oklch(0.34 0.02 150); --line-strong:oklch(0.45 0.026 150);
+    --accent:oklch(0.68 0.12 155); --accent-soft:oklch(0.68 0.12 155 / 0.16); --accent-ink:oklch(0.15 0.02 155);
+    --tag:oklch(0.75 0.13 60); --tag-soft:oklch(0.75 0.13 60 / 0.17);
+    --bad:oklch(0.72 0.15 25); --bad-soft:oklch(0.72 0.15 25 / 0.16);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.16 0.016 150); --paper-raised:oklch(0.21 0.018 150);
+  --ink:oklch(0.95 0.008 150); --ink-dim:oklch(0.7 0.014 150);
+  --line:oklch(0.34 0.02 150); --line-strong:oklch(0.45 0.026 150);
+  --accent:oklch(0.68 0.12 155); --accent-soft:oklch(0.68 0.12 155 / 0.16); --accent-ink:oklch(0.15 0.02 155);
+  --tag:oklch(0.75 0.13 60); --tag-soft:oklch(0.75 0.13 60 / 0.17);
+  --bad:oklch(0.72 0.15 25); --bad-soft:oklch(0.72 0.15 25 / 0.16);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Albert Sans',system-ui,sans-serif}
+h1,h2,h3{font-family:'Chivo',sans-serif;margin:0;text-wrap:balance}
+.mono{font-family:'Fragment Mono',monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:8px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-family:'Chivo',sans-serif;font-weight:800;font-size:18px;position:relative}
+.brand .mark::after{content:'';position:absolute;top:-4px;right:-4px;width:10px;height:10px;border-radius:50%;background:var(--tag)}
+.brand h1{font-size:20px;font-weight:700}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Fragment Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.profile-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;margin-top:16px;background:var(--accent-soft);border-radius:10px;font-size:12.5px;flex-wrap:wrap}
+.profile-bar .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.profile-bar.off .dot{background:var(--ink-dim)}
+.profile-bar a{color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer}
+.profile-bar a:hover{text-decoration:underline}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Albert Sans',sans-serif;font-weight:700;font-size:13px;padding:11px 14px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:10px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:16px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Albert Sans',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:7px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:90px;line-height:1.5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.item-row-edit{display:grid;grid-template-columns:1fr 90px 26px;gap:6px;margin-bottom:8px}
+.item-row-edit input{font-size:12.5px;padding:7px 9px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
+.item-row-edit .rm{width:26px;height:26px;border:1px solid var(--line);border-radius:5px;background:var(--paper);color:var(--ink-dim);cursor:pointer}
+
+.btn{font-family:'Albert Sans',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:8px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'Fragment Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.caveat{background:var(--tag-soft);border-left:3px solid var(--tag);padding:10px 12px;font-size:11.5px;line-height:1.5;border-radius:0 6px 6px 0;margin-bottom:16px}
+
+.price-position{position:relative;height:50px;margin:16px 0}
+.price-track{position:absolute;top:22px;left:0;right:0;height:4px;background:var(--line);border-radius:2px}
+.price-dot{position:absolute;top:14px;width:20px;height:20px;border-radius:50%;transform:translateX(-50%);border:3px solid var(--paper-raised);display:flex;align-items:center;justify-content:center}
+.price-dot.you{background:var(--accent);z-index:2}
+.price-dot.comp{background:var(--tag)}
+.price-label{position:absolute;top:-2px;font-size:10px;font-family:'Fragment Mono',monospace;transform:translateX(-50%);white-space:nowrap}
+
+.roi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+@media(max-width:640px){.roi-grid{grid-template-columns:1fr}}
+.roi-tile{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px;text-align:center}
+.roi-tile .val{font-family:'Fragment Mono',monospace;font-size:22px;font-weight:700;color:var(--accent)}
+.roi-tile .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-top:4px}
+
+.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:640px){.tier-grid{grid-template-columns:1fr}}
+.tier-card{border:1px solid var(--line);border-radius:10px;padding:16px;text-align:center}
+.tier-card.mid{border-color:var(--tag);border-width:2px}
+.tier-card .tp{font-family:'Fragment Mono',monospace;font-size:22px;font-weight:700;color:var(--accent);margin:6px 0}
+
+.tag-chip{display:inline-block;font-family:'Fragment Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--tag-soft);color:oklch(0.45 0.13 60);text-transform:uppercase;letter-spacing:.04em}
+:root[data-theme="dark"] .tag-chip{color:var(--tag)}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">$</div>
+      <div>
+        <h1>Pricing Strategy Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 13</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Pricing audit: <strong>$300–$1,200</strong><br>Ongoing advisory: <strong>$1k–$8k/mo</strong></div>
+  </header>
+
+  <div class="profile-bar off" id="profile-bar">
+    <span class="dot"></span>
+    <span id="profile-summary">No client business set — every tab writes generically.</span>
+    <a data-tab="profile">Set it up →</a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="competitor">Competitor Position</button>
+    <button class="tab" data-tab="model">Pricing Model</button>
+    <button class="tab" data-tab="increase">Price Change</button>
+    <button class="tab" data-tab="tiers">Tier Structure</button>
+    <button class="tab" data-tab="profile">Client Business</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- COMPETITOR POSITION -->
+  <div class="view active" id="view-competitor">
+    <div class="split">
+      <div class="panel">
+        <h3>Your price vs. competitors</h3>
+        <p class="sub">Enter real numbers you've researched — this never invents competitor prices.</p>
+        <div class="field"><label>Your product/service &amp; price ($)</label>
+          <div class="two-col"><input type="text" id="cp-yourname" placeholder="Your offering"><input type="number" id="cp-yourprice" placeholder="Price" min="0" step="1"></div>
+        </div>
+        <div class="field"><label>Competitor prices</label></div>
+        <div id="cp-rows"></div>
+        <button class="btn btn-sm" onclick="addComp()">+ Add competitor</button>
+        <button class="btn btn-primary btn-block" id="cp-btn" onclick="genCompetitor()" style="margin-top:14px">Analyze position</button>
+      </div>
+      <div class="panel">
+        <h3>Market position</h3>
+        <p class="sub">Where you sit, and what that signals to buyers.</p>
+        <div id="cp-viz"></div>
+        <div id="cp-output"><div class="output-empty">Enter your price and at least one competitor.</div></div>
+        <div class="output-status" id="cp-status"></div>
+        <div class="output-actions" id="cp-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genCompetitor(true)">Re-analyze</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING MODEL -->
+  <div class="view" id="view-model">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Which pricing model actually fits this business.</p>
+        <div class="field"><label>What you sell</label><textarea id="pm-what" placeholder="e.g. a monthly cleaning service, billed per visit"></textarea></div>
+        <div class="field"><label>Customer type</label>
+          <select id="pm-customer"><option>B2C — individual consumers</option><option>B2B — small businesses</option><option>B2B — enterprise</option></select>
+        </div>
+        <button class="btn btn-primary btn-block" id="pm-btn" onclick="genModel()">Recommend a pricing model</button>
+      </div>
+      <div class="panel">
+        <h3>Recommendation</h3>
+        <p class="sub">The model, why it fits, and the tradeoff to know.</p>
+        <div id="pm-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="pm-status"></div>
+        <div class="output-actions" id="pm-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genModel(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICE CHANGE -->
+  <div class="view" id="view-increase">
+    <div class="panel" style="max-width:720px;margin-bottom:16px">
+      <h3>Price change calculator</h3>
+      <p class="sub">Real math — this is what justifies the number to yourself before you announce it.</p>
+      <div class="two-col">
+        <div class="field"><label>Current price ($)</label><input type="number" id="pc-current" value="100" min="0" step="1" oninput="calcIncrease()"></div>
+        <div class="field"><label>Cost increase (%)</label><input type="number" id="pc-costpct" value="8" min="0" step="0.5" oninput="calcIncrease()"></div>
+      </div>
+      <div class="two-col">
+        <div class="field"><label>Target margin (%)</label><input type="number" id="pc-margin" value="30" min="0" max="95" step="1" oninput="calcIncrease()"></div>
+        <div class="field"><label>Customers affected</label><input type="number" id="pc-customers" value="50" min="0" step="1" oninput="calcIncrease()"></div>
+      </div>
+      <div class="roi-grid">
+        <div class="roi-tile"><div class="val" id="pc-newprice">$100</div><div class="lbl">Suggested new price</div></div>
+        <div class="roi-tile"><div class="val" id="pc-increase">0%</div><div class="lbl">Increase</div></div>
+        <div class="roi-tile"><div class="val" id="pc-annual">$0</div><div class="lbl">Added annual revenue*</div></div>
+      </div>
+      <p class="sub" style="margin:0">New price = current price ÷ (1 − target margin). *Added revenue assumes monthly billing and no customer churn — a real increase should assume some churn.</p>
+    </div>
+    <div class="panel" style="max-width:720px">
+      <h3>Announcement message</h3>
+      <button class="btn btn-primary btn-block" id="pc-btn" onclick="genIncreaseMessage()">Draft the price increase announcement</button>
+      <div id="pc-output" style="margin-top:14px"><div class="output-empty">Run the calculator above, then draft a message.</div></div>
+      <div class="output-status" id="pc-status"></div>
+      <div class="output-actions" id="pc-actions" style="display:none">
+        <button class="btn btn-sm" onclick="copyOut('pc-output')">Copy text</button>
+        <button class="btn btn-sm" onclick="genIncreaseMessage(true)">Regenerate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIER STRUCTURE -->
+  <div class="view" id="view-tiers">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Good/Better/Best anchoring — the middle tier is usually the one you want chosen.</p>
+        <div class="field"><label>What you sell</label><input type="text" id="tr-what" placeholder="e.g. website maintenance plans"></div>
+        <div class="field"><label>Target price for your most popular tier ($)</label><input type="number" id="tr-target" value="99" min="0" step="1"></div>
+        <button class="btn btn-primary btn-block" id="tr-btn" onclick="genTiers()">Build tier structure</button>
+      </div>
+      <div class="panel">
+        <h3>Tier structure</h3>
+        <p class="sub">Three tiers, anchored so the middle one looks like the obvious choice.</p>
+        <div id="tr-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="tr-status"></div>
+        <div class="output-actions" id="tr-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genTiers(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENT BUSINESS -->
+  <div class="view" id="view-profile">
+    <div class="panel" style="max-width:640px">
+      <h3>Client business</h3>
+      <p class="sub">Set this once per client — every tab above writes with this context.</p>
+      <div class="field"><label>Business name</label><input type="text" id="pf-name" placeholder="e.g. Reyes Home Cleaning"></div>
+      <div class="field"><label>What the business does</label><input type="text" id="pf-desc" placeholder="e.g. residential cleaning service"></div>
+      <button class="btn btn-primary btn-block" onclick="saveProfile()">Save client business</button>
+      <div class="output-status" id="pf-status"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Most small businesses picked a price once and never revisited it.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Audit</span>&nbsp; $300–$1,200 for a one-time pricing audit: competitor position, model recommendation, and a tier restructure.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Advisory</span>&nbsp; $1k–$8k/mo for ongoing pricing strategy as a business scales or adds products.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Bring real data</span>&nbsp; This tool is only as good as the competitor prices and costs you feed it — spend 20 minutes researching real numbers before running the analysis.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. Competitor prices and cost figures come only from what you enter — nothing is looked up or invented.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab, [data-tab]').forEach(t => t.addEventListener('click', () => {
+  const target = t.dataset.tab;
+  if(!target) return;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.dataset.tab === target));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + target));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escapeAttr(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+function money(n){ return '$' + (n||0).toLocaleString('en-US',{maximumFractionDigits:0}); }
+
+/* ---------- client business profile ---------- */
+const PROFILE_KEY = 'aa-pricing-profile-v1';
+function loadProfile(){ try{ return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); }catch(e){ return null; } }
+function renderProfileBar(){
+  const p = loadProfile();
+  const bar = document.getElementById('profile-bar');
+  const summary = document.getElementById('profile-summary');
+  if(p && p.name){
+    bar.classList.remove('off');
+    summary.textContent = `Pricing for "${p.name}"`;
+  } else {
+    bar.classList.add('off');
+    summary.textContent = 'No client business set — every tab writes generically.';
+  }
+}
+function saveProfile(){
+  const p = { name: document.getElementById('pf-name').value.trim(), desc: document.getElementById('pf-desc').value.trim() };
+  try{ localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }catch(e){}
+  renderProfileBar();
+  const el = document.getElementById('pf-status');
+  el.textContent = 'Saved.';
+  setTimeout(() => el.textContent = '', 2000);
+}
+(function initProfileForm(){
+  const p = loadProfile();
+  if(!p) return;
+  document.getElementById('pf-name').value = p.name || '';
+  document.getElementById('pf-desc').value = p.desc || '';
+})();
+renderProfileBar();
+function profileContext(){
+  const p = loadProfile();
+  if(!p || !p.name) return '';
+  return `\n\nClient business: "${p.name}" — ${p.desc || 'no further description'}.`;
+}
+
+/* ---------- sample helpers ---------- */
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+async function runSample(promptText, btnId, statusId, outputId, actionsId, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const out = document.getElementById(outputId);
+  const actions = document.getElementById(actionsId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = '';
+  actions.style.display = 'none';
+  out.innerHTML = `<div class="card">Thinking…</div>`;
+  try{
+    const { text } = await sample(promptText, {
+      modelTier: 'default',
+      cache: regenerate ? false : true,
+      onText: ({text}) => { out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`; }
+    });
+    out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`;
+    actions.style.display = 'flex';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      empty_completion: 'Nothing came back — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+/* ---------- competitor position ---------- */
+let compRows = [{name:'', price:0}];
+function renderCompForm(){
+  const wrap = document.getElementById('cp-rows');
+  wrap.innerHTML = compRows.map((c,i) => `
+    <div class="item-row-edit">
+      <input type="text" placeholder="Competitor name" value="${escapeAttr(c.name)}" data-f="name" data-i="${i}">
+      <input type="number" placeholder="Price" min="0" step="1" value="${c.price}" data-f="price" data-i="${i}">
+      <button class="rm" data-i="${i}">&times;</button>
+    </div>
+  `).join('');
+  wrap.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const i = +e.target.dataset.i, f = e.target.dataset.f;
+      compRows[i][f] = f === 'price' ? (parseFloat(e.target.value)||0) : e.target.value;
+    });
+  });
+  wrap.querySelectorAll('.rm').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if(compRows.length <= 1) return;
+      compRows.splice(+btn.dataset.i, 1);
+      renderCompForm();
+    });
+  });
+}
+function addComp(){ compRows.push({name:'', price:0}); renderCompForm(); }
+renderCompForm();
+
+function genCompetitor(regenerate){
+  const yourName = document.getElementById('cp-yourname').value.trim();
+  const yourPrice = parseFloat(document.getElementById('cp-yourprice').value) || 0;
+  const comps = compRows.filter(c => c.name.trim() && c.price > 0);
+  if(!yourPrice || !comps.length){ document.getElementById('cp-status').textContent = 'Enter your price and at least one competitor.'; return; }
+
+  const allPrices = [yourPrice, ...comps.map(c => c.price)];
+  const min = Math.min(...allPrices), max = Math.max(...allPrices);
+  const range = max - min || 1;
+  const viz = document.getElementById('cp-viz');
+  viz.innerHTML = `<div class="price-position">
+    <div class="price-track"></div>
+    ${comps.map(c => `<div class="price-dot comp" style="left:${((c.price-min)/range)*100}%"></div><div class="price-label" style="left:${((c.price-min)/range)*100}%;top:32px">${escapeHtml(c.name)}</div>`).join('')}
+    <div class="price-dot you" style="left:${((yourPrice-min)/range)*100}%"></div>
+    <div class="price-label" style="left:${((yourPrice-min)/range)*100}%">You: ${money(yourPrice)}</div>
+  </div>`;
+
+  const list = comps.map(c => `${c.name}: $${c.price}`).join('; ');
+  const prompt = `Analyze this business's price position against competitors, using ONLY the numbers given — never invent or assume additional market data.${profileContext()}
+Your offering: "${yourName || 'the product/service'}" priced at $${yourPrice}.
+Competitors: ${list}
+Reply with only a JSON object: {"position": "Below market" | "At market" | "Premium", "signal": string (1-2 sentences on what this price position signals to buyers), "recommendation": string (1-2 sentences of practical advice given this position)}.`;
+  runSampleJson(prompt, 'cp-btn', 'cp-status', (d) => {
+    document.getElementById('cp-output').innerHTML = `<div class="card">
+      <span class="tag-chip">${escapeHtml(d.position||'')}</span>
+      <div class="field-lbl">What this signals</div>${escapeHtml(d.signal||'')}
+      <div class="field-lbl">Recommendation</div>${escapeHtml(d.recommendation||'')}
+    </div>`;
+    document.getElementById('cp-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- pricing model ---------- */
+function genModel(regenerate){
+  const what = document.getElementById('pm-what').value.trim();
+  const customer = document.getElementById('pm-customer').value;
+  if(!what){ document.getElementById('pm-status').textContent = 'Describe what you sell first.'; return; }
+  const prompt = `Recommend a pricing model for this business.${profileContext()}
+What they sell: "${what}"
+Customer type: "${customer}"
+Reply with only a JSON object: {"model": string (e.g. "Flat rate", "Tiered subscription", "Usage-based", "Per-project"), "reasoning": string (2-3 sentences why this fits), "tradeoff": string (1 sentence on the main downside to watch for)}.`;
+  runSampleJson(prompt, 'pm-btn', 'pm-status', (d) => {
+    document.getElementById('pm-output').innerHTML = `<div class="card">
+      <span class="tag-chip">${escapeHtml(d.model||'')}</span>
+      <div class="field-lbl">Why it fits</div>${escapeHtml(d.reasoning||'')}
+      <div class="field-lbl">Tradeoff to watch</div>${escapeHtml(d.tradeoff||'')}
+    </div>`;
+    document.getElementById('pm-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- price change calculator (pure math) ---------- */
+function calcIncrease(){
+  const current = parseFloat(document.getElementById('pc-current').value) || 0;
+  const margin = parseFloat(document.getElementById('pc-margin').value) || 0;
+  const customers = parseFloat(document.getElementById('pc-customers').value) || 0;
+  const newPrice = margin < 95 ? current / (1 - margin/100) : current;
+  const increasePct = current > 0 ? ((newPrice - current) / current) * 100 : 0;
+  const addedAnnual = (newPrice - current) * customers * 12;
+  document.getElementById('pc-newprice').textContent = money(newPrice);
+  document.getElementById('pc-increase').textContent = increasePct.toFixed(1) + '%';
+  document.getElementById('pc-annual').textContent = money(addedAnnual);
+}
+calcIncrease();
+
+function genIncreaseMessage(regenerate){
+  const current = document.getElementById('pc-current').value;
+  const newPrice = document.getElementById('pc-newprice').textContent;
+  const increase = document.getElementById('pc-increase').textContent;
+  const prompt = `Draft a short, professional customer-facing message announcing a price increase.${profileContext()}
+Current price: $${current}. New price: ${newPrice} (a ${increase} increase). Keep it under 120 words: acknowledge the change plainly, briefly explain it's due to rising costs/continued investment in quality (don't over-apologize), state the effective date as "[date]", and thank them for their business. Output only the message text.`;
+  runSample(prompt, 'pc-btn', 'pc-status', 'pc-output', 'pc-actions', regenerate);
+}
+
+/* ---------- tier structure ---------- */
+function genTiers(regenerate){
+  const what = document.getElementById('tr-what').value.trim();
+  const target = parseFloat(document.getElementById('tr-target').value) || 0;
+  if(!what || !target){ document.getElementById('tr-status').textContent = 'Fill in both fields first.'; return; }
+  const prompt = `Design a 3-tier Good/Better/Best pricing structure for this offering, anchored so the middle tier ($${target}) is the one most customers should choose.${profileContext()}
+What they sell: "${what}"
+Reply with only a JSON array of exactly 3 {"name": string, "price": number, "features": [string] (3-4 items)} objects, ordered low to high, with the middle price close to $${target}.`;
+  runSampleJson(prompt, 'tr-btn', 'tr-status', (items) => {
+    const tiers = Array.isArray(items) ? items : [];
+    document.getElementById('tr-output').innerHTML = `<div class="tier-grid">${tiers.map((t,i) => `
+      <div class="tier-card${i===1?' mid':''}">
+        <div style="font-weight:700">${escapeHtml(t.name||'')}</div>
+        <div class="tp">$${t.price||0}</div>
+        <ul style="text-align:left;font-size:12px;padding-left:18px;margin:0">${(t.features||[]).map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul>
+      </div>
+    `).join('')}</div>`;
+    document.getElementById('tr-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function copyOut(id){
+  const text = document.querySelector('#' + id + ' .card')?.textContent || '';
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+</script>

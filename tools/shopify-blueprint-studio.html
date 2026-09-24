@@ -1,0 +1,289 @@
+<title>Shopify Blueprint Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.008 175);
+  --paper-raised:oklch(0.995 0.004 175);
+  --ink:oklch(0.2 0.025 175);
+  --ink-dim:oklch(0.46 0.016 175);
+  --line:oklch(0.85 0.014 175);
+  --line-strong:oklch(0.7 0.02 175);
+  --accent:oklch(0.5 0.12 300);
+  --accent-soft:oklch(0.5 0.12 300 / 0.1);
+  --accent-ink:oklch(0.99 0.005 90);
+  --teal:oklch(0.55 0.1 175);
+  --teal-soft:oklch(0.55 0.1 175 / 0.14);
+  --shadow:0 1px 2px oklch(0.25 0.02 175 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.16 0.018 175); --paper-raised:oklch(0.21 0.02 175);
+    --ink:oklch(0.95 0.008 175); --ink-dim:oklch(0.7 0.014 175);
+    --line:oklch(0.34 0.022 175); --line-strong:oklch(0.45 0.028 175);
+    --accent:oklch(0.72 0.13 300); --accent-soft:oklch(0.72 0.13 300 / 0.16); --accent-ink:oklch(0.15 0.02 300);
+    --teal:oklch(0.7 0.1 175); --teal-soft:oklch(0.7 0.1 175 / 0.17);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.16 0.018 175); --paper-raised:oklch(0.21 0.02 175);
+  --ink:oklch(0.95 0.008 175); --ink-dim:oklch(0.7 0.014 175);
+  --line:oklch(0.34 0.022 175); --line-strong:oklch(0.45 0.028 175);
+  --accent:oklch(0.72 0.13 300); --accent-soft:oklch(0.72 0.13 300 / 0.16); --accent-ink:oklch(0.15 0.02 300);
+  --teal:oklch(0.7 0.1 175); --teal-soft:oklch(0.7 0.1 175 / 0.17);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif}
+h1,h2,h3{font-family:'DM Serif Display',georgia,serif;margin:0;text-wrap:balance}
+.mono{font-family:'DM Mono',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:10px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:19px}
+.brand h1{font-size:20px;font-weight:400}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.profile-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;margin-top:16px;background:var(--accent-soft);border-radius:10px;font-size:12.5px;flex-wrap:wrap}
+.profile-bar .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.profile-bar.off .dot{background:var(--ink-dim)}
+.profile-bar a{color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer}
+.profile-bar a:hover{text-decoration:underline}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;padding:11px 14px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:10px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:19px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'DM Sans',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:7px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:90px;line-height:1.5}
+
+.btn{font-family:'DM Sans',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:8px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.impact-tag{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;padding:2px 8px;border-radius:8px;background:var(--teal-soft);color:oklch(0.42 0.09 175);margin-left:6px}
+:root[data-theme="dark"] .impact-tag{color:var(--teal)}
+
+.tag-chip{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--teal-soft);color:oklch(0.42 0.09 175);text-transform:uppercase;letter-spacing:.04em}
+:root[data-theme="dark"] .tag-chip{color:var(--teal)}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">Sh</div>
+      <div>
+        <h1>Shopify Blueprint Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 27</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Per audit: <strong>$300–$1,200</strong><br>Implementation: <strong>$1k–$8k/project</strong></div>
+  </header>
+
+  <div class="profile-bar off" id="profile-bar">
+    <span class="dot"></span>
+    <span id="profile-summary">No store profile set — every tab writes generically.</span>
+    <a data-tab="profile">Set it up →</a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="audit">Store Audit</button>
+    <button class="tab" data-tab="apps">App Recommendations</button>
+    <button class="tab" data-tab="profile">Store Profile</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- STORE AUDIT -->
+  <div class="view active" id="view-audit">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Describe what's slow or manual about running the store today.</p>
+        <div class="field"><label>What's frustrating about the store right now</label><textarea id="au-pain" style="min-height:160px" placeholder="e.g. we manually update inventory across 2 sales channels, customer support gets the same 5 questions over and over, checkout abandonment feels high"></textarea></div>
+        <button class="btn btn-primary btn-block" id="au-btn" onclick="genAudit()">Audit &amp; prioritize</button>
+      </div>
+      <div class="panel">
+        <h3>Prioritized fixes</h3>
+        <p class="sub">Ranked by likely impact vs. effort to implement.</p>
+        <div id="au-output"><div class="output-empty">Describe the pain points and audit.</div></div>
+        <div class="output-status" id="au-status"></div>
+        <div class="output-actions" id="au-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genAudit(true)">Re-audit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP RECOMMENDATIONS -->
+  <div class="view" id="view-apps">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">One specific need → the type of app/integration that solves it.</p>
+        <div class="field"><label>What the store needs to do</label><textarea id="ap-need" placeholder="e.g. automatically follow up with customers who abandoned checkout"></textarea></div>
+        <button class="btn btn-primary btn-block" id="ap-btn" onclick="genApps()">Recommend app types</button>
+      </div>
+      <div class="panel">
+        <h3>Recommended app categories</h3>
+        <p class="sub">Categories and what to look for — verify specific app names and reviews on the Shopify App Store, since listings change.</p>
+        <div id="ap-output"><div class="output-empty">Describe the need and generate.</div></div>
+        <div class="output-status" id="ap-status"></div>
+        <div class="output-actions" id="ap-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genApps(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STORE PROFILE -->
+  <div class="view" id="view-profile">
+    <div class="panel" style="max-width:640px">
+      <h3>Store profile</h3>
+      <p class="sub">Set this once per client — every tab above writes with this context.</p>
+      <div class="field"><label>Store name</label><input type="text" id="pf-name" placeholder="e.g. Reyes Home Goods"></div>
+      <div class="field"><label>What they sell</label><input type="text" id="pf-desc" placeholder="e.g. handmade home decor"></div>
+      <button class="btn btn-primary btn-block" onclick="saveProfile()">Save store profile</button>
+      <div class="output-status" id="pf-status"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Most Shopify stores run on default settings and never optimize.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Audit</span>&nbsp; $300–$1,200 to audit a store and deliver a prioritized improvement plan.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Implementation</span>&nbsp; $1k–$8k per project to actually install and configure the apps/automations recommended.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Verify current apps</span>&nbsp; App Store listings and pricing change constantly — this recommends categories and what to look for, always verify the specific app choice yourself.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. This doesn't connect to any real Shopify store or app catalog.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab, [data-tab]').forEach(t => t.addEventListener('click', () => {
+  const target = t.dataset.tab;
+  if(!target) return;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.dataset.tab === target));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + target));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+const PROFILE_KEY = 'aa-shopify-profile-v1';
+function loadProfile(){ try{ return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); }catch(e){ return null; } }
+function renderProfileBar(){
+  const p = loadProfile();
+  const bar = document.getElementById('profile-bar');
+  const summary = document.getElementById('profile-summary');
+  if(p && p.name){
+    bar.classList.remove('off');
+    summary.textContent = `Auditing "${p.name}"`;
+  } else {
+    bar.classList.add('off');
+    summary.textContent = 'No store profile set — every tab writes generically.';
+  }
+}
+function saveProfile(){
+  const p = { name: document.getElementById('pf-name').value.trim(), desc: document.getElementById('pf-desc').value.trim() };
+  try{ localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }catch(e){}
+  renderProfileBar();
+  const el = document.getElementById('pf-status');
+  el.textContent = 'Saved.';
+  setTimeout(() => el.textContent = '', 2000);
+}
+(function initProfileForm(){
+  const p = loadProfile();
+  if(!p) return;
+  document.getElementById('pf-name').value = p.name || '';
+  document.getElementById('pf-desc').value = p.desc || '';
+})();
+renderProfileBar();
+function profileContext(){
+  const p = loadProfile();
+  if(!p || !p.name) return '';
+  return `\n\nStore: "${p.name}" — ${p.desc || 'no further description'}.`;
+}
+
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function genAudit(regenerate){
+  const pain = document.getElementById('au-pain').value.trim();
+  if(!pain){ document.getElementById('au-status').textContent = 'Describe the pain points first.'; return; }
+  const prompt = `A Shopify store owner described these pain points.${profileContext()}
+Pain points: "${pain}"
+Reply with only a JSON array of 3-5 {"fix": string, "impact": "High" | "Medium" | "Low", "howToApproach": string (1-2 sentences, general approach not a specific paid app name)} objects, ordered by impact.`;
+  runSampleJson(prompt, 'au-btn', 'au-status', (items) => {
+    const wrap = document.getElementById('au-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map(it => `<div class="card"><strong>${escapeHtml(it.fix||'')}</strong><span class="impact-tag">${escapeHtml(it.impact||'')} impact</span><div class="field-lbl">Approach</div>${escapeHtml(it.howToApproach||'')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('au-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function genApps(regenerate){
+  const need = document.getElementById('ap-need').value.trim();
+  if(!need){ document.getElementById('ap-status').textContent = 'Describe the need first.'; return; }
+  const prompt = `A Shopify store needs: "${need}".${profileContext()}
+Recommend app categories/types (never specific brand names, since app store listings change constantly) that solve this. Reply with only a JSON array of 2-4 {"category": string, "whatToLookFor": string, "roughCost": string (e.g. "$10-30/mo, most Shopify apps in this category")} objects.`;
+  runSampleJson(prompt, 'ap-btn', 'ap-status', (items) => {
+    const wrap = document.getElementById('ap-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map(it => `<div class="card"><span class="n">${escapeHtml(it.category||'')}</span><br>${escapeHtml(it.whatToLookFor||'')}<div class="field-lbl">Typical cost</div>${escapeHtml(it.roughCost||'')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('ap-actions').style.display = 'flex';
+  }, regenerate);
+}
+</script>

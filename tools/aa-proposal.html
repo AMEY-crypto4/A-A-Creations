@@ -1,0 +1,399 @@
+<title>A&A Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Mulish:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.97 0.012 95);
+  --paper-raised:oklch(0.99 0.006 95);
+  --ink:oklch(0.24 0.025 140);
+  --ink-dim:oklch(0.48 0.02 130);
+  --line:oklch(0.85 0.02 95);
+  --line-strong:oklch(0.72 0.03 95);
+  --accent:oklch(0.42 0.09 150);
+  --accent-soft:oklch(0.42 0.09 150 / 0.09);
+  --accent-ink:oklch(0.99 0.006 95);
+  --gold:oklch(0.72 0.1 85);
+  --shadow:0 1px 2px oklch(0.3 0.03 95 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.17 0.016 140); --paper-raised:oklch(0.215 0.018 140);
+    --ink:oklch(0.94 0.01 95); --ink-dim:oklch(0.7 0.016 95);
+    --line:oklch(0.34 0.02 140); --line-strong:oklch(0.45 0.025 140);
+    --accent:oklch(0.68 0.1 150); --accent-soft:oklch(0.68 0.1 150 / 0.14); --accent-ink:oklch(0.15 0.02 150);
+    --gold:oklch(0.76 0.1 85);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.17 0.016 140); --paper-raised:oklch(0.215 0.018 140);
+  --ink:oklch(0.94 0.01 95); --ink-dim:oklch(0.7 0.016 95);
+  --line:oklch(0.34 0.02 140); --line-strong:oklch(0.45 0.025 140);
+  --accent:oklch(0.68 0.1 150); --accent-soft:oklch(0.68 0.1 150 / 0.14); --accent-ink:oklch(0.15 0.02 150);
+  --gold:oklch(0.76 0.1 85);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Mulish',system-ui,sans-serif}
+h1,h2,h3{font-family:'Cormorant Garamond',georgia,serif;margin:0;text-wrap:balance}
+.mono{font-family:'Space Mono',monospace}
+.app{display:grid;grid-template-columns:400px 1fr;min-height:100vh}
+@media(max-width:920px){.app{grid-template-columns:1fr}}
+
+.form-side{padding:28px 26px;border-right:1px solid var(--line);background:var(--paper-raised)}
+.form-side .tag{font-family:'Space Mono',monospace;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+.form-side h1{font-size:26px;margin:4px 0 2px;font-style:italic;font-weight:600}
+.form-side .desc{font-size:12.5px;color:var(--ink-dim);margin:8px 0 22px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:5px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Mulish',sans-serif;font-size:13.5px;padding:8px 10px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:58px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.list-form{border-top:1px solid var(--line);margin-top:16px;padding-top:16px}
+.list-form h3{font-size:13px;text-transform:uppercase;letter-spacing:.04em;font-family:'Mulish',sans-serif;font-weight:700;margin-bottom:12px}
+.list-row-edit{display:grid;grid-template-columns:1fr 26px;gap:6px;margin-bottom:8px}
+.list-row-edit input{font-size:12.5px;padding:7px 9px;border:1px solid var(--line-strong);border-radius:4px;background:var(--paper);color:var(--ink)}
+.list-row-edit .rm{width:26px;height:26px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink-dim);cursor:pointer}
+.list-row-edit .rm:hover{color:#b3423f;border-color:#b3423f}
+
+.btn{font-family:'Mulish',sans-serif;font-weight:700;font-size:13px;padding:9px 16px;border-radius:6px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.9}
+.btn-block{width:100%;margin-top:8px}
+.btn-sm{padding:6px 10px;font-size:11.5px}
+
+/* preview */
+.preview-side{padding:48px;display:flex;justify-content:center}
+.sheet{width:100%;max-width:640px;background:var(--paper-raised);box-shadow:0 6px 28px oklch(0.3 0.04 130/0.16);padding:64px 56px;animation:fadeUp .55s cubic-bezier(.16,1,.3,1) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.p-eyebrow{font-family:'Space Mono',monospace;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.12em;text-align:center;margin-bottom:10px}
+.p-title{font-size:44px;font-style:italic;font-weight:600;text-align:center;line-height:1.05}
+.p-sub{text-align:center;font-size:15px;color:var(--ink-dim);margin-top:8px}
+.gold-rule{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:30px 0}
+.p-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-dim);margin-bottom:32px}
+.p-meta .mono{color:var(--ink)}
+.p-section{margin-bottom:28px}
+.p-section h2{font-size:19px;font-weight:600;color:var(--accent);margin-bottom:10px;font-style:italic}
+.p-section p{font-size:14px;line-height:1.7;color:var(--ink)}
+.p-scope{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.p-scope li{font-size:14px;line-height:1.5;padding-left:20px;position:relative}
+.p-scope li::before{content:'◆';position:absolute;left:0;top:2px;color:var(--gold);font-size:9px}
+.p-invest{background:var(--accent-soft);border-radius:6px;padding:20px 22px;text-align:center;margin:6px 0}
+.p-invest .amt{font-family:'Space Mono',monospace;font-size:32px;font-weight:700;color:var(--accent)}
+.p-invest .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-dim);margin-top:4px}
+.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:560px){.tier-grid{grid-template-columns:1fr}}
+.tier-card{border:1px solid var(--line);border-radius:8px;padding:18px 16px;text-align:center}
+.tier-card.featured{border-color:var(--gold);border-width:2px}
+.tier-card .tname{font-family:'Cormorant Garamond',georgia,serif;font-style:italic;font-size:18px;font-weight:600}
+.tier-card .tprice{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;color:var(--accent);margin:8px 0}
+.tier-card ul{list-style:none;margin:10px 0 0;padding:0;text-align:left;display:grid;gap:6px}
+.tier-card li{font-size:12px;line-height:1.5;padding-left:14px;position:relative;color:var(--ink-dim)}
+.tier-card li::before{content:'◆';position:absolute;left:0;top:1px;color:var(--gold);font-size:7px}
+.faq-item{margin-bottom:16px}
+.faq-item .q{font-weight:700;font-size:13.5px;margin-bottom:4px}
+.faq-item .a{font-size:13px;color:var(--ink-dim);line-height:1.6}
+.case-item{background:var(--accent-soft);border-radius:6px;padding:16px 18px;margin-bottom:12px;font-size:13.5px;line-height:1.6;font-style:italic}
+.case-item .cname{font-style:normal;font-weight:700;margin-top:8px;font-size:12.5px;color:var(--accent)}
+.list-row-pair{display:grid;grid-template-columns:1fr 26px;gap:6px;margin-bottom:10px}
+.list-row-pair .pair-inputs{display:grid;gap:6px}
+.list-row-pair input,.list-row-pair textarea{font-size:12.5px;padding:7px 9px;border:1px solid var(--line-strong);border-radius:4px;background:var(--paper);color:var(--ink);width:100%}
+.p-sign{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:40px}
+.sign-line{border-top:1px solid var(--ink);margin-top:38px;padding-top:6px;font-size:11px;color:var(--ink-dim)}
+.p-footer{text-align:center;margin-top:40px;font-size:11.5px;color:var(--ink-dim)}
+
+@media print{
+  .form-side{display:none}
+  .app{grid-template-columns:1fr}
+  .preview-side{padding:0}
+  .sheet{box-shadow:none;max-width:100%;animation:none;padding:20px 6px}
+  body{background:#fff}
+}
+</style>
+
+<div class="app">
+  <div class="form-side">
+    <span class="tag">A&amp;A Creations · Fig. 03</span>
+    <h1>Proposal Builder</h1>
+    <p class="desc">Fill this in — the proposal on the right updates live. Print or save as PDF when it's ready to send.</p>
+
+    <div class="field"><label>Client / business name</label><input type="text" id="f-client" placeholder="Reyes Home Cleaning"></div>
+    <div class="field"><label>Project title</label><input type="text" id="f-title" placeholder="Instant Quote &amp; Booking Tool"></div>
+    <div class="field"><label>Overview (1–2 sentences)</label><textarea id="f-overview" placeholder="A short summary of the problem and what you'll build."></textarea></div>
+
+    <div class="list-form">
+      <h3>Scope of work</h3>
+      <div id="scope-rows"></div>
+      <button class="btn btn-sm" onclick="addScope()">+ Add scope item</button>
+    </div>
+
+    <div class="field" style="margin-top:16px"><label>Timeline</label><input type="text" id="f-timeline" placeholder="5–7 business days"></div>
+
+    <div class="list-form">
+      <h3>Pricing tiers</h3>
+      <div id="tier-rows"></div>
+    </div>
+
+    <div class="field"><label>Payment terms</label><textarea id="f-terms" placeholder="50% deposit to begin, balance due on delivery."></textarea></div>
+    <div class="two-col">
+      <div class="field"><label>Proposal date</label><input type="date" id="f-date"></div>
+      <div class="field"><label>Valid until</label><input type="date" id="f-valid"></div>
+    </div>
+
+    <div class="list-form">
+      <h3>Common questions (objection handling)</h3>
+      <div id="faq-rows"></div>
+      <button class="btn btn-sm" onclick="addFaq()">+ Add question</button>
+    </div>
+
+    <div class="list-form">
+      <h3>Case studies / testimonials</h3>
+      <p class="desc" style="margin:0 0 10px">Optional — leave blank to hide a slot. Never invent a client name or result; fill in real ones or leave empty.</p>
+      <div id="case-rows"></div>
+      <button class="btn btn-sm" onclick="addCase()">+ Add case study</button>
+    </div>
+
+    <button class="btn btn-primary btn-block" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+
+  <div class="preview-side">
+    <div class="sheet">
+      <div class="p-eyebrow">A&amp;A Creations · Proposal</div>
+      <div class="p-title" id="p-title">Instant Quote &amp; Booking Tool</div>
+      <div class="p-sub">Prepared for <span id="p-client">your client</span></div>
+      <div class="gold-rule"></div>
+      <div class="p-meta">
+        <span>Date: <span class="mono" id="p-date">—</span></span>
+        <span>Valid until: <span class="mono" id="p-valid">—</span></span>
+      </div>
+
+      <div class="p-section" id="p-overview-wrap">
+        <h2>Overview</h2>
+        <p id="p-overview">—</p>
+      </div>
+
+      <div class="p-section">
+        <h2>Scope of work</h2>
+        <ul class="p-scope" id="p-scope"></ul>
+      </div>
+
+      <div class="p-section">
+        <h2>Timeline</h2>
+        <p id="p-timeline">—</p>
+      </div>
+
+      <div class="p-section">
+        <h2>Investment</h2>
+        <div class="tier-grid" id="p-tiers"></div>
+        <p id="p-terms" style="margin-top:16px"></p>
+      </div>
+
+      <div class="p-section" id="p-faq-wrap">
+        <h2>Common questions</h2>
+        <div id="p-faq"></div>
+      </div>
+
+      <div class="p-section" id="p-case-wrap">
+        <h2>Recent work</h2>
+        <div id="p-case"></div>
+      </div>
+
+      <div class="p-sign">
+        <div><div class="sign-line">Client signature &amp; date</div></div>
+        <div><div class="sign-line">A&amp;A Creations &amp; date</div></div>
+      </div>
+
+      <div class="p-footer">A&amp;A Creations · 8454021541</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function todayStr(offsetDays){ return new Date(Date.now() + (offsetDays||0)*86400000).toISOString().slice(0,10); }
+const STORE = 'aa-proposal-draft-v1';
+
+function defaultState(){
+  return {
+    client:'', title:'Instant Quote & Booking Tool', overview:'',
+    scope:['Instant quote calculator matched to your real pricing','Booking request form that logs straight to your leads list','Handover walkthrough and 30 days of small fixes included'],
+    timeline:'5–7 business days',
+    tiers:[
+      {name:'Starter', price:450, features:'One working tool\n3-5 day delivery\nOne round of revisions'},
+      {name:'Standard', price:900, features:'Two connected tools\n5-7 day delivery\nTwo rounds of revisions\n30-min training call'},
+      {name:'Premium', price:1800, features:'Full toolkit + integration\n7-10 day delivery\nUnlimited revisions in scope\n30 days of support'},
+    ],
+    terms:'50% deposit to begin, balance due on delivery. Deposit is non-refundable once work begins.',
+    date: todayStr(0), valid: todayStr(14),
+    faqs:[
+      {q:'What if I need changes after delivery?', a:'Minor fixes are covered by your plan\'s revision rounds. Anything beyond the original scope is quoted separately before any work starts.'},
+      {q:'What if I\'m not happy with the result?', a:'We\'ll revise within the agreed rounds until it matches the brief. If it still isn\'t right, we\'ll talk through next steps before any additional charge.'},
+    ],
+    caseStudies:[{name:'', result:''}]
+  };
+}
+function loadState(){
+  const params = new URLSearchParams(location.search);
+  if(params.get('client') || params.get('title') || params.get('price')){
+    const s = defaultState();
+    if(params.get('client')) s.client = params.get('client');
+    if(params.get('title')) s.title = params.get('title');
+    if(params.get('price')) s.tiers[1].price = parseFloat(params.get('price')) || s.tiers[1].price;
+    return s;
+  }
+  try{
+    const raw = localStorage.getItem(STORE);
+    if(raw) return Object.assign(defaultState(), JSON.parse(raw));
+  }catch(e){}
+  return defaultState();
+}
+function saveState(){ try{ localStorage.setItem(STORE, JSON.stringify(state)); }catch(e){} }
+let state = loadState();
+
+function bindField(id, key, isNum){
+  const el = document.getElementById(id);
+  el.value = state[key];
+  el.addEventListener('input', () => { state[key] = isNum ? (parseFloat(el.value)||0) : el.value; saveState(); render(); });
+}
+bindField('f-client','client');
+bindField('f-title','title');
+bindField('f-overview','overview');
+bindField('f-timeline','timeline');
+bindField('f-terms','terms');
+bindField('f-date','date');
+bindField('f-valid','valid');
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escapeAttr(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+function money(n){ return '$' + (n||0).toLocaleString('en-US'); }
+
+function renderScopeForm(){
+  const wrap = document.getElementById('scope-rows');
+  wrap.innerHTML = '';
+  state.scope.forEach((s, i) => {
+    const row = document.createElement('div');
+    row.className = 'list-row-edit';
+    row.innerHTML = `<input type="text" value="${escapeAttr(s)}" data-i="${i}"><button class="rm" data-i="${i}">&times;</button>`;
+    wrap.appendChild(row);
+  });
+  wrap.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', e => { state.scope[+e.target.dataset.i] = e.target.value; saveState(); render(); });
+  });
+  wrap.querySelectorAll('.rm').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if(state.scope.length <= 1) return;
+      state.scope.splice(+btn.dataset.i, 1);
+      saveState(); renderScopeForm(); render();
+    });
+  });
+}
+function addScope(){ state.scope.push(''); saveState(); renderScopeForm(); render(); }
+
+/* ---------- pricing tiers ---------- */
+function renderTierForm(){
+  const wrap = document.getElementById('tier-rows');
+  wrap.innerHTML = state.tiers.map((t,i) => `
+    <div style="border:1px solid var(--line);border-radius:6px;padding:10px;margin-bottom:10px">
+      <div class="two-col" style="margin-bottom:8px">
+        <input type="text" value="${escapeAttr(t.name)}" data-f="name" data-i="${i}" placeholder="Tier name">
+        <input type="number" value="${t.price}" data-f="price" data-i="${i}" min="0" step="10">
+      </div>
+      <textarea data-f="features" data-i="${i}" placeholder="One feature per line" style="min-height:70px">${escapeHtml(t.features)}</textarea>
+    </div>
+  `).join('');
+  wrap.querySelectorAll('[data-f]').forEach(el => {
+    el.addEventListener('input', e => {
+      const i = +e.target.dataset.i, f = e.target.dataset.f;
+      state.tiers[i][f] = f === 'price' ? (parseFloat(e.target.value)||0) : e.target.value;
+      saveState(); render();
+    });
+  });
+}
+
+/* ---------- faq ---------- */
+function renderFaqForm(){
+  const wrap = document.getElementById('faq-rows');
+  wrap.innerHTML = state.faqs.map((f,i) => `
+    <div class="list-row-pair">
+      <div class="pair-inputs">
+        <input type="text" value="${escapeAttr(f.q)}" data-f="q" data-i="${i}" placeholder="Question">
+        <textarea data-f="a" data-i="${i}" placeholder="Answer" style="min-height:44px">${escapeHtml(f.a)}</textarea>
+      </div>
+      <button class="rm" data-i="${i}">&times;</button>
+    </div>
+  `).join('');
+  wrap.querySelectorAll('[data-f]').forEach(el => {
+    el.addEventListener('input', e => {
+      const i = +e.target.dataset.i, f = e.target.dataset.f;
+      state.faqs[i][f] = e.target.value;
+      saveState(); render();
+    });
+  });
+  wrap.querySelectorAll('.rm').forEach(btn => {
+    btn.addEventListener('click', () => { state.faqs.splice(+btn.dataset.i,1); saveState(); renderFaqForm(); render(); });
+  });
+}
+function addFaq(){ state.faqs.push({q:'',a:''}); saveState(); renderFaqForm(); render(); }
+
+/* ---------- case studies ---------- */
+function renderCaseForm(){
+  const wrap = document.getElementById('case-rows');
+  wrap.innerHTML = state.caseStudies.map((c,i) => `
+    <div class="list-row-pair">
+      <div class="pair-inputs">
+        <input type="text" value="${escapeAttr(c.name)}" data-f="name" data-i="${i}" placeholder="Client name (real, or leave blank)">
+        <textarea data-f="result" data-i="${i}" placeholder="What you did and the real result" style="min-height:44px">${escapeHtml(c.result)}</textarea>
+      </div>
+      <button class="rm" data-i="${i}">&times;</button>
+    </div>
+  `).join('');
+  wrap.querySelectorAll('[data-f]').forEach(el => {
+    el.addEventListener('input', e => {
+      const i = +e.target.dataset.i, f = e.target.dataset.f;
+      state.caseStudies[i][f] = e.target.value;
+      saveState(); render();
+    });
+  });
+  wrap.querySelectorAll('.rm').forEach(btn => {
+    btn.addEventListener('click', () => { state.caseStudies.splice(+btn.dataset.i,1); saveState(); renderCaseForm(); render(); });
+  });
+}
+function addCase(){ state.caseStudies.push({name:'',result:''}); saveState(); renderCaseForm(); render(); }
+
+function render(){
+  document.getElementById('p-title').textContent = state.title || 'Project proposal';
+  document.getElementById('p-client').textContent = state.client || 'your client';
+  document.getElementById('p-date').textContent = state.date || '—';
+  document.getElementById('p-valid').textContent = state.valid || '—';
+  const ovWrap = document.getElementById('p-overview-wrap');
+  ovWrap.style.display = state.overview ? 'block' : 'none';
+  document.getElementById('p-overview').textContent = state.overview;
+  document.getElementById('p-scope').innerHTML = state.scope.filter(s=>s.trim()).map(s => `<li>${escapeHtml(s)}</li>`).join('') || '<li>—</li>';
+  document.getElementById('p-timeline').textContent = state.timeline || '—';
+
+  document.getElementById('p-tiers').innerHTML = state.tiers.map((t,i) => `
+    <div class="tier-card${i===1?' featured':''}">
+      <div class="tname">${escapeHtml(t.name||'Tier')}</div>
+      <div class="tprice">${money(t.price)}</div>
+      <ul>${t.features.split('\n').filter(x=>x.trim()).map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>
+    </div>
+  `).join('');
+  document.getElementById('p-terms').textContent = state.terms;
+
+  const faqs = state.faqs.filter(f => f.q.trim() || f.a.trim());
+  document.getElementById('p-faq-wrap').style.display = faqs.length ? 'block' : 'none';
+  document.getElementById('p-faq').innerHTML = faqs.map(f => `<div class="faq-item"><div class="q">${escapeHtml(f.q)}</div><div class="a">${escapeHtml(f.a)}</div></div>`).join('');
+
+  const cases = state.caseStudies.filter(c => c.name.trim() || c.result.trim());
+  document.getElementById('p-case-wrap').style.display = cases.length ? 'block' : 'none';
+  document.getElementById('p-case').innerHTML = cases.map(c => `<div class="case-item">"${escapeHtml(c.result)}"<div class="cname">— ${escapeHtml(c.name || 'Client')}</div></div>`).join('');
+}
+
+renderScopeForm();
+renderTierForm();
+renderFaqForm();
+renderCaseForm();
+render();
+</script>

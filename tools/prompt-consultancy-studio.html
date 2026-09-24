@@ -1,0 +1,370 @@
+<title>Prompt Consultancy Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Martian+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.006 290);
+  --paper-raised:oklch(0.995 0.003 290);
+  --ink:oklch(0.2 0.03 290);
+  --ink-dim:oklch(0.46 0.02 290);
+  --line:oklch(0.85 0.014 290);
+  --line-strong:oklch(0.7 0.022 290);
+  --accent:oklch(0.5 0.17 300);
+  --accent-soft:oklch(0.5 0.17 300 / 0.1);
+  --accent-ink:oklch(0.99 0.006 90);
+  --cyan:oklch(0.66 0.12 200);
+  --cyan-soft:oklch(0.66 0.12 200 / 0.14);
+  --shadow:0 1px 2px oklch(0.25 0.03 290 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.16 0.018 290); --paper-raised:oklch(0.21 0.02 290);
+    --ink:oklch(0.95 0.008 290); --ink-dim:oklch(0.7 0.016 290);
+    --line:oklch(0.34 0.024 290); --line-strong:oklch(0.45 0.03 290);
+    --accent:oklch(0.72 0.15 300); --accent-soft:oklch(0.72 0.15 300 / 0.16); --accent-ink:oklch(0.15 0.02 300);
+    --cyan:oklch(0.72 0.1 200); --cyan-soft:oklch(0.72 0.1 200 / 0.16);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.16 0.018 290); --paper-raised:oklch(0.21 0.02 290);
+  --ink:oklch(0.95 0.008 290); --ink-dim:oklch(0.7 0.016 290);
+  --line:oklch(0.34 0.024 290); --line-strong:oklch(0.45 0.03 290);
+  --accent:oklch(0.72 0.15 300); --accent-soft:oklch(0.72 0.15 300 / 0.16); --accent-ink:oklch(0.15 0.02 300);
+  --cyan:oklch(0.72 0.1 200); --cyan-soft:oklch(0.72 0.1 200 / 0.16);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+h1,h2,h3{font-family:'Sora',sans-serif;margin:0;text-wrap:balance}
+.mono{font-family:'Martian Mono',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--cyan));display:flex;align-items:center;justify-content:center;color:var(--accent-ink);font-family:'Martian Mono',monospace;font-weight:700;font-size:15px}
+.brand h1{font-size:20px;font-weight:700}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Martian Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.profile-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;margin-top:16px;background:var(--accent-soft);border-radius:10px;font-size:12.5px;flex-wrap:wrap}
+.profile-bar .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.profile-bar.off .dot{background:var(--ink-dim)}
+.profile-bar a{color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer}
+.profile-bar a:hover{text-decoration:underline}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:13px;padding:11px 14px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:10px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:16px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:7px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:80px;line-height:1.5}
+.field textarea.code{font-family:'Martian Mono',monospace;font-size:12px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.btn{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:8px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'Martian Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.prompt-block{font-family:'Martian Mono',monospace;font-size:12px;white-space:pre-wrap;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:14px;line-height:1.6}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.score-badge{display:inline-block;font-family:'Martian Mono',monospace;font-weight:700;font-size:13px;padding:5px 12px;border-radius:20px;background:var(--cyan-soft);color:oklch(0.42 0.12 200)}
+:root[data-theme="dark"] .score-badge{color:var(--cyan)}
+.tier-tag{display:inline-block;font-family:'Martian Mono',monospace;font-size:10px;padding:2px 8px;border-radius:8px;background:var(--cyan-soft);color:oklch(0.42 0.12 200);margin-left:6px}
+:root[data-theme="dark"] .tier-tag{color:var(--cyan)}
+
+.tag-chip{display:inline-block;font-family:'Martian Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--cyan-soft);color:oklch(0.42 0.12 200);text-transform:uppercase;letter-spacing:.04em}
+:root[data-theme="dark"] .tag-chip{color:var(--cyan)}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">{ }</div>
+      <div>
+        <h1>Prompt Consultancy Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 12</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Audit + library: <strong>$500–$2,500</strong><br>Retainer: <strong>$1.5k–$15k/mo</strong></div>
+  </header>
+
+  <div class="profile-bar off" id="profile-bar">
+    <span class="dot"></span>
+    <span id="profile-summary">No client business set — every tab writes generically.</span>
+    <a data-tab="profile">Set it up →</a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="audit">Prompt Auditor</button>
+    <button class="tab" data-tab="builder">Prompt Builder</button>
+    <button class="tab" data-tab="library">Prompt Library</button>
+    <button class="tab" data-tab="profile">Client Business</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- PROMPT AUDITOR -->
+  <div class="view active" id="view-audit">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Paste a prompt the client already uses (in ChatGPT, Claude, a tool's settings) for a critique.</p>
+        <div class="field"><label>Existing prompt</label><textarea class="code" id="au-prompt" style="min-height:180px" placeholder="Paste the prompt text here…"></textarea></div>
+        <div class="field"><label>What it's supposed to do</label><input type="text" id="au-goal" placeholder="e.g. draft customer support replies"></div>
+        <button class="btn btn-primary btn-block" id="au-btn" onclick="genAudit()">Audit this prompt</button>
+      </div>
+      <div class="panel">
+        <h3>Audit</h3>
+        <p class="sub">A clarity score, specific weaknesses, and a rewritten version.</p>
+        <div id="au-output"><div class="output-empty">Paste a prompt and audit it.</div></div>
+        <div class="output-status" id="au-status"></div>
+        <div class="output-actions" id="au-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('au-rewrite')">Copy rewritten prompt</button>
+          <button class="btn btn-sm" onclick="genAudit(true)">Re-audit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROMPT BUILDER -->
+  <div class="view" id="view-builder">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Structured pieces in, a well-engineered prompt out — this is the actual craft you're selling.</p>
+        <div class="field"><label>Task</label><input type="text" id="bd-task" placeholder="e.g. classify incoming support emails by urgency"></div>
+        <div class="field"><label>Context the model needs</label><textarea id="bd-context" placeholder="e.g. we're a SaaS company, urgency levels are Low/Medium/High/Critical"></textarea></div>
+        <div class="field"><label>Desired output format</label><input type="text" id="bd-format" placeholder="e.g. a single word: the urgency level"></div>
+        <div class="field"><label>Constraints / things to avoid</label><input type="text" id="bd-constraints" placeholder="e.g. never mark something Critical unless it mentions data loss or an outage"></div>
+        <button class="btn btn-primary btn-block" id="bd-btn" onclick="genBuilder()">Assemble prompt</button>
+      </div>
+      <div class="panel">
+        <h3>Assembled prompt</h3>
+        <p class="sub">Ready to paste into an API call or a tool's system prompt field.</p>
+        <div id="bd-output"><div class="output-empty">Fill in the fields and assemble.</div></div>
+        <div class="output-status" id="bd-status"></div>
+        <div class="output-actions" id="bd-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('bd-prompt')">Copy prompt</button>
+          <button class="btn btn-sm" onclick="genBuilder(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROMPT LIBRARY -->
+  <div class="view" id="view-library">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">List the business's repetitive AI-assistable tasks — get a starter library, one prompt per task.</p>
+        <div class="field"><label>Repetitive tasks (one per line)</label><textarea id="lb-tasks" style="min-height:160px" placeholder="Draft customer support replies&#10;Summarize weekly sales calls&#10;Write social captions from blog posts"></textarea></div>
+        <button class="btn btn-primary btn-block" id="lb-btn" onclick="genLibrary()">Generate prompt library</button>
+      </div>
+      <div class="panel">
+        <h3>Prompt library</h3>
+        <p class="sub">Each ready to paste in, with the model tier that fits.</p>
+        <div id="lb-output"><div class="output-empty">List tasks and generate.</div></div>
+        <div class="output-status" id="lb-status"></div>
+        <div class="output-actions" id="lb-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('lb-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genLibrary(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENT BUSINESS -->
+  <div class="view" id="view-profile">
+    <div class="panel" style="max-width:640px">
+      <h3>Client business</h3>
+      <p class="sub">Set this once per client — every tab above writes with this context.</p>
+      <div class="field"><label>Business name</label><input type="text" id="pf-name" placeholder="e.g. Reyes Home Cleaning"></div>
+      <div class="field"><label>What the business does</label><input type="text" id="pf-desc" placeholder="e.g. residential cleaning service"></div>
+      <button class="btn btn-primary btn-block" onclick="saveProfile()">Save client business</button>
+      <div class="output-status" id="pf-status"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Businesses are already using AI badly — you're selling the difference between a vague prompt and an engineered one.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Audit + library</span>&nbsp; $500–$2,500 to audit their current prompts and deliver a documented starter library for their repetitive tasks.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Retainer</span>&nbsp; $1.5k–$15k/mo for larger orgs that need ongoing prompt maintenance as their tools and use cases grow.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Find clients</span>&nbsp; Look for businesses already paying for ChatGPT/Claude seats but getting mediocre output — that gap between "has AI access" and "uses it well" is the entire pitch.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. Nothing here is saved anywhere except this browser.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab, [data-tab]').forEach(t => t.addEventListener('click', () => {
+  const target = t.dataset.tab;
+  if(!target) return;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.dataset.tab === target));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + target));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ---------- client business profile ---------- */
+const PROFILE_KEY = 'aa-prompt-profile-v1';
+function loadProfile(){ try{ return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); }catch(e){ return null; } }
+function renderProfileBar(){
+  const p = loadProfile();
+  const bar = document.getElementById('profile-bar');
+  const summary = document.getElementById('profile-summary');
+  if(p && p.name){
+    bar.classList.remove('off');
+    summary.textContent = `Consulting for "${p.name}"`;
+  } else {
+    bar.classList.add('off');
+    summary.textContent = 'No client business set — every tab writes generically.';
+  }
+}
+function saveProfile(){
+  const p = { name: document.getElementById('pf-name').value.trim(), desc: document.getElementById('pf-desc').value.trim() };
+  try{ localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }catch(e){}
+  renderProfileBar();
+  const el = document.getElementById('pf-status');
+  el.textContent = 'Saved.';
+  setTimeout(() => el.textContent = '', 2000);
+}
+(function initProfileForm(){
+  const p = loadProfile();
+  if(!p) return;
+  document.getElementById('pf-name').value = p.name || '';
+  document.getElementById('pf-desc').value = p.desc || '';
+})();
+renderProfileBar();
+function profileContext(){
+  const p = loadProfile();
+  if(!p || !p.name) return '';
+  return `\n\nClient business: "${p.name}" — ${p.desc || 'no further description'}.`;
+}
+
+/* ---------- sample helper ---------- */
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+/* ---------- prompt auditor ---------- */
+function genAudit(regenerate){
+  const prompt = document.getElementById('au-prompt').value.trim();
+  const goal = document.getElementById('au-goal').value.trim();
+  if(!prompt){ document.getElementById('au-status').textContent = 'Paste a prompt first.'; return; }
+  const req = `Audit this AI prompt for weaknesses and rewrite it well.${profileContext()}
+Prompt's intended goal: "${goal || 'not specified'}"
+Prompt to audit:
+"""${prompt}"""
+Reply with only a JSON object: {"clarityScore": number (1-10), "weaknesses": [string] (2-4 specific issues: vagueness, missing output format, no constraints, etc.), "rewrittenPrompt": string (an improved version applying prompt engineering best practices: clear task, context, output format, constraints)}.`;
+  runSampleJson(req, 'au-btn', 'au-status', (d) => {
+    const weak = (d.weaknesses||[]).map(w => `<li>${escapeHtml(w)}</li>`).join('');
+    document.getElementById('au-output').innerHTML = `<div class="card">
+      <span class="score-badge">${d.clarityScore||'?'}/10 clarity</span>
+      <div class="field-lbl">Weaknesses</div><ul style="margin:4px 0 0;padding-left:18px">${weak}</ul>
+      <div class="field-lbl">Rewritten prompt</div>
+      <div class="prompt-block" id="au-rewrite">${escapeHtml(d.rewrittenPrompt||'')}</div>
+    </div>`;
+    document.getElementById('au-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- prompt builder ---------- */
+function genBuilder(regenerate){
+  const task = document.getElementById('bd-task').value.trim();
+  const context = document.getElementById('bd-context').value.trim();
+  const format = document.getElementById('bd-format').value.trim();
+  const constraints = document.getElementById('bd-constraints').value.trim();
+  if(!task){ document.getElementById('bd-status').textContent = 'Describe the task first.'; return; }
+  const req = `Assemble a well-engineered AI prompt from these pieces.${profileContext()}
+Task: "${task}"
+Context: "${context || 'none given'}"
+Desired output format: "${format || 'not specified — infer a sensible one'}"
+Constraints: "${constraints || 'none given'}"
+Reply with only a JSON object: {"assembledPrompt": string (the final, ready-to-use prompt text combining all pieces clearly), "recommendedTier": "quick" | "default" | "complex", "tierReason": string (1 sentence why that tier fits this task)}.`;
+  runSampleJson(req, 'bd-btn', 'bd-status', (d) => {
+    document.getElementById('bd-output').innerHTML = `<div class="card">
+      <div class="field-lbl">Assembled prompt</div>
+      <div class="prompt-block" id="bd-prompt">${escapeHtml(d.assembledPrompt||'')}</div>
+      <div class="field-lbl">Recommended model tier</div>
+      <span class="tier-tag">${escapeHtml(d.recommendedTier||'default')}</span> ${escapeHtml(d.tierReason||'')}
+    </div>`;
+    document.getElementById('bd-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- prompt library ---------- */
+function genLibrary(regenerate){
+  const tasks = document.getElementById('lb-tasks').value.trim();
+  if(!tasks){ document.getElementById('lb-status').textContent = 'List at least one task first.'; return; }
+  const req = `Build a starter prompt library — one well-engineered prompt per task listed below.${profileContext()}
+Tasks (one per line):
+"""${tasks}"""
+Reply with only a JSON array of {"task": string, "prompt": string (a complete, ready-to-use prompt for this task), "tier": "quick" | "default" | "complex"} objects, one per task line.`;
+  runSampleJson(req, 'lb-btn', 'lb-status', (items) => {
+    const wrap = document.getElementById('lb-output');
+    wrap.innerHTML = (Array.isArray(items) ? items : []).map(it => `<div class="card">
+      <span class="n">${escapeHtml(it.task||'')}</span> <span class="tier-tag">${escapeHtml(it.tier||'default')}</span>
+      <div class="prompt-block" style="margin-top:8px">${escapeHtml(it.prompt||'')}</div>
+    </div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('lb-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function copyOut(id){
+  const el = document.getElementById(id);
+  const text = el ? el.textContent : Array.from(document.querySelectorAll('.card')).map(c => c.textContent).join('\n\n');
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+</script>

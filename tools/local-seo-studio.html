@@ -1,0 +1,380 @@
+<title>Local SEO Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;600;700&family=Nunito+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.01 70);
+  --paper-raised:oklch(0.995 0.005 70);
+  --ink:oklch(0.24 0.03 45);
+  --ink-dim:oklch(0.47 0.02 45);
+  --line:oklch(0.85 0.02 60);
+  --line-strong:oklch(0.72 0.03 60);
+  --accent:oklch(0.5 0.15 40);
+  --accent-soft:oklch(0.5 0.15 40 / 0.1);
+  --accent-ink:oklch(0.99 0.006 90);
+  --sage:oklch(0.55 0.09 150);
+  --sage-soft:oklch(0.55 0.09 150 / 0.13);
+  --shadow:0 1px 2px oklch(0.3 0.03 50 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.17 0.016 45); --paper-raised:oklch(0.22 0.018 45);
+    --ink:oklch(0.95 0.01 70); --ink-dim:oklch(0.7 0.018 60);
+    --line:oklch(0.35 0.022 50); --line-strong:oklch(0.46 0.028 50);
+    --accent:oklch(0.7 0.14 40); --accent-soft:oklch(0.7 0.14 40 / 0.16); --accent-ink:oklch(0.15 0.02 40);
+    --sage:oklch(0.68 0.1 150); --sage-soft:oklch(0.68 0.1 150 / 0.17);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.17 0.016 45); --paper-raised:oklch(0.22 0.018 45);
+  --ink:oklch(0.95 0.01 70); --ink-dim:oklch(0.7 0.018 60);
+  --line:oklch(0.35 0.022 50); --line-strong:oklch(0.46 0.028 50);
+  --accent:oklch(0.7 0.14 40); --accent-soft:oklch(0.7 0.14 40 / 0.16); --accent-ink:oklch(0.15 0.02 40);
+  --sage:oklch(0.68 0.1 150); --sage-soft:oklch(0.68 0.1 150 / 0.17);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Nunito Sans',system-ui,sans-serif}
+h1,h2,h3{font-family:'Bitter',georgia,serif;margin:0;text-wrap:balance}
+.mono{font-family:'DM Mono',monospace}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent-ink);font-family:'Bitter',serif;font-weight:700;font-size:17px;position:relative}
+.brand .mark::after{content:'';position:absolute;bottom:-3px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid var(--accent)}
+.brand h1{font-size:21px;font-weight:600}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.tabs{display:flex;gap:4px;margin:22px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:13.5px;padding:11px 16px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:28px 0}
+.view.active{display:block;animation:riseIn .35s cubic-bezier(.16,1,.3,1) both}
+@keyframes riseIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:860px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:16px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Nunito Sans',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:7px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:90px;line-height:1.5}
+
+.btn{font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:20px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 13px;font-size:12px;border-radius:16px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:15px 16px;margin-bottom:12px;white-space:pre-wrap;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;color:var(--sage);background:var(--sage-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.thinking-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+
+.tag-chip{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--sage-soft);color:var(--sage);text-transform:uppercase;letter-spacing:.04em}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">📍</div>
+      <div>
+        <h1>Local SEO Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 06</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Typical retainer: <strong>$300–$800/mo</strong> per business<br>Area-page setup: <strong>$50/area</strong> · Base setup: <strong>$150–$300</strong></div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="posts">Google Business Posts</button>
+    <button class="tab" data-tab="areas">Service Area Pages</button>
+    <button class="tab" data-tab="calendar">Content Calendar</button>
+    <button class="tab" data-tab="gqa">Google Q&amp;A Seeding</button>
+    <button class="tab" data-tab="faq">Website FAQ</button>
+    <button class="tab" data-tab="replies">Review Reply Bank</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- POSTS -->
+  <div class="view active" id="view-posts">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Generates 3 ready-to-post Google Business Profile updates.</p>
+        <div class="field"><label>Business name &amp; type</label><input type="text" id="po-biz" placeholder="e.g. Reyes Home Cleaning, residential cleaning service"></div>
+        <div class="field"><label>This week's update, offer, or news</label><textarea id="po-update" placeholder="e.g. 15% off first-time bookings this month, now offering move-out cleans"></textarea></div>
+        <button class="btn btn-primary btn-block" id="po-btn" onclick="genPosts()">Generate 3 posts</button>
+      </div>
+      <div class="panel">
+        <h3>Posts</h3>
+        <p class="sub">Copy straight into Google Business Profile.</p>
+        <div id="po-output"><div class="output-empty">Fill in the business details and generate.</div></div>
+        <div class="output-status" id="po-status"></div>
+        <div class="output-actions" id="po-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genPosts(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICE AREA PAGES -->
+  <div class="view" id="view-areas">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Generates a unique landing-page blurb per neighborhood/city — the single highest-leverage local SEO tactic for a service business with a wide coverage area.</p>
+        <div class="field"><label>Business name &amp; type</label><input type="text" id="ar-biz" placeholder="e.g. Reyes Home Cleaning, residential cleaning service"></div>
+        <div class="field"><label>Areas served (comma-separated)</label><textarea id="ar-areas" placeholder="e.g. Riverside, Corona, Moreno Valley, Jurupa Valley"></textarea></div>
+        <button class="btn btn-primary btn-block" id="ar-btn" onclick="genAreas()">Generate area pages</button>
+      </div>
+      <div class="panel">
+        <h3>Service area pages</h3>
+        <p class="sub">One card per area — headline + a genuinely distinct paragraph, not the same text with the name swapped.</p>
+        <div id="ar-output"><div class="output-empty">List your service areas and generate.</div></div>
+        <div class="output-status" id="ar-status"></div>
+        <div class="output-actions" id="ar-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('ar-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genAreas(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT CALENDAR -->
+  <div class="view" id="view-calendar">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A 4-week posting plan across platforms, not just a pile of loose captions.</p>
+        <div class="field"><label>Business name &amp; type</label><input type="text" id="cal-biz" placeholder="e.g. Reyes Home Cleaning, residential cleaning service"></div>
+        <div class="field"><label>This month's focus or season</label><input type="text" id="cal-theme" placeholder="e.g. back-to-school deep cleans, spring cleaning push"></div>
+        <button class="btn btn-primary btn-block" id="cal-btn" onclick="genCalendar()">Generate 4-week calendar</button>
+      </div>
+      <div class="panel">
+        <h3>Content calendar</h3>
+        <p class="sub">One entry per week — topic, platform, and the angle to take.</p>
+        <div id="cal-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="cal-status"></div>
+        <div class="output-actions" id="cal-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('cal-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genCalendar(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOOGLE Q&A SEEDING -->
+  <div class="view" id="view-gqa">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Anyone can post to a Google Business Profile's Q&amp;A section — seeding it yourself means the first answers customers see are accurate and on-brand.</p>
+        <div class="field"><label>Business name &amp; type</label><input type="text" id="gq-biz" placeholder="e.g. Reyes Home Cleaning, residential cleaning service"></div>
+        <div class="field"><label>Services (rough list is fine)</label><textarea id="gq-services" placeholder="e.g. weekly/biweekly cleaning, deep cleans, move-out cleans"></textarea></div>
+        <button class="btn btn-primary btn-block" id="gq-btn" onclick="genGqa()">Generate Q&amp;A seed set</button>
+      </div>
+      <div class="panel">
+        <h3>Q&amp;A pairs</h3>
+        <p class="sub">Short, direct — Google Q&amp;A rewards brevity, unlike a website FAQ.</p>
+        <div id="gq-output"><div class="output-empty">Fill in the business details and generate.</div></div>
+        <div class="output-status" id="gq-status"></div>
+        <div class="output-actions" id="gq-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('gq-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genGqa(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="view" id="view-faq">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Generates a ready-to-publish FAQ section for a website.</p>
+        <div class="field"><label>Business name &amp; type</label><input type="text" id="fq-biz" placeholder="e.g. Reyes Home Cleaning, residential cleaning service"></div>
+        <div class="field"><label>Services offered (rough list is fine)</label><textarea id="fq-services" placeholder="e.g. weekly/biweekly cleaning, deep cleans, move-out cleans, pet-friendly products"></textarea></div>
+        <button class="btn btn-primary btn-block" id="fq-btn" onclick="genFaq()">Generate FAQ section</button>
+      </div>
+      <div class="panel">
+        <h3>FAQ section</h3>
+        <p class="sub">8–10 questions real customers actually ask.</p>
+        <div id="fq-output"><div class="output-empty">Fill in the business details and generate.</div></div>
+        <div class="output-status" id="fq-status"></div>
+        <div class="output-actions" id="fq-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('fq-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genFaq(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPLY BANK -->
+  <div class="view" id="view-replies">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Builds a reusable reply template for each star rating — not a one-off, a bank you reuse for months.</p>
+        <div class="field"><label>Business name</label><input type="text" id="rb-biz" placeholder="e.g. Reyes Home Cleaning"></div>
+        <div class="field"><label>Personality / tone</label>
+          <select id="rb-tone"><option>Warm and personal</option><option>Professional and brief</option><option>Friendly and a little playful</option></select>
+        </div>
+        <button class="btn btn-primary btn-block" id="rb-btn" onclick="genReplyBank()">Generate reply bank</button>
+      </div>
+      <div class="panel">
+        <h3>Reply templates</h3>
+        <p class="sub">One template per star rating, with a [detail] placeholder to personalize.</p>
+        <div id="rb-output"><div class="output-empty">Fill in the business name and generate.</div></div>
+        <div class="output-status" id="rb-status"></div>
+        <div class="output-actions" id="rb-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('rb-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genReplyBank(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Local SEO content is a natural monthly retainer.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Retainer</span>&nbsp; Charge $300–$800/mo per business for weekly Google Business posts, a maintained FAQ, and review replies within 24 hours. Most local businesses have no one doing this consistently — that's the entire pitch.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Setup</span>&nbsp; Charge a $150–$300 one-time setup fee for the FAQ section, Google Q&amp;A seed set, and initial reply bank, then bill monthly for ongoing posts.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Area pages</span>&nbsp; For a business covering multiple towns or neighborhoods, charge an extra $50 per service-area page — these are real ranking pages, not throwaway content, and most competitors don't bother.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Bundle</span>&nbsp; Pair this with <strong>A&amp;A Creations Console</strong>'s quote/booking tool for a combined "get found + get booked" package — a stronger pitch than either alone.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. Nothing is stored anywhere except this browser.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + t.dataset.tab));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing the input.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function genPosts(regenerate){
+  const biz = document.getElementById('po-biz').value.trim();
+  const update = document.getElementById('po-update').value.trim();
+  if(!biz){ document.getElementById('po-status').textContent = 'Enter the business name and type first.'; return; }
+  const prompt = `Write 3 distinct Google Business Profile posts for this business: "${biz}". This week's update/offer: "${update || 'no specific update, write general engagement posts'}". Each post should be under 1500 characters, include a clear call to action, and sound like a real small business owner, not a marketing agency. Reply with only a JSON array of exactly 3 strings, one per post.`;
+  runSampleJson(prompt, 'po-btn', 'po-status', (posts) => {
+    const wrap = document.getElementById('po-output');
+    wrap.innerHTML = (Array.isArray(posts) ? posts : []).map((p,i) => `<div class="card"><span class="n">Post ${i+1}</span><br>${escapeHtml(String(p))}</div>`).join('') || '<div class="output-empty">No posts came back — try again.</div>';
+    document.getElementById('po-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function genFaq(regenerate){
+  const biz = document.getElementById('fq-biz').value.trim();
+  const services = document.getElementById('fq-services').value.trim();
+  if(!biz || !services){ document.getElementById('fq-status').textContent = 'Fill in both fields first.'; return; }
+  const prompt = `Write 8 to 10 frequently asked questions with concise answers for the website FAQ section of this business: "${biz}". Services: "${services}". Cover the questions real customers actually ask before booking (pricing, scheduling, what's included, service area, guarantees) — never invent specific prices, guarantees, or policies not implied by the input. Reply with only a JSON array of {"q": string, "a": string} objects.`;
+  runSampleJson(prompt, 'fq-btn', 'fq-status', (items) => {
+    const wrap = document.getElementById('fq-output');
+    wrap.innerHTML = (Array.isArray(items) ? items : []).map((it,i) => `<div class="card"><span class="n">Q${i+1}</span><br><strong>${escapeHtml(String(it.q||''))}</strong><br>${escapeHtml(String(it.a||''))}</div>`).join('') || '<div class="output-empty">No FAQ came back — try again.</div>';
+    document.getElementById('fq-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function genReplyBank(regenerate){
+  const biz = document.getElementById('rb-biz').value.trim();
+  const tone = document.getElementById('rb-tone').value;
+  if(!biz){ document.getElementById('rb-status').textContent = 'Enter the business name first.'; return; }
+  const prompt = `Write a reusable review reply template for each star rating (5, 4, 3, 2-or-1) for this business: "${biz}". Tone: ${tone}. Each template should include a [detail] placeholder where the owner fills in something specific to that review, and for the 2-or-1-star template, focus on taking the conversation offline to resolve it. Reply with only a JSON array of exactly 4 objects: {"stars": string, "template": string}, ordered 5,4,3,"2-or-1".`;
+  runSampleJson(prompt, 'rb-btn', 'rb-status', (items) => {
+    const wrap = document.getElementById('rb-output');
+    wrap.innerHTML = (Array.isArray(items) ? items : []).map(it => `<div class="card"><span class="n">${escapeHtml(String(it.stars||''))} stars</span><br>${escapeHtml(String(it.template||''))}</div>`).join('') || '<div class="output-empty">No templates came back — try again.</div>';
+    document.getElementById('rb-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function genAreas(regenerate){
+  const biz = document.getElementById('ar-biz').value.trim();
+  const areas = document.getElementById('ar-areas').value.trim();
+  if(!biz || !areas){ document.getElementById('ar-status').textContent = 'Fill in both fields first.'; return; }
+  const prompt = `Write a service-area landing page blurb for each area listed, for this business: "${biz}". Areas: "${areas}". Each blurb needs a headline and a 2-3 sentence paragraph that is GENUINELY DIFFERENT per area — reference something area-appropriate (it's fine to reference the area only by name and general character, never invent specific local landmarks or facts you don't know) so the pages don't read as duplicate content with the name swapped. Never invent specific prices, review counts, or claims. Reply with only a JSON array of {"area": string, "headline": string, "body": string} objects, one per area listed.`;
+  runSampleJson(prompt, 'ar-btn', 'ar-status', (items) => {
+    const wrap = document.getElementById('ar-output');
+    wrap.innerHTML = (Array.isArray(items) ? items : []).map(it => `<div class="card"><span class="n">${escapeHtml(String(it.area||''))}</span><br><strong>${escapeHtml(String(it.headline||''))}</strong><br>${escapeHtml(String(it.body||''))}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('ar-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function genCalendar(regenerate){
+  const biz = document.getElementById('cal-biz').value.trim();
+  const theme = document.getElementById('cal-theme').value.trim();
+  if(!biz){ document.getElementById('cal-status').textContent = 'Enter the business name and type first.'; return; }
+  const prompt = `Build a 4-week local social/content calendar for this business: "${biz}". This month's focus: "${theme || 'general engagement, no specific seasonal push'}". For each of the 4 weeks, give one content idea with a platform (Google Business Profile, Facebook, Instagram, or "email") and a one-line angle/topic — vary the platform and content type across weeks (don't repeat the same format 4 times). Reply with only a JSON array of exactly 4 objects: {"week": number, "platform": string, "topic": string, "angle": string}.`;
+  runSampleJson(prompt, 'cal-btn', 'cal-status', (items) => {
+    const wrap = document.getElementById('cal-output');
+    wrap.innerHTML = (Array.isArray(items) ? items : []).map(it => `<div class="card"><span class="n">Week ${escapeHtml(String(it.week||''))} · ${escapeHtml(String(it.platform||''))}</span><br><strong>${escapeHtml(String(it.topic||''))}</strong><br>${escapeHtml(String(it.angle||''))}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('cal-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function genGqa(regenerate){
+  const biz = document.getElementById('gq-biz').value.trim();
+  const services = document.getElementById('gq-services').value.trim();
+  if(!biz || !services){ document.getElementById('gq-status').textContent = 'Fill in both fields first.'; return; }
+  const prompt = `Write 6 short Question &amp; Answer pairs to seed a Google Business Profile's public Q&amp;A section for: "${biz}". Services: "${services}". Google Q&amp;A style is brief — questions under 15 words, answers under 40 words, written like a real customer asked and the real owner answered. Never invent specific prices or policies not implied by the input. Reply with only a JSON array of exactly 6 {"q": string, "a": string} objects.`;
+  runSampleJson(prompt, 'gq-btn', 'gq-status', (items) => {
+    const wrap = document.getElementById('gq-output');
+    wrap.innerHTML = (Array.isArray(items) ? items : []).map((it,i) => `<div class="card"><span class="n">Q&amp;A ${i+1}</span><br><strong>${escapeHtml(String(it.q||''))}</strong><br>${escapeHtml(String(it.a||''))}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('gq-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function copyOut(id){
+  const text = Array.from(document.querySelectorAll('#' + id + ' .card')).map(c => c.textContent).join('\n\n');
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+</script>

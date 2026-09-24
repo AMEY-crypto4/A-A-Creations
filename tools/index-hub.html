@@ -1,0 +1,246 @@
+<title>A&A Toolkit Index</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.97 0.006 250); --paper-raised:oklch(0.995 0.003 250);
+  --ink:oklch(0.2 0.02 250); --ink-dim:oklch(0.46 0.015 250);
+  --line:oklch(0.87 0.008 250); --line-strong:oklch(0.72 0.015 250);
+  --accent:oklch(0.5 0.14 265); --accent-soft:oklch(0.5 0.14 265 / 0.1);
+  --good:oklch(0.5 0.12 150); --good-soft:oklch(0.5 0.12 150 / 0.13);
+  --wait:oklch(0.6 0.14 55); --wait-soft:oklch(0.6 0.14 55 / 0.13);
+  --shadow:0 1px 2px oklch(0.2 0.02 250 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.15 0.016 250); --paper-raised:oklch(0.205 0.018 250);
+    --ink:oklch(0.94 0.006 250); --ink-dim:oklch(0.68 0.014 250);
+    --line:oklch(0.33 0.02 250); --line-strong:oklch(0.44 0.026 250);
+    --accent:oklch(0.72 0.12 265); --accent-soft:oklch(0.72 0.12 265 / 0.16);
+    --good:oklch(0.7 0.12 150); --good-soft:oklch(0.7 0.12 150 / 0.16);
+    --wait:oklch(0.74 0.13 55); --wait-soft:oklch(0.74 0.13 55 / 0.16);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.15 0.016 250); --paper-raised:oklch(0.205 0.018 250);
+  --ink:oklch(0.94 0.006 250); --ink-dim:oklch(0.68 0.014 250);
+  --line:oklch(0.33 0.02 250); --line-strong:oklch(0.44 0.026 250);
+  --accent:oklch(0.72 0.12 265); --accent-soft:oklch(0.72 0.12 265 / 0.16);
+  --good:oklch(0.7 0.12 150); --good-soft:oklch(0.7 0.12 150 / 0.16);
+  --wait:oklch(0.74 0.13 55); --wait-soft:oklch(0.74 0.13 55 / 0.16);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Work Sans',system-ui,sans-serif}
+h1,h2{font-family:'Fraunces',georgia,serif;font-weight:700;margin:0;text-wrap:balance}
+.mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:900px;margin:0 auto;padding:40px 24px 70px}
+header{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:8px}
+header h1{font-size:clamp(28px,4.5vw,38px)}
+header p{color:var(--ink-dim);font-size:14.5px;margin-top:8px;max-width:60ch;line-height:1.55}
+.updated{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.05em;margin-top:14px}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:24px 0}
+.stat{background:var(--paper-raised);padding:14px 16px}
+.stat .n{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600}
+.stat .l{font-size:11px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+
+.section{margin-top:30px}
+.section h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-dim);font-family:'IBM Plex Mono',monospace;font-weight:600;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.tool-row{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:14px 4px;border-bottom:1px solid var(--line)}
+.tool-row:last-child{border-bottom:0}
+.tool-name{font-family:'Fraunces',georgia,serif;font-weight:600;font-size:16px}
+.tool-name a{color:var(--ink);text-decoration:none}
+.tool-name a:hover{color:var(--accent)}
+.tool-desc{font-size:12.5px;color:var(--ink-dim);margin-top:2px;max-width:52ch;line-height:1.5}
+.status-pill{font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;text-transform:uppercase;letter-spacing:.03em}
+.status-pill.done{background:var(--good-soft);color:var(--good)}
+.status-pill.queued{background:var(--wait-soft);color:var(--wait)}
+.idea-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-dim);white-space:nowrap}
+
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>A&amp;A Toolkit Index</h1>
+    <p>Every tool built from the 50-idea Hustle Ledger, in one place. Check back here first rather than hunting through chat history for links.</p>
+    <div class="updated" id="updated"></div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="n" id="stat-done">33</div><div class="l">Tools live</div></div>
+    <div class="stat"><div class="n">44</div><div class="l">Of 50 ideas covered</div></div>
+    <div class="stat"><div class="n" id="stat-queued">6</div><div class="l">Ideas remaining</div></div>
+  </div>
+
+  <div class="section">
+    <h2>A&amp;A Creations — core suite (idea #10)</h2>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/b2972592-7b28-487b-85f1-f8424a14c714" target="_blank" rel="noopener">A&amp;A Creations</a></div><div class="tool-desc">Freelance pitch page — 3 live demo tools, pricing, outreach scripts.</div></div>
+      <span class="idea-num">#10</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/1a0e24c8-5bee-4e33-9306-4be97267bcdb" target="_blank" rel="noopener">A&amp;A Creations Console</a></div><div class="tool-desc">Categorized quote calculator, lead tracker with CSV export, client relationship view, status-aware follow-up emails, AI review replies.</div></div>
+      <span class="idea-num">#10</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/c9fdfe00-fbf0-440b-921a-57f87099a431" target="_blank" rel="noopener">A&amp;A Invoice</a></div><div class="tool-desc">Hourly/flat/expense line items, saved client autocomplete, invoice history, tax/discount math, print-to-PDF.</div></div>
+      <span class="idea-num">#10</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/b1f01116-85c5-4ba3-a343-0a83730dd7e0" target="_blank" rel="noopener">A&amp;A Proposal</a></div><div class="tool-desc">Scope, timeline, 3 pricing tiers, objection-handling FAQ, case studies, print-to-PDF.</div></div>
+      <span class="idea-num">#10</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/ffd2b117-b4ba-4417-8c61-a5aec2c318aa" target="_blank" rel="noopener">A&amp;A Agreement</a></div><div class="tool-desc">13-clause service agreement generator, print-to-PDF. Template, not legal advice.</div></div>
+      <span class="idea-num">#10</span><span class="status-pill done">Live</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Standalone tool-kits</h2>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/fd318cad-96a5-49e3-84f9-7d45f7741ad0" target="_blank" rel="noopener">Resume Studio</a></div><div class="tool-desc">Resume tailoring, cover letters, LinkedIn content, interview prep, portfolio blurbs.</div></div>
+      <span class="idea-num">#34</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/d2a06a71-a562-4d1f-82bd-df662f1997cb" target="_blank" rel="noopener">Local SEO Studio</a></div><div class="tool-desc">Google Business posts, service-area landing pages, content calendar, Google Q&amp;A seeding, website FAQ, review reply bank.</div></div>
+      <span class="idea-num">#9</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/6124c1ff-4b9b-44b2-98a3-843380d1c026" target="_blank" rel="noopener">Copywriting Studio</a></div><div class="tool-desc">Landing pages, ad copy, email campaigns, batch product descriptions, saved brand voice.</div></div>
+      <span class="idea-num">#4</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/017704c3-dd5b-401d-bbe5-a388d377b9ba" target="_blank" rel="noopener">Grant Writing Studio</a></div><div class="tool-desc">Fit checker, needs statement, program narrative, budget narrative, outcomes/evaluation plan, letter of inquiry — saved org profile.</div></div>
+      <span class="idea-num">#17</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/dcc77701-4d18-4cf2-8987-e531fd153fff" target="_blank" rel="noopener">Study Guide Studio</a></div><div class="tool-desc">Summarizer, flip flashcards, interactive practice quiz, tutoring lesson plans, deadline-aware study schedule.</div></div>
+      <span class="idea-num">#37 / #12</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/0c8002f1-bd17-4d05-8e58-783bd94dad24" target="_blank" rel="noopener">Travel Planner Studio</a></div><div class="tool-desc">Day-by-day itinerary builder, packing list, budget allocator, local tips — saved travel style.</div></div>
+      <span class="idea-num">#33</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/30ee91bf-8843-4358-a4f4-5a72e07569f0" target="_blank" rel="noopener">Automation Blueprint Studio</a></div><div class="tool-desc">Process auditor, automation recipe builder, real ROI calculator, printable client report.</div></div>
+      <span class="idea-num">#44 / #50</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/86ba1266-afa1-46c1-9786-fc17588df183" target="_blank" rel="noopener">Prompt Consultancy Studio</a></div><div class="tool-desc">Prompt auditor with clarity scoring, structured prompt builder, batch prompt library generator.</div></div>
+      <span class="idea-num">#25</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/d2a58901-a861-4eba-9006-71140f6a5aa0" target="_blank" rel="noopener">Pricing Strategy Studio</a></div><div class="tool-desc">Competitor position visualizer, pricing model recommender, price-increase calculator + announcement drafting, tier builder.</div></div>
+      <span class="idea-num">#48</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/4305b86b-19a1-463e-8c1c-5a848631f92e" target="_blank" rel="noopener">Email Flow Studio</a></div><div class="tool-desc">Welcome series, cart recovery, win-back sequences, segmentation strategy, subject line A/B lab.</div></div>
+      <span class="idea-num">#14</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/c22da13c-7750-4959-b4ba-342c63fe49f8" target="_blank" rel="noopener">Creator Management Studio</a></div><div class="tool-desc">Content calendar, batch caption generator, engagement reply bank, brand pitch drafting.</div></div>
+      <span class="idea-num">#19</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/e21f0fa1-c11e-4f9c-97e5-1dbe13898810" target="_blank" rel="noopener">Analytics Insights Studio</a></div><div class="tool-desc">Plain-English traffic reports, real conversion funnel calculator with AI commentary, month-over-month comparison.</div></div>
+      <span class="idea-num">#39</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/ceb74ebb-d01d-40cf-bfb5-139feae589d6" target="_blank" rel="noopener">Personal Shopper Studio</a></div><div class="tool-desc">Gift finder, style capsule builder, registry list generator, real budget allocator.</div></div>
+      <span class="idea-num">#28</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/812692aa-08d8-4745-bfba-256ce9405a87" target="_blank" rel="noopener">E-book Publishing Studio</a></div><div class="tool-desc">Niche validator, chapter outline builder, chapter drafter, blurb/keyword generator, KDP launch checklist.</div></div>
+      <span class="idea-num">#5</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/04d69d0e-8ee7-47cf-876b-faa5092ab93c" target="_blank" rel="noopener">Podcast Clip Studio</a></div><div class="tool-desc">Highlight-moment finder from a timestamped transcript, clip captions, title/hook lab.</div></div>
+      <span class="idea-num">#2</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/f137af6b-3e49-4663-a1fd-95f8558acfa3" target="_blank" rel="noopener">Ad Performance Studio</a></div><div class="tool-desc">Real CTR/CPC/CPA/ROAS calculator plus AI diagnosis of the likely bottleneck.</div></div>
+      <span class="idea-num">#7</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/3be443a5-9f19-4693-ba21-ef96eb80f907" target="_blank" rel="noopener">Data Quality Studio</a></div><div class="tool-desc">Data quality auditor plus a real Python/pandas cleaning script generator.</div></div>
+      <span class="idea-num">#13</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/8ab73094-c3de-4196-a7de-a1ee15c51f1c" target="_blank" rel="noopener">Meal Plan Studio</a></div><div class="tool-desc">Custom weekly meal plans, recipe expander, consolidated grocery list.</div></div>
+      <span class="idea-num">#20</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/44671b4e-052e-4d7d-a886-3dc9c560ca32" target="_blank" rel="noopener">Translation Studio</a></div><div class="tool-desc">Draft translation, back-translation QA check, tone/register notes.</div></div>
+      <span class="idea-num">#22</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/50f20c61-3114-4643-a594-e72cc3af5108" target="_blank" rel="noopener">Budget Planner Studio</a></div><div class="tool-desc">Real 50/30/20 budget builder plus AI organizational spending suggestions.</div></div>
+      <span class="idea-num">#27</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/9ea5b82d-c15b-492c-b44e-593210f1b786" target="_blank" rel="noopener">Property Valuation Studio</a></div><div class="tool-desc">Comps-based $/sqft calculator plus AI market commentary — not a licensed appraisal.</div></div>
+      <span class="idea-num">#29</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/dd483f17-a275-4a94-b422-2e24c22b6cac" target="_blank" rel="noopener">Contract Scanner Studio</a></div><div class="tool-desc">Contract red-flag scanner ranked by severity — a first-pass prep tool, never legal advice.</div></div>
+      <span class="idea-num">#30</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/3d82b7fe-f1e6-4edb-a68a-6ecf9e5ace40" target="_blank" rel="noopener">Shopify Blueprint Studio</a></div><div class="tool-desc">Pain-point audit prioritized by impact, plus an app-category recommender.</div></div>
+      <span class="idea-num">#35</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/bfa200c8-b374-4e6a-89ce-9b22f3d16053" target="_blank" rel="noopener">Caption Subtitle Studio</a></div><div class="tool-desc">Transcript cleanup, SRT formatter, and social caption chunking with live preview.</div></div>
+      <span class="idea-num">#42</span><span class="status-pill done">Live</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Image / audio / video brief generators</h2>
+    <p style="font-size:12.5px;color:var(--ink-dim);margin-bottom:14px">No image, audio, or video generation exists in this session — these build the prompts, scripts, and technical briefs you run through Midjourney, Suno, ElevenLabs, HeyGen, DaVinci Resolve, etc. yourself.</p>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/328e72d6-9087-418b-a1ef-b05ce2523074" target="_blank" rel="noopener">Image Brief Studio</a></div><div class="tool-desc">Prompt builder, style guide, batch variants, client brief — covers avatars, POD, NFT, staging, game assets, interiors, character &amp; map design.</div></div>
+      <span class="idea-num">#3,6,15,16,32,38,40,49</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/554b3d81-0e41-4f9d-a549-56792637441b" target="_blank" rel="noopener">Audio Brief Studio</a></div><div class="tool-desc">Music brief, voiceover script, sound design brief, audiobook narration package.</div></div>
+      <span class="idea-num">#8,24,36,47</span><span class="status-pill done">Live</span>
+    </div>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/318cd4e6-7b5c-4090-87c6-1bee213828cd" target="_blank" rel="noopener">Video Brief Studio</a></div><div class="tool-desc">Faceless video script, spokesperson script, VFX brief, color grade direction, restoration plan.</div></div>
+      <span class="idea-num">#1,11,31,41,46</span><span class="status-pill done">Live</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Bonus — not from the ledger</h2>
+    <div class="tool-row">
+      <div><div class="tool-name"><a href="https://claude.ai/code/artifact/a85bd17a-0899-41b1-a98f-f705bd2305f6" target="_blank" rel="noopener">Client Onboarding Studio</a></div><div class="tool-desc">Welcome emails, intake questionnaires, a "what happens next" timeline, and a new-client FAQ — works with any business in this toolkit.</div></div>
+      <span class="idea-num">bonus</span><span class="status-pill done">Live</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Retrofit queue — complete</h2>
+    <p style="font-size:12.5px;color:var(--ink-dim);margin-bottom:0">All 5 core tools (A&amp;A Creations, Console, Invoice, Proposal, plus Resume Studio and Local SEO Studio) are now comprehensive, multi-feature tools rather than single-purpose demos. From here on, new builds start at that bar.</p>
+  </div>
+
+  <div class="section">
+    <h2>Coverage — 44 of 50, and that's the real ceiling</h2>
+    <p style="font-size:12.5px;color:var(--ink-dim)">33 tools live, covering 44 of the ledger's 50 ideas (several tools combine related ideas; the image/audio/video ideas are covered as prompt-and-brief generators, since no generation capability exists in this session — those tools build what you'd paste into Midjourney, Suno, ElevenLabs, HeyGen, etc.). The final 6 (Healthcare Admin Tasks, AI Stock Market Insights, Smart Home Setup, Mental Health Chatbot Moderation, Niche AI Data Analysis, Urban Farming) aren't generation-blocked — they're compliance-heavy, hands-on-installation, a job application rather than a product, or redundant with a tool already built. Nothing left on the list is buildable the way the other 44 are.</p>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — this index is rebuilt and republished each time a new tool goes live, so this link stays the one place to check. All tools are private artifacts under your account.
+  </footer>
+</div>
+
+<script>
+document.getElementById('updated').textContent = 'Last updated ' + new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+</script>

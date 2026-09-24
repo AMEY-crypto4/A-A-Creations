@@ -1,0 +1,358 @@
+<title>Image Brief Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grandstander:wght@500;600;700;800&family=Lexend+Deca:wght@400;500;600;700&family=Cousine:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.008 300);
+  --paper-raised:oklch(0.995 0.004 300);
+  --ink:oklch(0.2 0.03 300);
+  --ink-dim:oklch(0.46 0.02 300);
+  --line:oklch(0.85 0.016 300);
+  --line-strong:oklch(0.7 0.024 300);
+  --accent:oklch(0.55 0.2 320);
+  --accent-soft:oklch(0.55 0.2 320 / 0.1);
+  --accent-ink:oklch(0.99 0.006 90);
+  --cyan:oklch(0.7 0.13 200);
+  --cyan-soft:oklch(0.7 0.13 200 / 0.16);
+  --cyan-ink:oklch(0.32 0.08 200);
+  --shadow:0 1px 2px oklch(0.25 0.03 300 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.16 0.02 300); --paper-raised:oklch(0.21 0.022 300);
+    --ink:oklch(0.95 0.008 300); --ink-dim:oklch(0.7 0.016 300);
+    --line:oklch(0.34 0.026 300); --line-strong:oklch(0.45 0.032 300);
+    --accent:oklch(0.72 0.16 320); --accent-soft:oklch(0.72 0.16 320 / 0.16); --accent-ink:oklch(0.16 0.03 320);
+    --cyan:oklch(0.78 0.12 200); --cyan-soft:oklch(0.78 0.12 200 / 0.18); --cyan-ink:oklch(0.85 0.1 200);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.16 0.02 300); --paper-raised:oklch(0.21 0.022 300);
+  --ink:oklch(0.95 0.008 300); --ink-dim:oklch(0.7 0.016 300);
+  --line:oklch(0.34 0.026 300); --line-strong:oklch(0.45 0.032 300);
+  --accent:oklch(0.72 0.16 320); --accent-soft:oklch(0.72 0.16 320 / 0.16); --accent-ink:oklch(0.16 0.03 320);
+  --cyan:oklch(0.78 0.12 200); --cyan-soft:oklch(0.78 0.12 200 / 0.18); --cyan-ink:oklch(0.85 0.1 200);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Lexend Deca',system-ui,sans-serif}
+h1,h2,h3{font-family:'Grandstander',sans-serif;margin:0;text-wrap:balance}
+.mono{font-family:'Cousine',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--cyan));color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-family:'Grandstander',sans-serif;font-weight:800;font-size:17px}
+.brand h1{font-size:20px;font-weight:700}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Cousine',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+.caveat{background:var(--cyan-soft);border-left:3px solid var(--cyan);padding:10px 12px;font-size:11.5px;line-height:1.5;border-radius:0 6px 6px 0;margin-top:16px}
+.caveat strong{color:var(--cyan-ink)}
+:root[data-theme="dark"] .caveat strong{color:var(--cyan)}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Lexend Deca',sans-serif;font-weight:600;font-size:12.5px;padding:11px 13px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:17px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Lexend Deca',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:80px;line-height:1.5}
+
+.btn{font-family:'Lexend Deca',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:20px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 13px;font-size:12px;border-radius:16px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'Cousine',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.prompt-block{font-family:'Cousine',monospace;font-size:12px;white-space:pre-wrap;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:12px;line-height:1.6}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.tool-tag{display:inline-block;font-family:'Cousine',monospace;font-size:10px;padding:2px 8px;border-radius:8px;background:var(--cyan-soft);color:var(--cyan-ink);margin-left:6px}
+:root[data-theme="dark"] .tool-tag{color:var(--cyan)}
+
+.tag-chip{display:inline-block;font-family:'Cousine',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--cyan-soft);color:var(--cyan-ink);text-transform:uppercase;letter-spacing:.04em}
+:root[data-theme="dark"] .tag-chip{color:var(--cyan)}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">🎨</div>
+      <div>
+        <h1>Image Brief Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 29</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Per piece: <strong>$15–$150</strong><br>Depends heavily on project type</div>
+  </header>
+  <div class="caveat"><strong>This doesn't generate images itself</strong> — no image generation is available here. It generates the detailed prompts, style guides, and briefs you paste into Midjourney, DALL·E, Stable Diffusion, or hand to a client. You (or your image-gen subscription) still make the actual picture.</div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="prompt">Prompt Builder</button>
+    <button class="tab" data-tab="style">Style Guide</button>
+    <button class="tab" data-tab="variants">Batch Variants</button>
+    <button class="tab" data-tab="brief">Client Brief</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- PROMPT BUILDER -->
+  <div class="view active" id="view-prompt">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Covers avatars, POD designs, NFT art, virtual staging, game assets, interior concepts, character design, and map making.</p>
+        <div class="field"><label>Project type</label>
+          <select id="pr-type">
+            <option>Custom avatar / portrait</option>
+            <option>Print-on-demand design (shirt/mug/poster)</option>
+            <option>NFT collection piece</option>
+            <option>Virtual staging (furnish a room photo)</option>
+            <option>Game texture / asset</option>
+            <option>Interior design concept render</option>
+            <option>Character design (cosplay / TTRPG)</option>
+            <option>Fantasy / game map</option>
+          </select>
+        </div>
+        <div class="field"><label>Subject &amp; details</label><textarea id="pr-subject" placeholder="e.g. a stoic elven ranger, forest camouflage armor, longbow, short white hair"></textarea></div>
+        <div class="field"><label>Art style</label><input type="text" id="pr-style" placeholder="e.g. painterly fantasy illustration, Studio Ghibli-inspired"></div>
+        <button class="btn btn-primary btn-block" id="pr-btn" onclick="genPrompt()">Build prompt</button>
+      </div>
+      <div class="panel">
+        <h3>Generation prompt</h3>
+        <p class="sub">Ready to paste into your image tool of choice.</p>
+        <div id="pr-output"><div class="output-empty">Fill in the fields and build.</div></div>
+        <div class="output-status" id="pr-status"></div>
+        <div class="output-actions" id="pr-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('pr-output')">Copy prompt</button>
+          <button class="btn btn-sm" onclick="genPrompt(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STYLE GUIDE -->
+  <div class="view" id="view-style">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Keep a whole set (an NFT collection, a game's assets, a brand's avatars) visually consistent.</p>
+        <div class="field"><label>Project / brand name</label><input type="text" id="sg-name" placeholder="e.g. Moonlit Grove NFT collection"></div>
+        <div class="field"><label>Rough creative direction</label><textarea id="sg-direction" placeholder="e.g. whimsical forest creatures, pastel colors, hand-drawn feel"></textarea></div>
+        <button class="btn btn-primary btn-block" id="sg-btn" onclick="genStyleGuide()">Generate style guide</button>
+      </div>
+      <div class="panel">
+        <h3>Style guide</h3>
+        <p class="sub">Reusable keywords and anchors to paste into every prompt in the set.</p>
+        <div id="sg-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="sg-status"></div>
+        <div class="output-actions" id="sg-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genStyleGuide(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BATCH VARIANTS -->
+  <div class="view" id="view-variants">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">One base idea → a themed set of prompt variations (poses, angles, palettes).</p>
+        <div class="field"><label>Base subject</label><textarea id="vr-base" placeholder="e.g. a cyberpunk street vendor character"></textarea></div>
+        <div class="field"><label>Number of variants</label>
+          <select id="vr-count"><option value="4">4</option><option value="6" selected>6</option><option value="8">8</option></select>
+        </div>
+        <button class="btn btn-primary btn-block" id="vr-btn" onclick="genVariants()">Generate variant set</button>
+      </div>
+      <div class="panel">
+        <h3>Variant prompts</h3>
+        <p class="sub">Each a distinct angle on the same subject — for a themed collection.</p>
+        <div id="vr-output"><div class="output-empty">Describe the base subject and generate.</div></div>
+        <div class="output-status" id="vr-status"></div>
+        <div class="output-actions" id="vr-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('vr-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genVariants(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENT BRIEF -->
+  <div class="view" id="view-brief">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Turn a vague client request into a real project brief.</p>
+        <div class="field"><label>What the client asked for (rough/informal is fine)</label><textarea id="cb-ask" style="min-height:120px" placeholder="e.g. they want something 'cool and modern' for their new energy drink can design, no other details"></textarea></div>
+        <button class="btn btn-primary btn-block" id="cb-btn" onclick="genBrief()">Format into a brief</button>
+      </div>
+      <div class="panel">
+        <h3>Project brief</h3>
+        <p class="sub">Deliverables, style direction, and revision scope — send this back to the client to confirm before you start.</p>
+        <div id="cb-output"><div class="output-empty">Describe the ask and format it.</div></div>
+        <div class="output-status" id="cb-status"></div>
+        <div class="output-actions" id="cb-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('cb-output')">Copy text</button>
+          <button class="btn btn-sm" onclick="genBrief(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:680px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">One prompt-engineering skill sells across eight different niches.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:10px"><span class="tag-chip">Avatars/portraits</span>&nbsp; $15–$50 per set, sold on Etsy/Fiverr.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:10px"><span class="tag-chip">POD designs</span>&nbsp; $5–$20 per design, sold repeatedly across products.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:10px"><span class="tag-chip">NFT collections</span>&nbsp; Highly volatile — treat as speculative, never promise buyers a return.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:10px"><span class="tag-chip">Virtual staging</span>&nbsp; $20–$60 per photo for realtors — cheaper and faster than physical staging.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:10px"><span class="tag-chip">Game/character assets</span>&nbsp; $30–$150 per commission for indie devs and TTRPG players.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">You still need a tool</span>&nbsp; A Midjourney or similar subscription ($10-60/mo) is the cost of doing this business — factor it into your pricing.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. No image is ever generated by this page itself.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + t.dataset.tab));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function runSample(promptText, btnId, statusId, outputId, actionsId, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const out = document.getElementById(outputId);
+  const actions = document.getElementById(actionsId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = '';
+  actions.style.display = 'none';
+  out.innerHTML = `<div class="card">Thinking…</div>`;
+  try{
+    const { text } = await sample(promptText, {
+      modelTier: 'default',
+      cache: regenerate ? false : true,
+      onText: ({text}) => { out.innerHTML = `<div class="card"><div class="prompt-block">${escapeHtml(text)}</div></div>`; }
+    });
+    out.innerHTML = `<div class="card"><div class="prompt-block">${escapeHtml(text)}</div></div>`;
+    actions.style.display = 'flex';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      empty_completion: 'Nothing came back — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function genPrompt(regenerate){
+  const type = document.getElementById('pr-type').value;
+  const subject = document.getElementById('pr-subject').value.trim();
+  const style = document.getElementById('pr-style').value.trim();
+  if(!subject){ document.getElementById('pr-status').textContent = 'Describe the subject first.'; return; }
+  const prompt = `Write a detailed, professional image-generation prompt (Midjourney/DALL-E/Stable-Diffusion style, with composition, lighting, and quality descriptors) for this project.
+Project type: "${type}"
+Subject: "${subject}"
+Style: "${style || 'use your judgment, appropriate to the project type'}"
+Include a main prompt line, then on a new line a short "avoid:" note for a negative prompt (things to exclude). Output only the prompt text.`;
+  runSample(prompt, 'pr-btn', 'pr-status', 'pr-output', 'pr-actions', regenerate);
+}
+
+function genStyleGuide(regenerate){
+  const name = document.getElementById('sg-name').value.trim();
+  const direction = document.getElementById('sg-direction').value.trim();
+  if(!name || !direction){ document.getElementById('sg-status').textContent = 'Fill in both fields first.'; return; }
+  const prompt = `Create a reusable image style guide for "${name}", based on this creative direction: "${direction}".
+Include: a palette description (named colors, not hex codes), 5-8 art-style keywords to reuse in every prompt, a lighting/mood anchor phrase, and one thing to consistently avoid. Output as plain text, clearly labeled sections.`;
+  runSample(prompt, 'sg-btn', 'sg-status', 'sg-output', 'sg-actions', regenerate);
+}
+
+async function genVariants(regenerate){
+  const base = document.getElementById('vr-base').value.trim();
+  const count = document.getElementById('vr-count').value;
+  const btn = document.getElementById('vr-btn');
+  const statusEl = document.getElementById('vr-status');
+  const out = document.getElementById('vr-output');
+  const actions = document.getElementById('vr-actions');
+  if(!base){ statusEl.textContent = 'Describe the base subject first.'; return; }
+
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  out.innerHTML = '';
+
+  const prompt = `Create exactly ${count} distinct image-generation prompt variants for a themed set based on this subject: "${base}". Vary pose, angle, or context while keeping the core subject consistent — like a real NFT collection or game asset set.
+Reply with only a JSON array of exactly ${count} strings, each a complete, ready-to-use prompt.`;
+  try{
+    const items = await sample.json(prompt, { modelTier: 'default', cache: regenerate ? false : true });
+    const list = Array.isArray(items) ? items : [];
+    out.innerHTML = list.map((p,i) => `<div class="card"><span class="n">Variant ${i+1}</span><div class="prompt-block">${escapeHtml(p)}</div></div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    actions.style.display = 'flex';
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try again.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function genBrief(regenerate){
+  const ask = document.getElementById('cb-ask').value.trim();
+  if(!ask){ document.getElementById('cb-status').textContent = 'Describe the client\'s ask first.'; return; }
+  const prompt = `Turn this vague client request into a clear project brief for an image-generation commission. Never invent specifics the client didn't give — instead, list open questions to confirm with them.
+Client's ask: "${ask}"
+Include: a restated project summary, a style direction (or "to be confirmed" if unclear), deliverables (number of images, formats), and 2-3 open questions to ask the client before starting. Output as plain text.`;
+  runSample(prompt, 'cb-btn', 'cb-status', 'cb-output', 'cb-actions', regenerate);
+}
+
+function copyOut(id){
+  const text = Array.from(document.querySelectorAll('#' + id + ' .prompt-block')).map(c => c.textContent).join('\n\n')
+    || document.querySelector('#' + id + ' .prompt-block')?.textContent || '';
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+</script>

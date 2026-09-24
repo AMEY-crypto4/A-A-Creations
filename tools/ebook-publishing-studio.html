@@ -1,0 +1,476 @@
+<title>E-book Publishing Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Besley:wght@500;600;700&family=Onest:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.97 0.006 70);
+  --paper-raised:oklch(0.995 0.003 70);
+  --ink:oklch(0.2 0.012 60);
+  --ink-dim:oklch(0.46 0.014 60);
+  --line:oklch(0.85 0.014 60);
+  --line-strong:oklch(0.7 0.02 60);
+  --accent:oklch(0.5 0.14 45);
+  --accent-soft:oklch(0.5 0.14 45 / 0.1);
+  --accent-ink:oklch(0.99 0.006 90);
+  --gold:oklch(0.68 0.11 75);
+  --gold-soft:oklch(0.68 0.11 75 / 0.16);
+  --shadow:0 1px 2px oklch(0.25 0.02 60 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.16 0.012 60); --paper-raised:oklch(0.21 0.014 60);
+    --ink:oklch(0.95 0.008 70); --ink-dim:oklch(0.7 0.014 60);
+    --line:oklch(0.34 0.018 60); --line-strong:oklch(0.45 0.024 60);
+    --accent:oklch(0.68 0.13 45); --accent-soft:oklch(0.68 0.13 45 / 0.16); --accent-ink:oklch(0.16 0.02 45);
+    --gold:oklch(0.75 0.11 75); --gold-soft:oklch(0.75 0.11 75 / 0.18);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.16 0.012 60); --paper-raised:oklch(0.21 0.014 60);
+  --ink:oklch(0.95 0.008 70); --ink-dim:oklch(0.7 0.014 60);
+  --line:oklch(0.34 0.018 60); --line-strong:oklch(0.45 0.024 60);
+  --accent:oklch(0.68 0.13 45); --accent-soft:oklch(0.68 0.13 45 / 0.16); --accent-ink:oklch(0.16 0.02 45);
+  --gold:oklch(0.75 0.11 75); --gold-soft:oklch(0.75 0.11 75 / 0.18);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Onest',system-ui,sans-serif}
+h1,h2,h3{font-family:'Besley',georgia,serif;margin:0;text-wrap:balance}
+.mono{font-family:'Fira Code',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:4px 10px 10px 4px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-family:'Besley',serif;font-weight:700;font-size:18px}
+.brand h1{font-size:20px;font-weight:700}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.profile-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;margin-top:16px;background:var(--accent-soft);border-radius:10px;font-size:12.5px;flex-wrap:wrap}
+.profile-bar .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.profile-bar.off .dot{background:var(--ink-dim)}
+.profile-bar a{color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer}
+.profile-bar a:hover{text-decoration:underline}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Onest',sans-serif;font-weight:600;font-size:13px;padding:11px 14px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:10px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:16px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Onest',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:6px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:80px;line-height:1.5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.btn{font-family:'Onest',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:7px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'Fira Code',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.chapter-num{display:inline-block;font-family:'Fira Code',monospace;font-size:11px;color:var(--accent);font-weight:600}
+
+.checklist{display:grid;gap:0}
+.check-row{display:flex;gap:14px;align-items:flex-start;padding:14px 4px;border-bottom:1px solid var(--line)}
+.check-row:last-child{border-bottom:0}
+.check-row input[type=checkbox]{width:19px;height:19px;margin-top:1px;accent-color:var(--accent);flex-shrink:0;cursor:pointer}
+.check-row .ct{font-size:14px;font-weight:600}
+.check-row.checked .ct{text-decoration:line-through;color:var(--ink-dim)}
+.check-row .cd{font-size:12px;color:var(--ink-dim);margin-top:2px;line-height:1.5}
+.progress-bar{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:12px}
+.progress-fill{height:100%;background:var(--accent);transition:width .25s ease}
+
+.tag-chip{display:inline-block;font-family:'Fira Code',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--gold-soft);color:oklch(0.45 0.1 75);text-transform:uppercase;letter-spacing:.04em}
+:root[data-theme="dark"] .tag-chip{color:var(--gold)}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">📖</div>
+      <div>
+        <h1>E-book Publishing Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 18</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Ghostwritten e-book: <strong>$400–$2k</strong><br>Author coaching: <strong>$500–$4k/mo</strong></div>
+  </header>
+
+  <div class="profile-bar off" id="profile-bar">
+    <span class="dot"></span>
+    <span id="profile-summary">No book profile set — every tab writes generically.</span>
+    <a data-tab="profile">Set it up →</a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="validate">Niche Validator</button>
+    <button class="tab" data-tab="outline">Outline Builder</button>
+    <button class="tab" data-tab="chapter">Chapter Drafter</button>
+    <button class="tab" data-tab="blurb">Blurb &amp; Keywords</button>
+    <button class="tab" data-tab="launch">KDP Launch Checklist</button>
+    <button class="tab" data-tab="profile">Book Profile</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- NICHE VALIDATOR -->
+  <div class="view active" id="view-validate">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A reasoning-based gut check, not real market data — verify with actual KDP bestseller research before committing.</p>
+        <div class="field"><label>Book idea / niche</label><textarea id="vl-idea" placeholder="e.g. a 30-day meal prep guide for people with type 2 diabetes"></textarea></div>
+        <button class="btn btn-primary btn-block" id="vl-btn" onclick="genValidate()">Sanity-check this niche</button>
+      </div>
+      <div class="panel">
+        <h3>Niche assessment</h3>
+        <p class="sub">Target reader, competitive angle, and what to verify yourself.</p>
+        <div id="vl-output"><div class="output-empty">Describe the idea and check it.</div></div>
+        <div class="output-status" id="vl-status"></div>
+        <div class="output-actions" id="vl-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genValidate(true)">Re-check</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTLINE BUILDER -->
+  <div class="view" id="view-outline">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A full chapter-by-chapter structure.</p>
+        <div class="field"><label>Book topic</label><input type="text" id="ol-topic" placeholder="e.g. 30-day meal prep for type 2 diabetes"></div>
+        <div class="field"><label>Target reader</label><input type="text" id="ol-audience" placeholder="e.g. newly diagnosed adults who hate cooking"></div>
+        <div class="field"><label>Number of chapters</label>
+          <select id="ol-count"><option value="8">8</option><option value="10" selected>10</option><option value="12">12</option></select>
+        </div>
+        <button class="btn btn-primary btn-block" id="ol-btn" onclick="genOutline()">Generate outline</button>
+      </div>
+      <div class="panel">
+        <h3>Chapter outline</h3>
+        <p class="sub">Each chapter with a one-line summary of what it covers.</p>
+        <div id="ol-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="ol-status"></div>
+        <div class="output-actions" id="ol-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('ol-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genOutline(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER DRAFTER -->
+  <div class="view" id="view-chapter">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Draft one chapter at a time — paste an outline chapter's title and key points.</p>
+        <div class="field"><label>Chapter title</label><input type="text" id="ch-title" placeholder="e.g. Chapter 3: Stocking a Diabetes-Friendly Pantry"></div>
+        <div class="field"><label>Key points to cover</label><textarea id="ch-points" style="min-height:120px" placeholder="e.g. low-glycemic staples, reading nutrition labels, budget swaps, a sample shopping list"></textarea></div>
+        <button class="btn btn-primary btn-block" id="ch-btn" onclick="genChapter()">Draft this chapter</button>
+      </div>
+      <div class="panel">
+        <h3>Chapter draft</h3>
+        <p class="sub">A real first draft — expect to edit and fact-check before publishing.</p>
+        <div id="ch-output"><div class="output-empty">Fill in the fields and draft.</div></div>
+        <div class="output-status" id="ch-status"></div>
+        <div class="output-actions" id="ch-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('ch-output')">Copy text</button>
+          <button class="btn btn-sm" onclick="downloadOut('ch-output','chapter-draft.txt')">Save as .txt</button>
+          <button class="btn btn-sm" onclick="genChapter(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLURB & KEYWORDS -->
+  <div class="view" id="view-blurb">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">The sales page copy for your KDP listing.</p>
+        <div class="field"><label>Book summary (what it's about, what reader gets)</label><textarea id="bl-summary" style="min-height:130px" placeholder="e.g. a no-nonsense 30-day meal prep system for newly diagnosed type 2 diabetics who hate cooking"></textarea></div>
+        <button class="btn btn-primary btn-block" id="bl-btn" onclick="genBlurb()">Generate blurb &amp; keywords</button>
+      </div>
+      <div class="panel">
+        <h3>Listing copy</h3>
+        <p class="sub">Description, title suggestions, and searchable keywords.</p>
+        <div id="bl-output"><div class="output-empty">Describe the book and generate.</div></div>
+        <div class="output-status" id="bl-status"></div>
+        <div class="output-actions" id="bl-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('bl-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genBlurb(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KDP LAUNCH CHECKLIST -->
+  <div class="view" id="view-launch">
+    <div class="panel" style="max-width:640px">
+      <h3>KDP launch checklist</h3>
+      <p class="sub">The real steps between "manuscript done" and "live on Amazon."</p>
+      <div class="checklist" id="checklist"></div>
+      <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+      <p class="sub" id="prog-txt" style="margin-top:8px"></p>
+    </div>
+  </div>
+
+  <!-- BOOK PROFILE -->
+  <div class="view" id="view-profile">
+    <div class="panel" style="max-width:640px">
+      <h3>Book profile</h3>
+      <p class="sub">Set this once per book — every tab above writes with this context.</p>
+      <div class="field"><label>Working title</label><input type="text" id="pf-title" placeholder="e.g. The 30-Day Diabetes Kitchen Reset"></div>
+      <div class="field"><label>Genre / category</label><input type="text" id="pf-genre" placeholder="e.g. health &amp; diet, non-fiction"></div>
+      <button class="btn btn-primary btn-block" onclick="saveProfile()">Save book profile</button>
+      <div class="output-status" id="pf-status"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Short niche non-fiction is the fastest path to a published KDP book.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Ghostwriting</span>&nbsp; $400–$2,000 to draft an entire short e-book for a client who has the idea but not the time to write it.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Coaching</span>&nbsp; $500–$4k/mo helping aspiring authors outline, draft, and launch their own books using this workflow.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Fact-check everything</span>&nbsp; Especially for health, finance, or legal topics — a drafted chapter is a first pass, never a verified final text.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. Checklist progress saves locally in this browser.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab, [data-tab]').forEach(t => t.addEventListener('click', () => {
+  const target = t.dataset.tab;
+  if(!target) return;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.dataset.tab === target));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + target));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ---------- book profile ---------- */
+const PROFILE_KEY = 'aa-ebook-profile-v1';
+function loadProfile(){ try{ return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); }catch(e){ return null; } }
+function renderProfileBar(){
+  const p = loadProfile();
+  const bar = document.getElementById('profile-bar');
+  const summary = document.getElementById('profile-summary');
+  if(p && p.title){
+    bar.classList.remove('off');
+    summary.textContent = `Writing "${p.title}" — ${p.genre || 'genre not set'}`;
+  } else {
+    bar.classList.add('off');
+    summary.textContent = 'No book profile set — every tab writes generically.';
+  }
+}
+function saveProfile(){
+  const p = { title: document.getElementById('pf-title').value.trim(), genre: document.getElementById('pf-genre').value.trim() };
+  try{ localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }catch(e){}
+  renderProfileBar();
+  const el = document.getElementById('pf-status');
+  el.textContent = 'Saved.';
+  setTimeout(() => el.textContent = '', 2000);
+}
+(function initProfileForm(){
+  const p = loadProfile();
+  if(!p) return;
+  document.getElementById('pf-title').value = p.title || '';
+  document.getElementById('pf-genre').value = p.genre || '';
+})();
+renderProfileBar();
+function profileContext(){
+  const p = loadProfile();
+  if(!p || !p.title) return '';
+  return `\n\nBook: "${p.title}" (${p.genre || 'genre not specified'}).`;
+}
+
+/* ---------- sample helpers ---------- */
+async function runSample(promptText, btnId, statusId, outputId, actionsId, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const out = document.getElementById(outputId);
+  const actions = document.getElementById(actionsId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = '';
+  actions.style.display = 'none';
+  out.innerHTML = `<div class="card">Thinking…</div>`;
+  try{
+    const { text } = await sample(promptText, {
+      modelTier: 'default',
+      cache: regenerate ? false : true,
+      onText: ({text}) => { out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`; }
+    });
+    out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`;
+    actions.style.display = 'flex';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      empty_completion: 'Nothing came back — try again.',
+      prompt_too_large: 'That input is too long — trim it and try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+/* ---------- niche validator ---------- */
+function genValidate(regenerate){
+  const idea = document.getElementById('vl-idea').value.trim();
+  if(!idea){ document.getElementById('vl-status').textContent = 'Describe the book idea first.'; return; }
+  const prompt = `Give a reasoning-based sanity check of this e-book niche idea — you can't access real-time KDP bestseller data, so be explicit about that limit.${profileContext()}
+Idea: "${idea}"
+Cover: who the target reader likely is, one competitive angle that could differentiate this book, and one specific thing to manually verify on Amazon before committing (e.g. "search KDP for [X] and see how many results use this exact angle"). Under 180 words.`;
+  runSample(prompt, 'vl-btn', 'vl-status', 'vl-output', 'vl-actions', regenerate);
+}
+
+/* ---------- outline builder ---------- */
+function genOutline(regenerate){
+  const topic = document.getElementById('ol-topic').value.trim();
+  const audience = document.getElementById('ol-audience').value.trim();
+  const count = document.getElementById('ol-count').value;
+  if(!topic){ document.getElementById('ol-status').textContent = 'Enter a book topic first.'; return; }
+  const prompt = `Create a ${count}-chapter outline for a non-fiction e-book.${profileContext()}
+Topic: "${topic}". Target reader: "${audience || 'general audience'}".
+Chapters should build logically (foundation first, then application, then sustaining habits/next steps where relevant). Reply with only a JSON array of exactly ${count} {"chapter": number, "title": string, "summary": string (1 sentence)} objects.`;
+  runSampleJson(prompt, 'ol-btn', 'ol-status', (items) => {
+    const wrap = document.getElementById('ol-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map(it => `<div class="card"><span class="chapter-num">Ch. ${it.chapter}</span> <strong>${escapeHtml(it.title||'')}</strong><br>${escapeHtml(it.summary||'')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('ol-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- chapter drafter ---------- */
+function genChapter(regenerate){
+  const title = document.getElementById('ch-title').value.trim();
+  const points = document.getElementById('ch-points').value.trim();
+  if(!title || !points){ document.getElementById('ch-status').textContent = 'Fill in both fields first.'; return; }
+  const prompt = `Draft a full e-book chapter.${profileContext()}
+Chapter title: "${title}"
+Key points to cover: "${points}"
+Write 600-900 words in a clear, engaging non-fiction voice with short paragraphs and at least one subheading. Never invent specific statistics, studies, or medical/financial claims not implied by the key points — write generally where specifics aren't given. Output only the chapter text.`;
+  runSample(prompt, 'ch-btn', 'ch-status', 'ch-output', 'ch-actions', regenerate);
+}
+
+/* ---------- blurb & keywords ---------- */
+function genBlurb(regenerate){
+  const summary = document.getElementById('bl-summary').value.trim();
+  if(!summary){ document.getElementById('bl-status').textContent = 'Describe the book first.'; return; }
+  const prompt = `Write Amazon KDP listing copy for this book.${profileContext()}
+Book: "${summary}"
+Reply with only a JSON object: {"blurb": string (150-200 word back-cover description, hook first line), "titleOptions": [string] (3 alternative title/subtitle combos), "keywords": [string] (7 KDP search keyword phrases, realistic and specific, not generic)}.`;
+  runSampleJson(prompt, 'bl-btn', 'bl-status', (d) => {
+    const titles = (d.titleOptions||[]).map(t => `<li>${escapeHtml(t)}</li>`).join('');
+    const kw = (d.keywords||[]).map(k => escapeHtml(k)).join(' · ');
+    document.getElementById('bl-output').innerHTML = `<div class="card">
+      <div class="field-lbl">Blurb</div>${escapeHtml(d.blurb||'')}
+      <div class="field-lbl">Title options</div><ul style="margin:4px 0 0;padding-left:18px">${titles}</ul>
+      <div class="field-lbl">Keywords</div>${kw}
+    </div>`;
+    document.getElementById('bl-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- KDP checklist ---------- */
+const ITEMS = [
+  {t:'Finish and self-edit the manuscript', d:'Read it aloud once — awkward phrasing is easiest to catch by ear.'},
+  {t:'Get at least one outside read-through', d:'A fresh pair of eyes catches what you\'ve gone blind to.'},
+  {t:'Format for KDP (Kindle + paperback if applicable)', d:'Use KDP\'s free templates or a formatting tool — don\'t hand-format from scratch.'},
+  {t:'Commission or design a cover', d:'Covers sell books — this is not the place to cut corners.'},
+  {t:'Write the book description using the Blurb tab', d:'This is your sales page — spend real time on it.'},
+  {t:'Pick categories and keywords', d:'Choose specific, less-crowded categories over broad popular ones.'},
+  {t:'Set your launch price', d:'Many authors launch at $0.99–$2.99 to build reviews, then raise the price.'},
+  {t:'Line up 5-10 early reviewers', d:'Ask friends, a newsletter, or an ARC (advance reader copy) group before launch day.'},
+  {t:'Publish and verify the live listing', d:'Check the preview, formatting, and links after it goes live.'},
+];
+const CHECK_KEY = 'aa-ebook-checklist-v1';
+let checked = {};
+try{ checked = JSON.parse(localStorage.getItem(CHECK_KEY) || '{}'); }catch(e){ checked = {}; }
+function saveCheck(){ try{ localStorage.setItem(CHECK_KEY, JSON.stringify(checked)); }catch(e){} }
+function renderChecklist(){
+  const wrap = document.getElementById('checklist');
+  wrap.innerHTML = '';
+  ITEMS.forEach((item, i) => {
+    const row = document.createElement('div');
+    row.className = 'check-row' + (checked[i] ? ' checked' : '');
+    row.innerHTML = `<input type="checkbox" ${checked[i]?'checked':''} id="chk-${i}"><div><div class="ct">${escapeHtml(item.t)}</div><div class="cd">${escapeHtml(item.d)}</div></div>`;
+    row.querySelector('input').addEventListener('change', e => { checked[i] = e.target.checked; saveCheck(); renderChecklist(); });
+    wrap.appendChild(row);
+  });
+  const done = Object.values(checked).filter(Boolean).length;
+  document.getElementById('prog-fill').style.width = (done/ITEMS.length*100) + '%';
+  document.getElementById('prog-txt').textContent = done + ' / ' + ITEMS.length + ' steps done';
+}
+renderChecklist();
+
+function copyOut(id){
+  const text = Array.from(document.querySelectorAll('#' + id + ' .card')).map(c => c.textContent).join('\n\n')
+    || document.querySelector('#' + id + ' .card')?.textContent || '';
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+async function downloadOut(id, filename){
+  const text = document.querySelector('#' + id + ' .card')?.textContent || '';
+  const downloads = await claude.use('downloads').catch(() => null);
+  if(!downloads){ alert('Downloads aren\'t available in this view — use Copy text instead.'); return; }
+  try{ await downloads.save({ filename, data: text }); }
+  catch(e){ if(e.code !== 'declined') alert('Could not save the file (' + e.code + ').'); }
+}
+</script>

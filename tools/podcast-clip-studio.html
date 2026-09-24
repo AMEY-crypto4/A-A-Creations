@@ -1,0 +1,304 @@
+<title>Podcast Clip Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Readex+Pro:wght@400;500;600;700&family=PT+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.004 20);
+  --paper-raised:oklch(0.995 0.002 20);
+  --ink:oklch(0.18 0.01 20);
+  --ink-dim:oklch(0.46 0.012 20);
+  --line:oklch(0.85 0.01 20);
+  --line-strong:oklch(0.7 0.016 20);
+  --accent:oklch(0.5 0.19 25);
+  --accent-soft:oklch(0.5 0.19 25 / 0.1);
+  --accent-ink:oklch(0.99 0.005 90);
+  --gold:oklch(0.7 0.13 75);
+  --gold-soft:oklch(0.7 0.13 75 / 0.16);
+  --shadow:0 1px 2px oklch(0.2 0.01 20 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.15 0.01 20); --paper-raised:oklch(0.2 0.012 20);
+    --ink:oklch(0.95 0.006 20); --ink-dim:oklch(0.7 0.01 20);
+    --line:oklch(0.33 0.014 20); --line-strong:oklch(0.44 0.018 20);
+    --accent:oklch(0.68 0.17 25); --accent-soft:oklch(0.68 0.17 25 / 0.16); --accent-ink:oklch(0.15 0.02 25);
+    --gold:oklch(0.76 0.12 75); --gold-soft:oklch(0.76 0.12 75 / 0.18);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.15 0.01 20); --paper-raised:oklch(0.2 0.012 20);
+  --ink:oklch(0.95 0.006 20); --ink-dim:oklch(0.7 0.01 20);
+  --line:oklch(0.33 0.014 20); --line-strong:oklch(0.44 0.018 20);
+  --accent:oklch(0.68 0.17 25); --accent-soft:oklch(0.68 0.17 25 / 0.16); --accent-ink:oklch(0.15 0.02 25);
+  --gold:oklch(0.76 0.12 75); --gold-soft:oklch(0.76 0.12 75 / 0.18);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Readex Pro',system-ui,sans-serif}
+h1,h2,h3{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.02em;margin:0;text-wrap:balance}
+.mono{font-family:'PT Mono',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:18px}
+.brand h1{font-size:19px;font-weight:400}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'PT Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Readex Pro',sans-serif;font-weight:600;font-size:13px;padding:11px 14px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:10px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:17px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Readex Pro',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:7px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:200px;line-height:1.5;font-family:'PT Mono',monospace;font-size:12px}
+
+.btn{font-family:'Readex Pro',sans-serif;font-weight:600;font-size:13.5px;padding:11px 18px;border-radius:8px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'PT Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.timestamp{display:inline-block;font-family:'PT Mono',monospace;font-size:11px;padding:2px 8px;border-radius:8px;background:var(--gold-soft);color:oklch(0.45 0.1 75);margin-left:6px}
+:root[data-theme="dark"] .timestamp{color:var(--gold)}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.hook-score{font-family:'PT Mono',monospace;font-weight:700;font-size:12px;color:var(--accent)}
+
+.tag-chip{display:inline-block;font-family:'PT Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--gold-soft);color:oklch(0.45 0.1 75);text-transform:uppercase;letter-spacing:.04em}
+:root[data-theme="dark"] .tag-chip{color:var(--gold)}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">▶</div>
+      <div>
+        <h1>Podcast Clip Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 19</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Per episode: <strong>$40–$150</strong><br>Retainer: <strong>$800–$3.5k/mo</strong></div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="finder">Highlight Finder</button>
+    <button class="tab" data-tab="captions">Clip Captions</button>
+    <button class="tab" data-tab="titles">Title &amp; Hook Lab</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- HIGHLIGHT FINDER -->
+  <div class="view active" id="view-finder">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Paste a transcript with timestamps — Claude finds the moments worth clipping. It can't listen to audio, so the cutting itself still needs an editor (or a tool like Descript).</p>
+        <div class="field"><label>Transcript with timestamps</label><textarea id="hf-transcript" placeholder="[00:03:12] Host: So what got you into this in the first place?
+[00:03:20] Guest: Honestly, it started with a total failure..."></textarea></div>
+        <button class="btn btn-primary btn-block" id="hf-btn" onclick="genHighlights()">Find highlight moments</button>
+      </div>
+      <div class="panel">
+        <h3>Highlight moments</h3>
+        <p class="sub">Ranked by how well they'd work as a standalone clip.</p>
+        <div id="hf-output"><div class="output-empty">Paste a timestamped transcript and find highlights.</div></div>
+        <div class="output-status" id="hf-status"></div>
+        <div class="output-actions" id="hf-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('hf-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genHighlights(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIP CAPTIONS -->
+  <div class="view" id="view-captions">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">The caption/description text that goes with one finished clip.</p>
+        <div class="field"><label>What the clip is about</label><textarea id="cc-clip" style="min-height:120px" placeholder="e.g. the guest explains why their first startup failed and what they'd do differently"></textarea></div>
+        <div class="field"><label>Platform</label>
+          <select id="cc-platform"><option>TikTok / Reels / Shorts</option><option>YouTube</option><option>X / Twitter</option><option>LinkedIn</option></select>
+        </div>
+        <button class="btn btn-primary btn-block" id="cc-btn" onclick="genCaption()">Draft caption</button>
+      </div>
+      <div class="panel">
+        <h3>Clip caption</h3>
+        <p class="sub">Platform-appropriate length and tone, with hashtags where relevant.</p>
+        <div id="cc-output"><div class="output-empty">Fill in the fields and draft.</div></div>
+        <div class="output-status" id="cc-status"></div>
+        <div class="output-actions" id="cc-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('cc-output')">Copy text</button>
+          <button class="btn btn-sm" onclick="genCaption(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TITLE & HOOK LAB -->
+  <div class="view" id="view-titles">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">The first 2 seconds decide whether anyone keeps watching.</p>
+        <div class="field"><label>What the clip is about</label><textarea id="tl-clip" placeholder="e.g. the guest reveals the exact moment they knew to quit their job"></textarea></div>
+        <button class="btn btn-primary btn-block" id="tl-btn" onclick="genTitles()">Generate title &amp; hook options</button>
+      </div>
+      <div class="panel">
+        <h3>Titles &amp; opening hooks</h3>
+        <p class="sub">Each with a quick gut-check on curiosity pull.</p>
+        <div id="tl-output"><div class="output-empty">Describe the clip and generate.</div></div>
+        <div class="output-status" id="tl-status"></div>
+        <div class="output-actions" id="tl-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('tl-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genTitles(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Podcasters have hours of content and no time to clip it.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Per episode</span>&nbsp; $40–$150 to find and cut 5-10 clips from one episode, including captions and titles.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Retainer</span>&nbsp; $800–$3.5k/mo for shows publishing weekly, covering every episode plus posting.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Workflow</span>&nbsp; Get the transcript (most podcast hosts export one, or run the audio through a transcription tool), find highlights here, then cut with a video editor or Descript using the timestamps.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. This finds moments in a transcript — it doesn't listen to or cut audio/video itself.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + t.dataset.tab));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      prompt_too_large: 'That transcript is too long — trim it and try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+async function runSample(promptText, btnId, statusId, outputId, actionsId, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const out = document.getElementById(outputId);
+  const actions = document.getElementById(actionsId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = '';
+  actions.style.display = 'none';
+  out.innerHTML = `<div class="card">Thinking…</div>`;
+  try{
+    const { text } = await sample(promptText, {
+      modelTier: 'default',
+      cache: regenerate ? false : true,
+      onText: ({text}) => { out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`; }
+    });
+    out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`;
+    actions.style.display = 'flex';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      empty_completion: 'Nothing came back — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function genHighlights(regenerate){
+  const transcript = document.getElementById('hf-transcript').value.trim();
+  if(!transcript){ document.getElementById('hf-status').textContent = 'Paste a timestamped transcript first.'; return; }
+  const prompt = `Find the best highlight moments in this podcast transcript for short-form clips. Use ONLY timestamps actually present in the text — never invent one.
+Transcript:
+"""${transcript.slice(0,8000)}"""
+Reply with only a JSON array of 5-8 {"timestampRange": string (from the transcript, e.g. "03:12-03:45"), "whatHappens": string, "whyItWorks": string (1 sentence on the hook/emotion/insight)} objects, ordered strongest first.`;
+  runSampleJson(prompt, 'hf-btn', 'hf-status', (items) => {
+    const wrap = document.getElementById('hf-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map((it,i) => `<div class="card"><span class="n">Clip ${i+1}</span><span class="timestamp">${escapeHtml(it.timestampRange||'')}</span><br>${escapeHtml(it.whatHappens||'')}<div class="field-lbl">Why it works</div>${escapeHtml(it.whyItWorks||'')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('hf-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function genCaption(regenerate){
+  const clip = document.getElementById('cc-clip').value.trim();
+  const platform = document.getElementById('cc-platform').value;
+  if(!clip){ document.getElementById('cc-status').textContent = 'Describe the clip first.'; return; }
+  const prompt = `Write a ${platform} caption for this podcast clip: "${clip}". Match the platform's typical style and length (TikTok/Reels: short, punchy, 1-2 hashtags; YouTube: slightly longer with a question; X: concise, conversational; LinkedIn: a short professional takeaway). Output only the caption text.`;
+  runSample(prompt, 'cc-btn', 'cc-status', 'cc-output', 'cc-actions', regenerate);
+}
+
+function genTitles(regenerate){
+  const clip = document.getElementById('tl-clip').value.trim();
+  if(!clip){ document.getElementById('tl-status').textContent = 'Describe the clip first.'; return; }
+  const prompt = `Write 5 title/opening-hook options for this podcast clip: "${clip}". Vary the angle: a bold claim, a question, a "wait for it" tease, a direct benefit, and a controversial take. Each under 12 words.
+Reply with only a JSON array of exactly 5 {"angle": string, "hook": string} objects.`;
+  runSampleJson(prompt, 'tl-btn', 'tl-status', (items) => {
+    const wrap = document.getElementById('tl-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map(it => `<div class="card"><span class="tag-chip">${escapeHtml(it.angle||'')}</span><div style="margin-top:6px;font-weight:600">${escapeHtml(it.hook||'')}</div></div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('tl-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function copyOut(id){
+  const text = Array.from(document.querySelectorAll('#' + id + ' .card')).map(c => c.textContent).join('\n\n');
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+</script>

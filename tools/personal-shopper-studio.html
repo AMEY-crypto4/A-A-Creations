@@ -1,0 +1,380 @@
+<title>Personal Shopper Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;0,600;0,700;1,500&family=Urbanist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.008 20);
+  --paper-raised:oklch(0.995 0.004 20);
+  --ink:oklch(0.22 0.02 340);
+  --ink-dim:oklch(0.47 0.016 340);
+  --line:oklch(0.86 0.014 20);
+  --line-strong:oklch(0.72 0.02 20);
+  --accent:oklch(0.45 0.13 340);
+  --accent-soft:oklch(0.45 0.13 340 / 0.1);
+  --accent-ink:oklch(0.99 0.006 90);
+  --gold:oklch(0.72 0.1 75);
+  --gold-soft:oklch(0.72 0.1 75 / 0.16);
+  --gold-ink:oklch(0.4 0.08 75);
+  --shadow:0 1px 2px oklch(0.3 0.02 20 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.17 0.014 340); --paper-raised:oklch(0.22 0.016 340);
+    --ink:oklch(0.95 0.008 20); --ink-dim:oklch(0.7 0.014 20);
+    --line:oklch(0.35 0.02 340); --line-strong:oklch(0.46 0.026 340);
+    --accent:oklch(0.72 0.11 340); --accent-soft:oklch(0.72 0.11 340 / 0.16); --accent-ink:oklch(0.16 0.02 340);
+    --gold:oklch(0.78 0.1 75); --gold-soft:oklch(0.78 0.1 75 / 0.18); --gold-ink:oklch(0.82 0.1 75);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.17 0.014 340); --paper-raised:oklch(0.22 0.016 340);
+  --ink:oklch(0.95 0.008 20); --ink-dim:oklch(0.7 0.014 20);
+  --line:oklch(0.35 0.02 340); --line-strong:oklch(0.46 0.026 340);
+  --accent:oklch(0.72 0.11 340); --accent-soft:oklch(0.72 0.11 340 / 0.16); --accent-ink:oklch(0.16 0.02 340);
+  --gold:oklch(0.78 0.1 75); --gold-soft:oklch(0.78 0.1 75 / 0.18); --gold-ink:oklch(0.82 0.1 75);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Urbanist',system-ui,sans-serif}
+h1,h2,h3{font-family:'Bodoni Moda',georgia,serif;margin:0;text-wrap:balance}
+.mono{font-family:'Geist Mono',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-family:'Bodoni Moda',serif;font-weight:600;font-style:italic;font-size:19px}
+.brand h1{font-size:20px;font-weight:600}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Geist Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.profile-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;margin-top:16px;background:var(--accent-soft);border-radius:10px;font-size:12.5px;flex-wrap:wrap}
+.profile-bar .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.profile-bar.off .dot{background:var(--ink-dim)}
+.profile-bar a{color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer}
+.profile-bar a:hover{text-decoration:underline}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Urbanist',sans-serif;font-weight:600;font-size:13px;padding:11px 14px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:10px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:16px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Urbanist',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:7px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:80px;line-height:1.5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.btn{font-family:'Urbanist',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:20px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 13px;font-size:12px;border-radius:16px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'Geist Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.price-band{display:inline-block;font-family:'Geist Mono',monospace;font-size:11px;padding:2px 8px;border-radius:8px;background:var(--gold-soft);color:var(--gold-ink);margin-left:6px}
+.caveat{background:var(--gold-soft);border-left:3px solid var(--gold);padding:10px 12px;font-size:11.5px;line-height:1.5;border-radius:0 6px 6px 0;margin-bottom:16px}
+
+.budget-bar-row{display:grid;grid-template-columns:110px 1fr 60px;gap:10px;align-items:center;margin-bottom:10px;font-size:12.5px}
+.budget-bar-track{height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+.budget-bar-fill{height:100%;background:var(--accent)}
+
+.tag-chip{display:inline-block;font-family:'Geist Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--gold-soft);color:var(--gold-ink);text-transform:uppercase;letter-spacing:.04em}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">◈</div>
+      <div>
+        <h1>Personal Shopper Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 17</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Per request: <strong>$20–$75</strong><br>Monthly concierge: <strong>$300–$2.5k/mo</strong></div>
+  </header>
+
+  <div class="profile-bar off" id="profile-bar">
+    <span class="dot"></span>
+    <span id="profile-summary">No client profile set — every tab writes generically.</span>
+    <a data-tab="profile">Set it up →</a>
+  </div>
+
+  <div class="caveat" style="margin-top:16px">This suggests categories, types, and general price bands — it can't browse real-time inventory or prices. Pair its ideas with an actual store search before buying.</div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="gift">Gift Finder</button>
+    <button class="tab" data-tab="style">Style Consultant</button>
+    <button class="tab" data-tab="registry">Registry Builder</button>
+    <button class="tab" data-tab="budget">Budget Planner</button>
+    <button class="tab" data-tab="profile">Client Profile</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- GIFT FINDER -->
+  <div class="view active" id="view-gift">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Curated ideas, not a specific product catalog.</p>
+        <div class="field"><label>Recipient (age, relationship, interests)</label><textarea id="gf-recipient" placeholder="e.g. my sister, 34, loves gardening and cozy nights in, has everything already"></textarea></div>
+        <div class="two-col">
+          <div class="field"><label>Occasion</label><input type="text" id="gf-occasion" placeholder="e.g. birthday"></div>
+          <div class="field"><label>Budget ($)</label><input type="number" id="gf-budget" value="75" min="0" step="5"></div>
+        </div>
+        <button class="btn btn-primary btn-block" id="gf-btn" onclick="genGift()">Find gift ideas</button>
+      </div>
+      <div class="panel">
+        <h3>Gift ideas</h3>
+        <p class="sub">Each with a price band and why it fits.</p>
+        <div id="gf-output"><div class="output-empty">Describe the recipient and generate.</div></div>
+        <div class="output-status" id="gf-status"></div>
+        <div class="output-actions" id="gf-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genGift(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STYLE CONSULTANT -->
+  <div class="view" id="view-style">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A capsule shopping list by category, not specific SKUs.</p>
+        <div class="field"><label>Style goals / occasion</label><textarea id="st-goal" placeholder="e.g. building a capsule work wardrobe, business casual, prefers neutral colors"></textarea></div>
+        <div class="field"><label>Budget ($)</label><input type="number" id="st-budget" value="400" min="0" step="10"></div>
+        <button class="btn btn-primary btn-block" id="st-btn" onclick="genStyle()">Build shopping list</button>
+      </div>
+      <div class="panel">
+        <h3>Shopping list</h3>
+        <p class="sub">Organized by category with a price band per item.</p>
+        <div id="st-output"><div class="output-empty">Describe the style goal and generate.</div></div>
+        <div class="output-status" id="st-status"></div>
+        <div class="output-actions" id="st-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genStyle(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTRY BUILDER -->
+  <div class="view" id="view-registry">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A categorized starter registry list.</p>
+        <div class="field"><label>Event type</label>
+          <select id="rg-type"><option>Wedding</option><option>Baby shower</option><option>Housewarming</option><option>Birthday milestone</option></select>
+        </div>
+        <div class="field"><label>Preferences / style notes</label><textarea id="rg-notes" placeholder="e.g. modern minimalist home, loves cooking, already has basic kitchenware"></textarea></div>
+        <button class="btn btn-primary btn-block" id="rg-btn" onclick="genRegistry()">Build registry list</button>
+      </div>
+      <div class="panel">
+        <h3>Registry list</h3>
+        <p class="sub">Grouped by category with a price band per item.</p>
+        <div id="rg-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="rg-status"></div>
+        <div class="output-actions" id="rg-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genRegistry(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUDGET PLANNER -->
+  <div class="view" id="view-budget">
+    <div class="panel" style="max-width:720px">
+      <h3>Shopping budget allocator</h3>
+      <p class="sub">Real math — split a total budget across categories you list.</p>
+      <div class="field"><label>Total budget ($)</label><input type="number" id="bg-total" value="500" min="0" step="10"></div>
+      <div class="field"><label>Categories (one per line)</label><textarea id="bg-cats" style="min-height:110px" placeholder="Clothing&#10;Home decor&#10;Gifts for others&#10;Miscellaneous"></textarea></div>
+      <button class="btn btn-primary btn-block" id="bg-btn" onclick="genBudgetSplit()">Allocate budget</button>
+      <div id="bg-output" style="margin-top:16px"></div>
+      <div class="output-status" id="bg-status"></div>
+    </div>
+  </div>
+
+  <!-- CLIENT PROFILE -->
+  <div class="view" id="view-profile">
+    <div class="panel" style="max-width:640px">
+      <h3>Client profile</h3>
+      <p class="sub">Set this once per client — every tab above writes with this context.</p>
+      <div class="field"><label>Client name</label><input type="text" id="pf-name" placeholder="e.g. Jordan Reyes"></div>
+      <div class="field"><label>Their general taste / notes</label><textarea id="pf-notes" placeholder="e.g. minimalist, prefers experiences over things, allergic to scented products"></textarea></div>
+      <button class="btn btn-primary btn-block" onclick="saveProfile()">Save client profile</button>
+      <div class="output-status" id="pf-status"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Busy people will pay to skip the research.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Per request</span>&nbsp; $20–$75 per gift/shopping request — fast turnaround is the whole appeal.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Concierge</span>&nbsp; $300–$2.5k/mo for busy professionals or families who want ongoing gift reminders and shopping help.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">You do the buying</span>&nbsp; This drafts the ideas — you (or the client) still search and purchase from real stores. Offer to do that legwork too for a higher fee.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. Nothing here is saved anywhere except this browser.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab, [data-tab]').forEach(t => t.addEventListener('click', () => {
+  const target = t.dataset.tab;
+  if(!target) return;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.dataset.tab === target));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + target));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ---------- client profile ---------- */
+const PROFILE_KEY = 'aa-shopper-profile-v1';
+function loadProfile(){ try{ return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); }catch(e){ return null; } }
+function renderProfileBar(){
+  const p = loadProfile();
+  const bar = document.getElementById('profile-bar');
+  const summary = document.getElementById('profile-summary');
+  if(p && p.name){
+    bar.classList.remove('off');
+    summary.textContent = `Shopping for "${p.name}"`;
+  } else {
+    bar.classList.add('off');
+    summary.textContent = 'No client profile set — every tab writes generically.';
+  }
+}
+function saveProfile(){
+  const p = { name: document.getElementById('pf-name').value.trim(), notes: document.getElementById('pf-notes').value.trim() };
+  try{ localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }catch(e){}
+  renderProfileBar();
+  const el = document.getElementById('pf-status');
+  el.textContent = 'Saved.';
+  setTimeout(() => el.textContent = '', 2000);
+}
+(function initProfileForm(){
+  const p = loadProfile();
+  if(!p) return;
+  document.getElementById('pf-name').value = p.name || '';
+  document.getElementById('pf-notes').value = p.notes || '';
+})();
+renderProfileBar();
+function profileContext(){
+  const p = loadProfile();
+  if(!p || !p.name) return '';
+  return `\n\nClient: "${p.name}". Notes: ${p.notes || 'none'}.`;
+}
+
+/* ---------- sample helper ---------- */
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+/* ---------- gift finder ---------- */
+function genGift(regenerate){
+  const recipient = document.getElementById('gf-recipient').value.trim();
+  const occasion = document.getElementById('gf-occasion').value.trim();
+  const budget = document.getElementById('gf-budget').value;
+  if(!recipient){ document.getElementById('gf-status').textContent = 'Describe the recipient first.'; return; }
+  const prompt = `Suggest gift ideas — categories and types, not specific real products (you can't browse live inventory).${profileContext()}
+Recipient: "${recipient}". Occasion: "${occasion || 'general gift'}". Budget: up to $${budget}.
+Reply with only a JSON array of 5-6 {"idea": string (a specific type of gift, e.g. "a high-quality gardening tool set"), "priceBand": string (e.g. "$30-50"), "why": string (1 sentence connecting it to the recipient)} objects, all within budget.`;
+  runSampleJson(prompt, 'gf-btn', 'gf-status', (items) => {
+    const wrap = document.getElementById('gf-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map(it => `<div class="card"><strong>${escapeHtml(it.idea||'')}</strong><span class="price-band">${escapeHtml(it.priceBand||'')}</span><br>${escapeHtml(it.why||'')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('gf-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- style consultant ---------- */
+function genStyle(regenerate){
+  const goal = document.getElementById('st-goal').value.trim();
+  const budget = document.getElementById('st-budget').value;
+  if(!goal){ document.getElementById('st-status').textContent = 'Describe the style goal first.'; return; }
+  const prompt = `Build a capsule shopping list (categories/types, not specific real products) to fit this budget.${profileContext()}
+Goal: "${goal}". Total budget: $${budget}.
+Reply with only a JSON array of 5-8 {"item": string (a specific item type, e.g. "a tailored navy blazer"), "priceBand": string} objects whose price bands sum to roughly $${budget}.`;
+  runSampleJson(prompt, 'st-btn', 'st-status', (items) => {
+    const wrap = document.getElementById('st-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map(it => `<div class="card">${escapeHtml(it.item||'')}<span class="price-band">${escapeHtml(it.priceBand||'')}</span></div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('st-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- registry builder ---------- */
+function genRegistry(regenerate){
+  const type = document.getElementById('rg-type').value;
+  const notes = document.getElementById('rg-notes').value.trim();
+  const prompt = `Build a starter registry list for a ${type.toLowerCase()}.${profileContext()}
+Preferences: "${notes || 'none given — suggest broadly popular, practical items'}"
+Reply with only a JSON array of {"category": string, "items": [string]} objects covering the typical categories for this event type (3-5 categories, 3-4 items each).`;
+  runSampleJson(prompt, 'rg-btn', 'rg-status', (cats) => {
+    const wrap = document.getElementById('rg-output');
+    wrap.innerHTML = `<div class="card">${(Array.isArray(cats)?cats:[]).map(c => `<div class="field-lbl">${escapeHtml(c.category||'')}</div><ul style="margin:2px 0 0;padding-left:18px">${(c.items||[]).map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>`).join('')}</div>` || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('rg-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- budget planner (real math) ---------- */
+function genBudgetSplit(){
+  const total = parseFloat(document.getElementById('bg-total').value) || 0;
+  const cats = document.getElementById('bg-cats').value.trim().split('\n').map(c => c.trim()).filter(Boolean);
+  const statusEl = document.getElementById('bg-status');
+  if(!total || !cats.length){ statusEl.textContent = 'Enter a budget and at least one category.'; return; }
+  statusEl.textContent = '';
+  const share = 100 / cats.length;
+  const wrap = document.getElementById('bg-output');
+  wrap.innerHTML = cats.map(c => `
+    <div class="budget-bar-row">
+      <span>${escapeHtml(c)}</span>
+      <div class="budget-bar-track"><div class="budget-bar-fill" style="width:${share}%"></div></div>
+      <span class="mono">$${Math.round(total * share/100)}</span>
+    </div>
+  `).join('') + `<p style="font-size:11.5px;color:var(--ink-dim);margin-top:8px">Split evenly across ${cats.length} categories — adjust manually if one matters more.</p>`;
+}
+</script>

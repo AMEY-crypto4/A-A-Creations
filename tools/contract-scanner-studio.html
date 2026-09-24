@@ -1,0 +1,180 @@
+<title>Contract Scanner Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.004 255);
+  --paper-raised:oklch(0.995 0.002 255);
+  --ink:oklch(0.2 0.02 255);
+  --ink-dim:oklch(0.46 0.015 255);
+  --line:oklch(0.85 0.012 255);
+  --line-strong:oklch(0.7 0.02 255);
+  --accent:oklch(0.4 0.09 255);
+  --accent-soft:oklch(0.4 0.09 255 / 0.1);
+  --accent-ink:oklch(0.99 0.005 90);
+  --bad:oklch(0.55 0.18 28);
+  --bad-soft:oklch(0.55 0.18 28 / 0.13);
+  --medium:oklch(0.65 0.14 65);
+  --medium-soft:oklch(0.65 0.14 65 / 0.16);
+  --shadow:0 1px 2px oklch(0.25 0.02 255 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.15 0.014 255); --paper-raised:oklch(0.2 0.016 255);
+    --ink:oklch(0.94 0.006 255); --ink-dim:oklch(0.68 0.012 255);
+    --line:oklch(0.33 0.018 255); --line-strong:oklch(0.44 0.024 255);
+    --accent:oklch(0.68 0.1 255); --accent-soft:oklch(0.68 0.1 255 / 0.16); --accent-ink:oklch(0.15 0.02 255);
+    --bad:oklch(0.72 0.16 28); --bad-soft:oklch(0.72 0.16 28 / 0.16);
+    --medium:oklch(0.75 0.13 65); --medium-soft:oklch(0.75 0.13 65 / 0.18);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.15 0.014 255); --paper-raised:oklch(0.2 0.016 255);
+  --ink:oklch(0.94 0.006 255); --ink-dim:oklch(0.68 0.012 255);
+  --line:oklch(0.33 0.018 255); --line-strong:oklch(0.44 0.024 255);
+  --accent:oklch(0.68 0.1 255); --accent-soft:oklch(0.68 0.1 255 / 0.16); --accent-ink:oklch(0.15 0.02 255);
+  --bad:oklch(0.72 0.16 28); --bad-soft:oklch(0.72 0.16 28 / 0.16);
+  --medium:oklch(0.75 0.13 65); --medium-soft:oklch(0.75 0.13 65 / 0.18);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Source Sans 3',system-ui,sans-serif}
+h1,h2,h3{font-family:'Source Serif 4',georgia,serif;margin:0;text-wrap:balance}
+.mono{font-family:'Source Code Pro',monospace}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:6px;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);font-family:'Source Serif 4',serif;font-weight:700;font-size:18px}
+.brand h1{font-size:20px;font-weight:700}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Source Code Pro',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+.caveat{background:var(--bad-soft);border-left:3px solid var(--bad);padding:12px 14px;font-size:12px;line-height:1.6;border-radius:0 6px 6px 0;margin:16px 0 0}
+.caveat strong{color:var(--bad)}
+
+.split{display:grid;grid-template-columns:420px 1fr;gap:22px;margin-top:24px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:8px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:19px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field textarea{width:100%;font-family:'Source Sans 3',sans-serif;font-size:13px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:280px;line-height:1.5;font-family:'Source Code Pro',monospace;font-size:11.5px}
+
+.btn{font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:6px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:8px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.severity-tag{display:inline-block;font-family:'Source Code Pro',monospace;font-weight:600;font-size:10px;padding:3px 9px;border-radius:6px;text-transform:uppercase;letter-spacing:.04em}
+.severity-tag.high{background:var(--bad-soft);color:var(--bad)}
+.severity-tag.medium{background:var(--medium-soft);color:oklch(0.5 0.13 65)}
+:root[data-theme="dark"] .severity-tag.medium{color:var(--medium)}
+.quote{font-family:'Source Code Pro',monospace;font-size:11.5px;background:var(--paper);border-left:2px solid var(--line-strong);padding:6px 10px;margin:6px 0;color:var(--ink-dim)}
+
+.tag-chip{display:inline-block;font-family:'Source Code Pro',monospace;font-size:10px;padding:3px 9px;border-radius:6px;background:var(--accent-soft);color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">§</div>
+      <div>
+        <h1>Contract Scanner Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 26</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Per scan: <strong>$30–$100</strong></div>
+  </header>
+  <div class="caveat"><strong>Not legal advice.</strong> This flags clauses worth asking about — it doesn't replace a lawyer, and it's not a substitute for real legal review on anything high-value or high-risk. Use it to prepare smart questions, not to make the final call.</div>
+
+  <div class="split">
+    <div class="panel">
+      <h3>Contract text</h3>
+      <p class="sub">Paste the contract (or the sections you're unsure about).</p>
+      <div class="field"><label>Contract text</label><textarea id="cs-text" placeholder="Paste the contract text here…"></textarea></div>
+      <div class="field"><label>Your role (which party are you?)</label><input type="text" id="cs-role" placeholder="e.g. the freelancer / contractor signing this"></div>
+      <button class="btn btn-primary btn-block" id="cs-btn" onclick="genScan()">Scan for red flags</button>
+    </div>
+    <div class="panel">
+      <h3>Flagged clauses</h3>
+      <p class="sub">Things worth raising with a lawyer before you sign — ranked by how much they could cost you.</p>
+      <div id="cs-output"><div class="output-empty">Paste a contract and scan it.</div></div>
+      <div class="output-status" id="cs-status"></div>
+      <div class="output-actions" id="cs-actions" style="display:none">
+        <button class="btn btn-sm" onclick="genScan(true)">Re-scan</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:22px;max-width:640px">
+    <h3>Turning this into income</h3>
+    <p class="sub" style="margin-bottom:12px">A fast first-pass read before a lawyer's paid hour.</p>
+    <p style="font-size:14px;line-height:1.8;margin-bottom:10px"><span class="tag-chip">Per scan</span>&nbsp; $30–$100 to scan a contract and hand back a prioritized list of things to ask about — positioned clearly as a first pass, not legal advice.</p>
+    <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Know the line</span>&nbsp; If you're not a licensed attorney, never call this "legal advice" or "review" in your marketing — call it exactly what it is: a red-flag scan to bring to your own lawyer.</p>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. This is a starting point for a conversation with a real attorney, never a substitute for one.
+  </footer>
+</div>
+
+<script>
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      prompt_too_large: 'That contract is too long — trim it and try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function genScan(regenerate){
+  const text = document.getElementById('cs-text').value.trim();
+  const role = document.getElementById('cs-role').value.trim();
+  if(!text){ document.getElementById('cs-status').textContent = 'Paste the contract text first.'; return; }
+  const prompt = `Scan this contract for clauses worth flagging to the signer, from the perspective of "${role || 'the party signing this'}". You are not a lawyer and this is not legal advice — frame everything as "worth asking your attorney about," never as a definitive legal judgment. Use only what's actually in the text.
+Contract:
+"""${text.slice(0,8000)}"""
+Reply with only a JSON array of 4-8 {"clause": string (quote or closely paraphrase the relevant part), "concern": string (why it's worth asking about), "severity": "High" | "Medium"} objects, ordered most important first.`;
+  runSampleJson(prompt, 'cs-btn', 'cs-status', (items) => {
+    const wrap = document.getElementById('cs-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map(it => `<div class="card"><span class="severity-tag ${(it.severity||'').toLowerCase()}">${escapeHtml(it.severity||'')}</span><div class="quote">${escapeHtml(it.clause||'')}</div><div class="field-lbl">Worth asking about</div>${escapeHtml(it.concern||'')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('cs-actions').style.display = 'flex';
+  }, regenerate);
+}
+</script>

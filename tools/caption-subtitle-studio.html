@@ -1,0 +1,302 @@
+<title>Caption Subtitle Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Golos+Text:wght@400;500;600;700&family=Martian+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.005 260);
+  --paper-raised:oklch(0.995 0.003 260);
+  --ink:oklch(0.2 0.02 260);
+  --ink-dim:oklch(0.46 0.015 260);
+  --line:oklch(0.85 0.012 260);
+  --line-strong:oklch(0.7 0.02 260);
+  --accent:oklch(0.6 0.19 25);
+  --accent-soft:oklch(0.6 0.19 25 / 0.1);
+  --accent-ink:oklch(0.99 0.005 90);
+  --yellow:oklch(0.85 0.16 95);
+  --yellow-ink:oklch(0.3 0.05 90);
+  --shadow:0 1px 2px oklch(0.25 0.02 260 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.16 0.016 260); --paper-raised:oklch(0.21 0.018 260);
+    --ink:oklch(0.95 0.008 260); --ink-dim:oklch(0.7 0.014 260);
+    --line:oklch(0.34 0.02 260); --line-strong:oklch(0.45 0.026 260);
+    --accent:oklch(0.7 0.17 25); --accent-soft:oklch(0.7 0.17 25 / 0.16); --accent-ink:oklch(0.16 0.02 25);
+    --yellow:oklch(0.8 0.14 95); --yellow-ink:oklch(0.22 0.04 90);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.16 0.016 260); --paper-raised:oklch(0.21 0.018 260);
+  --ink:oklch(0.95 0.008 260); --ink-dim:oklch(0.7 0.014 260);
+  --line:oklch(0.34 0.02 260); --line-strong:oklch(0.45 0.026 260);
+  --accent:oklch(0.7 0.17 25); --accent-soft:oklch(0.7 0.17 25 / 0.16); --accent-ink:oklch(0.16 0.02 25);
+  --yellow:oklch(0.8 0.14 95); --yellow-ink:oklch(0.22 0.04 90);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Golos Text',system-ui,sans-serif}
+h1,h2,h3{font-family:'Alfa Slab One',sans-serif;font-weight:400;margin:0;text-wrap:balance}
+.mono{font-family:'Martian Mono',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:8px;background:var(--yellow);color:var(--yellow-ink);display:flex;align-items:center;justify-content:center;font-family:'Alfa Slab One',sans-serif;font-size:17px}
+.brand h1{font-size:19px}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Martian Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Golos Text',sans-serif;font-weight:600;font-size:13px;padding:11px 14px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:420px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:10px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:17px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field textarea{width:100%;font-family:'Martian Mono',monospace;font-size:11.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:7px;background:var(--paper);color:var(--ink);resize:vertical;min-height:240px;line-height:1.5}
+.field select{width:100%;font-family:'Golos Text',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:7px;background:var(--paper);color:var(--ink)}
+
+.btn{font-family:'Golos Text',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:8px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.code-block{font-family:'Martian Mono',monospace;font-size:11.5px;white-space:pre-wrap;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:14px;line-height:1.7;overflow-x:auto}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.caption-preview{background:#000;border-radius:10px;padding:40px 20px;text-align:center;margin-bottom:14px}
+.caption-preview span{background:var(--yellow);color:var(--yellow-ink);font-family:'Alfa Slab One',sans-serif;font-size:15px;padding:6px 12px;border-radius:4px;display:inline-block;text-transform:uppercase}
+
+.tag-chip{display:inline-block;font-family:'Martian Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--accent-soft);color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">CC</div>
+      <div>
+        <h1>Caption Subtitle Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 28</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Per video: <strong>$10–$50</strong><br>Retainer: <strong>$300–$1.5k/mo</strong></div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="clean">Transcript Cleanup</button>
+    <button class="tab" data-tab="srt">SRT Formatter</button>
+    <button class="tab" data-tab="social">Social Caption Style</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- TRANSCRIPT CLEANUP -->
+  <div class="view active" id="view-clean">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Paste a raw auto-generated transcript — this cleans filler words and fixes obvious errors without changing timestamps.</p>
+        <div class="field"><label>Raw transcript (with timestamps)</label><textarea id="cl-raw" placeholder="[00:00] um so today we're gonna like talk about
+[00:04] uh the the new feature we launched"></textarea></div>
+        <button class="btn btn-primary btn-block" id="cl-btn" onclick="genClean()">Clean up transcript</button>
+      </div>
+      <div class="panel">
+        <h3>Cleaned transcript</h3>
+        <p class="sub">Filler words removed, grammar tightened, timestamps preserved exactly as given.</p>
+        <div id="cl-output"><div class="output-empty">Paste a transcript and clean it.</div></div>
+        <div class="output-status" id="cl-status"></div>
+        <div class="output-actions" id="cl-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('cl-output')">Copy text</button>
+          <button class="btn btn-sm" onclick="genClean(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SRT FORMATTER -->
+  <div class="view" id="view-srt">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Paste timestamped text — get it formatted into valid SRT subtitle format.</p>
+        <div class="field"><label>Timestamped text</label><textarea id="sr-text" placeholder="00:00 Welcome back to the channel
+00:04 Today we're covering three tips"></textarea></div>
+        <button class="btn btn-primary btn-block" id="sr-btn" onclick="genSrt()">Convert to SRT</button>
+      </div>
+      <div class="panel">
+        <h3>SRT file content</h3>
+        <p class="sub">Copy this into a .srt file — most editors accept plain text saved with that extension.</p>
+        <div id="sr-output"><div class="output-empty">Paste text and convert.</div></div>
+        <div class="output-status" id="sr-status"></div>
+        <div class="output-actions" id="sr-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('sr-output')">Copy SRT</button>
+          <button class="btn btn-sm" onclick="genSrt(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOCIAL CAPTION STYLE -->
+  <div class="view" id="view-social">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Short punchy burned-in caption lines for social video — 3-6 words at a time.</p>
+        <div class="field"><label>What the speaker is saying (one section)</label><textarea id="so-text" style="min-height:110px" placeholder="e.g. the biggest mistake people make with their first budget is not tracking small purchases"></textarea></div>
+        <button class="btn btn-primary btn-block" id="so-btn" onclick="genSocial()">Break into caption lines</button>
+      </div>
+      <div class="panel">
+        <h3>Caption lines</h3>
+        <p class="sub">Preview of how it'd look burned into the video.</p>
+        <div id="so-preview"></div>
+        <div id="so-output"><div class="output-empty">Enter the speech and break it up.</div></div>
+        <div class="output-status" id="so-status"></div>
+        <div class="output-actions" id="so-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('so-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genSocial(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Every video needs captions — most creators still do this by hand or skip it.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Per video</span>&nbsp; $10–$50 to clean up a transcript, format captions, and break it into social-ready caption lines.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Retainer</span>&nbsp; $300–$1.5k/mo for creators publishing multiple videos a week.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Workflow</span>&nbsp; Get a raw auto-transcript (YouTube, Descript, Otter all generate one), clean it up here, format for the platform, hand it back.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. This formats and cleans text you provide — it doesn't transcribe audio itself.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + t.dataset.tab));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function runSample(promptText, btnId, statusId, outputId, actionsId, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const out = document.getElementById(outputId);
+  const actions = document.getElementById(actionsId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = '';
+  actions.style.display = 'none';
+  out.innerHTML = `<div class="code-block">Thinking…</div>`;
+  try{
+    const { text } = await sample(promptText, {
+      modelTier: 'default',
+      cache: regenerate ? false : true,
+      onText: ({text}) => { out.innerHTML = `<div class="code-block">${escapeHtml(text)}</div>`; }
+    });
+    out.innerHTML = `<div class="code-block">${escapeHtml(text)}</div>`;
+    actions.style.display = 'flex';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      empty_completion: 'Nothing came back — try again.',
+      prompt_too_large: 'That text is too long — trim it and try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function genClean(regenerate){
+  const raw = document.getElementById('cl-raw').value.trim();
+  if(!raw){ document.getElementById('cl-status').textContent = 'Paste a transcript first.'; return; }
+  const prompt = `Clean up this auto-generated transcript: remove filler words (um, uh, like, you know), fix obvious transcription errors, tighten grammar — but never change the meaning or invent words that weren't said. Keep every timestamp exactly as given, in the same position relative to the text.
+Transcript:
+"""${raw.slice(0,6000)}"""
+Output only the cleaned transcript.`;
+  runSample(prompt, 'cl-btn', 'cl-status', 'cl-output', 'cl-actions', regenerate);
+}
+
+function genSrt(regenerate){
+  const text = document.getElementById('sr-text').value.trim();
+  if(!text){ document.getElementById('sr-status').textContent = 'Paste timestamped text first.'; return; }
+  const prompt = `Convert this timestamped text into valid SRT subtitle format (sequence number, then "HH:MM:SS,mmm --> HH:MM:SS,mmm" timing line, then the caption text, blank line between entries). Use the timestamps given as the start time for each line; estimate a reasonable end time (2-4 seconds per line, or until the next timestamp) — since exact durations aren't given, note in your output that end times are estimated and should be checked against the actual video.
+Text:
+"""${text.slice(0,6000)}"""
+Output only the SRT-formatted content.`;
+  runSample(prompt, 'sr-btn', 'sr-status', 'sr-output', 'sr-actions', regenerate);
+}
+
+async function genSocial(regenerate){
+  const text = document.getElementById('so-text').value.trim();
+  const btn = document.getElementById('so-btn');
+  const statusEl = document.getElementById('so-status');
+  const out = document.getElementById('so-output');
+  const preview = document.getElementById('so-preview');
+  const actions = document.getElementById('so-actions');
+  if(!text){ statusEl.textContent = 'Enter the speech text first.'; return; }
+
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  out.innerHTML = '';
+  preview.innerHTML = '';
+
+  const prompt = `Break this spoken text into short burned-in social video caption chunks (3-6 words each, natural break points, all caps not required). Never change the wording.
+Text: "${text}"
+Reply with only a JSON array of strings, one per caption chunk, in order.`;
+
+  try{
+    const items = await sample.json(prompt, { modelTier: 'quick', cache: regenerate ? false : true });
+    const list = Array.isArray(items) ? items : [];
+    preview.innerHTML = list[0] ? `<div class="caption-preview"><span>${escapeHtml(list[0])}</span></div>` : '';
+    out.innerHTML = `<div class="code-block">${list.map(escapeHtml).join('\n')}</div>`;
+    actions.style.display = 'flex';
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try again.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function copyOut(id){
+  const text = document.querySelector('#' + id + ' .code-block')?.textContent || '';
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+</script>

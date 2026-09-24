@@ -1,0 +1,344 @@
+<title>Audio Brief Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Rubik:wght@400;500;600;700&family=Noto+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.006 280);
+  --paper-raised:oklch(0.995 0.003 280);
+  --ink:oklch(0.2 0.03 280);
+  --ink-dim:oklch(0.46 0.02 280);
+  --line:oklch(0.85 0.014 280);
+  --line-strong:oklch(0.7 0.02 280);
+  --accent:oklch(0.5 0.16 280);
+  --accent-soft:oklch(0.5 0.16 280 / 0.1);
+  --accent-ink:oklch(0.99 0.005 90);
+  --orange:oklch(0.68 0.15 50);
+  --orange-soft:oklch(0.68 0.15 50 / 0.16);
+  --orange-ink:oklch(0.42 0.12 50);
+  --shadow:0 1px 2px oklch(0.25 0.03 280 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.16 0.018 280); --paper-raised:oklch(0.21 0.02 280);
+    --ink:oklch(0.95 0.008 280); --ink-dim:oklch(0.7 0.014 280);
+    --line:oklch(0.34 0.022 280); --line-strong:oklch(0.45 0.028 280);
+    --accent:oklch(0.72 0.14 280); --accent-soft:oklch(0.72 0.14 280 / 0.16); --accent-ink:oklch(0.15 0.02 280);
+    --orange:oklch(0.75 0.13 50); --orange-soft:oklch(0.75 0.13 50 / 0.18); --orange-ink:oklch(0.82 0.13 50);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.16 0.018 280); --paper-raised:oklch(0.21 0.02 280);
+  --ink:oklch(0.95 0.008 280); --ink-dim:oklch(0.7 0.014 280);
+  --line:oklch(0.34 0.022 280); --line-strong:oklch(0.45 0.028 280);
+  --accent:oklch(0.72 0.14 280); --accent-soft:oklch(0.72 0.14 280 / 0.16); --accent-ink:oklch(0.15 0.02 280);
+  --orange:oklch(0.75 0.13 50); --orange-soft:oklch(0.75 0.13 50 / 0.18); --orange-ink:oklch(0.82 0.13 50);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Rubik',system-ui,sans-serif}
+h1,h2,h3{font-family:'Fjalla One',sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.01em;margin:0;text-wrap:balance}
+.mono{font-family:'Noto Sans Mono',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:18px}
+.brand h1{font-size:19px}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Noto Sans Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+.caveat{background:var(--orange-soft);border-left:3px solid var(--orange);padding:10px 12px;font-size:11.5px;line-height:1.5;border-radius:0 6px 6px 0;margin-top:16px}
+.caveat strong{color:var(--orange-ink)}
+:root[data-theme="dark"] .caveat strong{color:var(--orange)}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Rubik',sans-serif;font-weight:600;font-size:12.5px;padding:11px 13px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:10px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:18px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Rubik',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:7px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:90px;line-height:1.5}
+
+.btn{font-family:'Rubik',sans-serif;font-weight:600;font-size:13.5px;padding:11px 18px;border-radius:8px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'Noto Sans Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.prompt-block{font-family:'Noto Sans Mono',monospace;font-size:12px;white-space:pre-wrap;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:12px;line-height:1.6}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.chapter-tag{display:inline-block;font-family:'Noto Sans Mono',monospace;font-size:10px;padding:2px 8px;border-radius:8px;background:var(--orange-soft);color:var(--orange-ink);margin-right:6px}
+:root[data-theme="dark"] .chapter-tag{color:var(--orange)}
+
+.tag-chip{display:inline-block;font-family:'Noto Sans Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--orange-soft);color:var(--orange-ink);text-transform:uppercase;letter-spacing:.04em}
+:root[data-theme="dark"] .tag-chip{color:var(--orange)}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">♪</div>
+      <div>
+        <h1>Audio Brief Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 30</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Per project: <strong>$20–$300</strong><br>Depends on project type</div>
+  </header>
+  <div class="caveat"><strong>This doesn't generate audio itself</strong> — no audio generation is available here. It writes the prompts, scripts, and direction you feed into Suno, ElevenLabs, Mubert, or a voice actor. You (or your audio-gen subscription) still make the actual sound.</div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="music">Music Brief</button>
+    <button class="tab" data-tab="voiceover">Voiceover Script</button>
+    <button class="tab" data-tab="sound">Sound Design Brief</button>
+    <button class="tab" data-tab="audiobook">Audiobook Package</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- MUSIC BRIEF -->
+  <div class="view active" id="view-music">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A generation prompt for tools like Suno or Mubert.</p>
+        <div class="field"><label>What it's for</label><input type="text" id="mu-use" placeholder="e.g. background music for a cozy cooking YouTube channel"></div>
+        <div class="field"><label>Mood / genre</label><input type="text" id="mu-mood" placeholder="e.g. warm, acoustic, mid-tempo, lo-fi"></div>
+        <div class="field"><label>Length needed</label><input type="text" id="mu-length" placeholder="e.g. 2-minute loop"></div>
+        <button class="btn btn-primary btn-block" id="mu-btn" onclick="genMusic()">Build music brief</button>
+      </div>
+      <div class="panel">
+        <h3>Music generation prompt</h3>
+        <p class="sub">Paste into Suno, Mubert, or a similar tool.</p>
+        <div id="mu-output"><div class="output-empty">Fill in the fields and build.</div></div>
+        <div class="output-status" id="mu-status"></div>
+        <div class="output-actions" id="mu-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('mu-output')">Copy prompt</button>
+          <button class="btn btn-sm" onclick="genMusic(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VOICEOVER SCRIPT -->
+  <div class="view" id="view-voiceover">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A script with delivery direction for ElevenLabs or a voice actor.</p>
+        <div class="field"><label>What the voiceover is for</label><input type="text" id="vo-use" placeholder="e.g. a 30-second product explainer ad"></div>
+        <div class="field"><label>Key points to cover</label><textarea id="vo-points" placeholder="e.g. introduces the product, one key benefit, a call to action to visit the website"></textarea></div>
+        <div class="field"><label>Tone</label><input type="text" id="vo-tone" placeholder="e.g. upbeat, confident, conversational"></div>
+        <button class="btn btn-primary btn-block" id="vo-btn" onclick="genVoiceover()">Write script</button>
+      </div>
+      <div class="panel">
+        <h3>Voiceover script</h3>
+        <p class="sub">Includes bracketed delivery notes — [pause], [upbeat], etc.</p>
+        <div id="vo-output"><div class="output-empty">Fill in the fields and write.</div></div>
+        <div class="output-status" id="vo-status"></div>
+        <div class="output-actions" id="vo-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('vo-output')">Copy script</button>
+          <button class="btn btn-sm" onclick="genVoiceover(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOUND DESIGN BRIEF -->
+  <div class="view" id="view-sound">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A sound-effect list for a game or app, ready to generate or source.</p>
+        <div class="field"><label>Project</label><input type="text" id="sd-project" placeholder="e.g. a cozy farming mobile game"></div>
+        <div class="field"><label>Key moments needing sound</label><textarea id="sd-moments" placeholder="e.g. planting a seed, harvesting, level up, menu click, rain ambience"></textarea></div>
+        <button class="btn btn-primary btn-block" id="sd-btn" onclick="genSound()">Build sound design brief</button>
+      </div>
+      <div class="panel">
+        <h3>Sound effect list</h3>
+        <p class="sub">Each with a generation prompt or a sourcing suggestion.</p>
+        <div id="sd-output"><div class="output-empty">List the key moments and build.</div></div>
+        <div class="output-status" id="sd-status"></div>
+        <div class="output-actions" id="sd-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('sd-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genSound(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIOBOOK PACKAGE -->
+  <div class="view" id="view-audiobook">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A narration plan for one chapter — voice direction plus pacing notes.</p>
+        <div class="field"><label>Chapter title / summary</label><textarea id="ab-chapter" placeholder="e.g. Chapter 3: the protagonist discovers the letter"></textarea></div>
+        <div class="field"><label>Genre / tone</label><input type="text" id="ab-genre" placeholder="e.g. literary fiction, reflective and quiet"></div>
+        <button class="btn btn-primary btn-block" id="ab-btn" onclick="genAudiobook()">Build narration package</button>
+      </div>
+      <div class="panel">
+        <h3>Narration package</h3>
+        <p class="sub">Voice direction and pacing notes for ElevenLabs or a narrator.</p>
+        <div id="ab-output"><div class="output-empty">Fill in the fields and build.</div></div>
+        <div class="output-status" id="ab-status"></div>
+        <div class="output-actions" id="ab-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genAudiobook(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:680px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Direction and taste sell — the generation tool is just the instrument.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:10px"><span class="tag-chip">Licensed music</span>&nbsp; $20–$100 per track, sold on marketplaces or direct to creators.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:10px"><span class="tag-chip">Voiceover</span>&nbsp; $50–$300 per project depending on length and use.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:10px"><span class="tag-chip">Sound design</span>&nbsp; $200–$800 per game/app SFX package.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Audiobook narration</span>&nbsp; $50–$200 per finished hour of audio.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. No audio is ever generated by this page itself.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + t.dataset.tab));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function runSample(promptText, btnId, statusId, outputId, actionsId, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const out = document.getElementById(outputId);
+  const actions = document.getElementById(actionsId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = '';
+  actions.style.display = 'none';
+  out.innerHTML = `<div class="card">Thinking…</div>`;
+  try{
+    const { text } = await sample(promptText, {
+      modelTier: 'default',
+      cache: regenerate ? false : true,
+      onText: ({text}) => { out.innerHTML = `<div class="card"><div class="prompt-block">${escapeHtml(text)}</div></div>`; }
+    });
+    out.innerHTML = `<div class="card"><div class="prompt-block">${escapeHtml(text)}</div></div>`;
+    actions.style.display = 'flex';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      empty_completion: 'Nothing came back — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function genMusic(regenerate){
+  const use = document.getElementById('mu-use').value.trim();
+  const mood = document.getElementById('mu-mood').value.trim();
+  const length = document.getElementById('mu-length').value.trim();
+  if(!use || !mood){ document.getElementById('mu-status').textContent = 'Fill in the use case and mood first.'; return; }
+  const prompt = `Write a music-generation prompt (Suno/Mubert style: genre, instrumentation, tempo, mood descriptors) for this project.
+Use: "${use}". Mood/genre: "${mood}". Length needed: "${length || 'not specified'}".
+Output only the prompt text, ready to paste into a music generation tool.`;
+  runSample(prompt, 'mu-btn', 'mu-status', 'mu-output', 'mu-actions', regenerate);
+}
+
+function genVoiceover(regenerate){
+  const use = document.getElementById('vo-use').value.trim();
+  const points = document.getElementById('vo-points').value.trim();
+  const tone = document.getElementById('vo-tone').value.trim();
+  if(!use || !points){ document.getElementById('vo-status').textContent = 'Fill in the use case and key points first.'; return; }
+  const prompt = `Write a voiceover script for: "${use}". Key points to cover: "${points}". Tone: "${tone || 'professional'}".
+Include bracketed delivery direction like [pause], [upbeat], [slower] where it helps a voice actor or AI voice tool. Never invent facts or claims about the product/service beyond what's given. Output only the script.`;
+  runSample(prompt, 'vo-btn', 'vo-status', 'vo-output', 'vo-actions', regenerate);
+}
+
+function genSound(regenerate){
+  const project = document.getElementById('sd-project').value.trim();
+  const moments = document.getElementById('sd-moments').value.trim();
+  if(!project || !moments){ document.getElementById('sd-status').textContent = 'Fill in both fields first.'; return; }
+  const prompt = `Build a sound design brief for "${project}". Key moments needing sound: "${moments}"
+For each moment, give a short generation-prompt-style description (texture, length, character) suitable for an AI sound tool or a sourcing search on a library like Freesound. Reply with only a JSON array of {"moment": string, "soundBrief": string} objects, one per moment listed.`;
+  runSampleJson(prompt, 'sd-btn', 'sd-status', (items) => {
+    const wrap = document.getElementById('sd-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map(it => `<div class="card"><span class="n">${escapeHtml(it.moment||'')}</span><div class="prompt-block">${escapeHtml(it.soundBrief||'')}</div></div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('sd-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function genAudiobook(regenerate){
+  const chapter = document.getElementById('ab-chapter').value.trim();
+  const genre = document.getElementById('ab-genre').value.trim();
+  if(!chapter){ document.getElementById('ab-status').textContent = 'Describe the chapter first.'; return; }
+  const prompt = `Create a narration direction package for this audiobook chapter, for use with an AI voice tool like ElevenLabs or briefing a human narrator.
+Chapter: "${chapter}". Genre/tone: "${genre || 'not specified'}".
+Include: overall pacing guidance (words per minute range), voice character notes (pitch, warmth, energy), and 2-3 specific moments in a typical chapter of this kind where delivery should shift (a tense moment, a quiet moment, dialogue vs narration). Output as plain text.`;
+  runSample(prompt, 'ab-btn', 'ab-status', 'ab-output', 'ab-actions', regenerate);
+}
+
+function copyOut(id){
+  const text = document.querySelector('#' + id + ' .prompt-block')?.textContent
+    || Array.from(document.querySelectorAll('#' + id + ' .prompt-block')).map(c => c.textContent).join('\n\n');
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+</script>

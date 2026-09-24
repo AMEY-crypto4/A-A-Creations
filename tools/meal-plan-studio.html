@@ -1,0 +1,379 @@
+<title>Meal Plan Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Be+Vietnam+Pro:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.01 115);
+  --paper-raised:oklch(0.995 0.005 115);
+  --ink:oklch(0.22 0.03 140);
+  --ink-dim:oklch(0.47 0.02 130);
+  --line:oklch(0.85 0.02 115);
+  --line-strong:oklch(0.7 0.03 115);
+  --accent:oklch(0.5 0.12 140);
+  --accent-soft:oklch(0.5 0.12 140 / 0.1);
+  --accent-ink:oklch(0.99 0.006 90);
+  --tomato:oklch(0.58 0.19 35);
+  --tomato-soft:oklch(0.58 0.19 35 / 0.14);
+  --shadow:0 1px 2px oklch(0.3 0.02 115 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.16 0.018 140); --paper-raised:oklch(0.21 0.02 140);
+    --ink:oklch(0.95 0.01 115); --ink-dim:oklch(0.7 0.016 115);
+    --line:oklch(0.34 0.022 140); --line-strong:oklch(0.45 0.028 140);
+    --accent:oklch(0.7 0.12 140); --accent-soft:oklch(0.7 0.12 140 / 0.16); --accent-ink:oklch(0.15 0.02 140);
+    --tomato:oklch(0.7 0.16 35); --tomato-soft:oklch(0.7 0.16 35 / 0.17);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.16 0.018 140); --paper-raised:oklch(0.21 0.02 140);
+  --ink:oklch(0.95 0.01 115); --ink-dim:oklch(0.7 0.016 115);
+  --line:oklch(0.34 0.022 140); --line-strong:oklch(0.45 0.028 140);
+  --accent:oklch(0.7 0.12 140); --accent-soft:oklch(0.7 0.12 140 / 0.16); --accent-ink:oklch(0.15 0.02 140);
+  --tomato:oklch(0.7 0.16 35); --tomato-soft:oklch(0.7 0.16 35 / 0.17);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Be Vietnam Pro',system-ui,sans-serif}
+h1,h2,h3{font-family:'Yeseva One',georgia,serif;margin:0;text-wrap:balance}
+.mono{font-family:'Space Mono',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:19px}
+.brand h1{font-size:20px;font-weight:400}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.profile-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;margin-top:16px;background:var(--accent-soft);border-radius:10px;font-size:12.5px;flex-wrap:wrap}
+.profile-bar .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.profile-bar.off .dot{background:var(--ink-dim)}
+.profile-bar a{color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer}
+.profile-bar a:hover{text-decoration:underline}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Be Vietnam Pro',sans-serif;font-weight:600;font-size:13px;padding:11px 14px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:19px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Be Vietnam Pro',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:70px;line-height:1.5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.btn{font-family:'Be Vietnam Pro',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:20px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 13px;font-size:12px;border-radius:16px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.day-tag{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;padding:2px 8px;border-radius:10px;background:var(--tomato-soft);color:oklch(0.5 0.14 35);margin-right:6px}
+:root[data-theme="dark"] .day-tag{color:var(--tomato)}
+
+.tag-chip{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--tomato-soft);color:oklch(0.5 0.14 35);text-transform:uppercase;letter-spacing:.04em}
+:root[data-theme="dark"] .tag-chip{color:var(--tomato)}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">🍴</div>
+      <div>
+        <h1>Meal Plan Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 22</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Per plan: <strong>$15–$40</strong><br>Monthly subscription: <strong>$10–$30/mo</strong></div>
+  </header>
+
+  <div class="profile-bar off" id="profile-bar">
+    <span class="dot"></span>
+    <span id="profile-summary">No client profile set — every tab writes generically.</span>
+    <a data-tab="profile">Set it up →</a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="plan">Meal Plan</button>
+    <button class="tab" data-tab="recipe">Recipe Expander</button>
+    <button class="tab" data-tab="grocery">Grocery List</button>
+    <button class="tab" data-tab="profile">Client Profile</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- MEAL PLAN -->
+  <div class="view active" id="view-plan">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">This is meal planning support, not medical or nutrition-licensure advice — flag any real medical condition to a doctor/dietitian.</p>
+        <div class="field"><label>Diet type / restrictions</label><input type="text" id="pl-diet" placeholder="e.g. vegetarian, no nuts, low-carb"></div>
+        <div class="two-col">
+          <div class="field"><label>Days to plan</label>
+            <select id="pl-days"><option value="3">3</option><option value="5">5</option><option value="7" selected>7</option></select>
+          </div>
+          <div class="field"><label>Cooking time budget</label>
+            <select id="pl-time"><option>Under 20 min/meal</option><option>Under 45 min/meal</option><option>No limit</option></select>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block" id="pl-btn" onclick="genPlan()">Generate meal plan</button>
+      </div>
+      <div class="panel">
+        <h3>Meal plan</h3>
+        <p class="sub">Breakfast, lunch, dinner for each day.</p>
+        <div id="pl-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="pl-status"></div>
+        <div class="output-actions" id="pl-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('pl-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genPlan(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECIPE EXPANDER -->
+  <div class="view" id="view-recipe">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Turn one meal idea into a full step-by-step recipe.</p>
+        <div class="field"><label>Meal name</label><input type="text" id="rc-name" placeholder="e.g. one-pan lemon garlic chicken and rice"></div>
+        <div class="field"><label>Servings</label><input type="number" id="rc-servings" value="4" min="1" step="1"></div>
+        <button class="btn btn-primary btn-block" id="rc-btn" onclick="genRecipe()">Expand into full recipe</button>
+      </div>
+      <div class="panel">
+        <h3>Full recipe</h3>
+        <p class="sub">Ingredients with quantities and numbered steps.</p>
+        <div id="rc-output"><div class="output-empty">Enter a meal and expand it.</div></div>
+        <div class="output-status" id="rc-status"></div>
+        <div class="output-actions" id="rc-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('rc-output')">Copy text</button>
+          <button class="btn btn-sm" onclick="genRecipe(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GROCERY LIST -->
+  <div class="view" id="view-grocery">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Paste your meal list (from the Meal Plan tab, or your own) — get one consolidated shopping list.</p>
+        <div class="field"><label>Meals to shop for</label><textarea id="gr-meals" style="min-height:160px" placeholder="Monday: overnight oats, chicken stir fry
+Tuesday: veggie omelet, taco bowls..."></textarea></div>
+        <button class="btn btn-primary btn-block" id="gr-btn" onclick="genGrocery()">Build grocery list</button>
+      </div>
+      <div class="panel">
+        <h3>Grocery list</h3>
+        <p class="sub">Grouped by store section.</p>
+        <div id="gr-output"><div class="output-empty">List your meals and build the list.</div></div>
+        <div class="output-status" id="gr-status"></div>
+        <div class="output-actions" id="gr-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('gr-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genGrocery(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENT PROFILE -->
+  <div class="view" id="view-profile">
+    <div class="panel" style="max-width:640px">
+      <h3>Client profile</h3>
+      <p class="sub">Set this once per client — every tab above writes with this context.</p>
+      <div class="field"><label>Client name</label><input type="text" id="pf-name" placeholder="e.g. Jordan Reyes"></div>
+      <div class="field"><label>Household size / notes</label><input type="text" id="pf-notes" placeholder="e.g. family of 4, two picky kids"></div>
+      <button class="btn btn-primary btn-block" onclick="saveProfile()">Save client profile</button>
+      <div class="output-status" id="pf-status"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Meal planning is a chore most people would happily outsource.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Per plan</span>&nbsp; $15–$40 for a custom weekly plan plus grocery list.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Subscription</span>&nbsp; $10–$30/mo for a fresh plan delivered every week — recurring revenue from repeat clients.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Not medical advice</span>&nbsp; For real dietary conditions (diabetes, allergies with medical risk, eating disorders), point clients to a registered dietitian — this is convenience planning, not clinical nutrition care.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. Nothing here is saved anywhere except this browser.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab, [data-tab]').forEach(t => t.addEventListener('click', () => {
+  const target = t.dataset.tab;
+  if(!target) return;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.dataset.tab === target));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + target));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ---------- client profile ---------- */
+const PROFILE_KEY = 'aa-mealplan-profile-v1';
+function loadProfile(){ try{ return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); }catch(e){ return null; } }
+function renderProfileBar(){
+  const p = loadProfile();
+  const bar = document.getElementById('profile-bar');
+  const summary = document.getElementById('profile-summary');
+  if(p && p.name){
+    bar.classList.remove('off');
+    summary.textContent = `Planning for "${p.name}"`;
+  } else {
+    bar.classList.add('off');
+    summary.textContent = 'No client profile set — every tab writes generically.';
+  }
+}
+function saveProfile(){
+  const p = { name: document.getElementById('pf-name').value.trim(), notes: document.getElementById('pf-notes').value.trim() };
+  try{ localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }catch(e){}
+  renderProfileBar();
+  const el = document.getElementById('pf-status');
+  el.textContent = 'Saved.';
+  setTimeout(() => el.textContent = '', 2000);
+}
+(function initProfileForm(){
+  const p = loadProfile();
+  if(!p) return;
+  document.getElementById('pf-name').value = p.name || '';
+  document.getElementById('pf-notes').value = p.notes || '';
+})();
+renderProfileBar();
+function profileContext(){
+  const p = loadProfile();
+  if(!p || !p.name) return '';
+  return `\n\nClient: "${p.name}". Notes: ${p.notes || 'none'}.`;
+}
+
+/* ---------- sample helper ---------- */
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+async function runSample(promptText, btnId, statusId, outputId, actionsId, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const out = document.getElementById(outputId);
+  const actions = document.getElementById(actionsId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = '';
+  actions.style.display = 'none';
+  out.innerHTML = `<div class="card">Thinking…</div>`;
+  try{
+    const { text } = await sample(promptText, {
+      modelTier: 'default',
+      cache: regenerate ? false : true,
+      onText: ({text}) => { out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`; }
+    });
+    out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`;
+    actions.style.display = 'flex';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      empty_completion: 'Nothing came back — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+/* ---------- meal plan ---------- */
+function genPlan(regenerate){
+  const diet = document.getElementById('pl-diet').value.trim();
+  const days = document.getElementById('pl-days').value;
+  const time = document.getElementById('pl-time').value;
+  if(!diet){ document.getElementById('pl-status').textContent = 'Describe the diet/restrictions first.'; return; }
+  const prompt = `Create a ${days}-day meal plan (breakfast, lunch, dinner each day).${profileContext()}
+Diet/restrictions: "${diet}". Cooking time budget: "${time}".
+Vary meals across days — no repeats. Never suggest anything that conflicts with stated restrictions. Reply with only a JSON array of exactly ${days} {"day": number, "breakfast": string, "lunch": string, "dinner": string} objects.`;
+  runSampleJson(prompt, 'pl-btn', 'pl-status', (items) => {
+    const wrap = document.getElementById('pl-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map(d => `<div class="card"><span class="day-tag">Day ${d.day}</span><br><div class="field-lbl">Breakfast</div>${escapeHtml(d.breakfast||'')}<div class="field-lbl">Lunch</div>${escapeHtml(d.lunch||'')}<div class="field-lbl">Dinner</div>${escapeHtml(d.dinner||'')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('pl-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- recipe expander ---------- */
+function genRecipe(regenerate){
+  const name = document.getElementById('rc-name').value.trim();
+  const servings = document.getElementById('rc-servings').value;
+  if(!name){ document.getElementById('rc-status').textContent = 'Enter a meal name first.'; return; }
+  const prompt = `Write a full recipe for "${name}", serving ${servings}. Include an ingredient list with realistic quantities and numbered step-by-step instructions with approximate times. Output only the recipe text.`;
+  runSample(prompt, 'rc-btn', 'rc-status', 'rc-output', 'rc-actions', regenerate);
+}
+
+/* ---------- grocery list ---------- */
+function genGrocery(regenerate){
+  const meals = document.getElementById('gr-meals').value.trim();
+  if(!meals){ document.getElementById('gr-status').textContent = 'List your meals first.'; return; }
+  const prompt = `Build one consolidated grocery list for this week of meals, grouped by store section (Produce, Protein, Dairy, Pantry, Frozen, Other).${profileContext()}
+Meals:
+"""${meals}"""
+Reply with only a JSON array of {"section": string, "items": [string]} objects.`;
+  runSampleJson(prompt, 'gr-btn', 'gr-status', (cats) => {
+    const wrap = document.getElementById('gr-output');
+    wrap.innerHTML = `<div class="card">${(Array.isArray(cats)?cats:[]).map(c => `<div class="field-lbl">${escapeHtml(c.section||'')}</div><ul style="margin:2px 0 0;padding-left:18px">${(c.items||[]).map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>`).join('')}</div>` || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('gr-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function copyOut(id){
+  const text = Array.from(document.querySelectorAll('#' + id + ' .card')).map(c => c.textContent).join('\n\n');
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+</script>

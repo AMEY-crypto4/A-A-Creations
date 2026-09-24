@@ -1,0 +1,520 @@
+<title>Study Guide Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,600;7..72,700&family=Noto+Sans:wght@400;500;600;700&family=Overpass+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.98 0.006 100);
+  --paper-raised:oklch(0.997 0.003 100);
+  --ink:oklch(0.22 0.025 260);
+  --ink-dim:oklch(0.47 0.018 260);
+  --line:oklch(0.86 0.012 100);
+  --line-strong:oklch(0.72 0.02 100);
+  --accent:oklch(0.48 0.15 265);
+  --accent-soft:oklch(0.48 0.15 265 / 0.1);
+  --accent-ink:oklch(0.99 0.005 90);
+  --highlight:oklch(0.85 0.14 95);
+  --highlight-ink:oklch(0.32 0.06 90);
+  --good:oklch(0.5 0.12 150);
+  --good-soft:oklch(0.5 0.12 150 / 0.13);
+  --bad:oklch(0.55 0.16 25);
+  --bad-soft:oklch(0.55 0.16 25 / 0.13);
+  --shadow:0 1px 2px oklch(0.25 0.02 260 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.16 0.016 260); --paper-raised:oklch(0.21 0.018 260);
+    --ink:oklch(0.95 0.008 100); --ink-dim:oklch(0.7 0.014 100);
+    --line:oklch(0.34 0.022 260); --line-strong:oklch(0.45 0.028 260);
+    --accent:oklch(0.72 0.13 265); --accent-soft:oklch(0.72 0.13 265 / 0.16); --accent-ink:oklch(0.15 0.02 265);
+    --highlight:oklch(0.78 0.13 95); --highlight-ink:oklch(0.2 0.04 90);
+    --good:oklch(0.7 0.12 150); --good-soft:oklch(0.7 0.12 150 / 0.16);
+    --bad:oklch(0.72 0.15 25); --bad-soft:oklch(0.72 0.15 25 / 0.16);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.16 0.016 260); --paper-raised:oklch(0.21 0.018 260);
+  --ink:oklch(0.95 0.008 100); --ink-dim:oklch(0.7 0.014 100);
+  --line:oklch(0.34 0.022 260); --line-strong:oklch(0.45 0.028 260);
+  --accent:oklch(0.72 0.13 265); --accent-soft:oklch(0.72 0.13 265 / 0.16); --accent-ink:oklch(0.15 0.02 265);
+  --highlight:oklch(0.78 0.13 95); --highlight-ink:oklch(0.2 0.04 90);
+  --good:oklch(0.7 0.12 150); --good-soft:oklch(0.7 0.12 150 / 0.16);
+  --bad:oklch(0.72 0.15 25); --bad-soft:oklch(0.72 0.15 25 / 0.16);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Noto Sans',system-ui,sans-serif}
+h1,h2,h3{font-family:'Literata',georgia,serif;margin:0;text-wrap:balance}
+.mono{font-family:'Overpass Mono',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent-ink);font-family:'Literata',serif;font-weight:700;font-size:18px;position:relative}
+.brand .mark::after{content:'';position:absolute;bottom:5px;left:8px;right:8px;height:3px;background:var(--highlight);border-radius:2px}
+.brand h1{font-size:21px;font-weight:700}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Overpass Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.profile-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;margin-top:16px;background:var(--accent-soft);border-radius:10px;font-size:12.5px;flex-wrap:wrap}
+.profile-bar .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.profile-bar.off .dot{background:var(--ink-dim)}
+.profile-bar a{color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer}
+.profile-bar a:hover{text-decoration:underline}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Noto Sans',sans-serif;font-weight:700;font-size:13px;padding:11px 14px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:10px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:16px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Noto Sans',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:7px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:90px;line-height:1.5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.btn{font-family:'Noto Sans',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:8px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'Overpass Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.term-mark{background:var(--highlight);color:var(--highlight-ink);padding:0 4px;border-radius:3px;font-weight:600}
+
+/* flashcards */
+.flash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.flashcard{perspective:1000px;height:130px;cursor:pointer}
+.flashcard-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flashcard.flipped .flashcard-inner{transform:rotateY(180deg)}
+.flashcard-face{position:absolute;inset:0;backface-visibility:hidden;border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13px;background:var(--paper)}
+.flashcard-face.back{transform:rotateY(180deg);background:var(--accent-soft);font-size:12px}
+.flashcard-face .term{font-weight:700;font-family:'Literata',georgia,serif;font-size:15px}
+
+/* quiz */
+.quiz-q{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.quiz-q:last-child{border-bottom:0}
+.quiz-q .qtext{font-weight:700;margin-bottom:10px}
+.quiz-choice{display:block;padding:8px 12px;border:1px solid var(--line-strong);border-radius:6px;margin-bottom:6px;cursor:pointer;font-size:13px}
+.quiz-choice:hover{border-color:var(--accent)}
+.quiz-choice.correct{border-color:var(--good);background:var(--good-soft)}
+.quiz-choice.incorrect{border-color:var(--bad);background:var(--bad-soft)}
+.quiz-explain{font-size:12px;color:var(--ink-dim);margin-top:8px;display:none}
+.quiz-explain.show{display:block}
+
+.tag-chip{display:inline-block;font-family:'Overpass Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--good-soft);color:var(--good);text-transform:uppercase;letter-spacing:.04em}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">S</div>
+      <div>
+        <h1>Study Guide Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 09</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Study guide/set: <strong>$15–$40</strong><br>Tutoring curriculum: <strong>$600–$3k/mo</strong></div>
+  </header>
+
+  <div class="profile-bar off" id="profile-bar">
+    <span class="dot"></span>
+    <span id="profile-summary">No subject profile set — every tab writes generically.</span>
+    <a data-tab="profile">Set it up →</a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="summary">Summarizer</button>
+    <button class="tab" data-tab="flashcards">Flashcards</button>
+    <button class="tab" data-tab="quiz">Practice Quiz</button>
+    <button class="tab" data-tab="lesson">Lesson Plan</button>
+    <button class="tab" data-tab="schedule">Study Schedule</button>
+    <button class="tab" data-tab="profile">Subject Profile</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- SUMMARIZER -->
+  <div class="view active" id="view-summary">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Paste a chapter, notes, or article — get a structured summary with key terms pulled out.</p>
+        <div class="field"><label>Text to summarize</label><textarea id="sm-text" style="min-height:220px" placeholder="Paste chapter text or notes here…"></textarea></div>
+        <button class="btn btn-primary btn-block" id="sm-btn" onclick="genSummary()">Summarize</button>
+      </div>
+      <div class="panel">
+        <h3>Summary</h3>
+        <p class="sub">Overview, key points, and highlighted terms with definitions.</p>
+        <div id="sm-output"><div class="output-empty">Paste text and summarize.</div></div>
+        <div class="output-status" id="sm-status"></div>
+        <div class="output-actions" id="sm-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genSummary(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLASHCARDS -->
+  <div class="view" id="view-flashcards">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Click a card to flip it once it's generated.</p>
+        <div class="field"><label>Text or topic list</label><textarea id="fc-text" style="min-height:180px" placeholder="Paste notes, or list terms to cover"></textarea></div>
+        <div class="field"><label>Number of cards</label>
+          <select id="fc-count"><option value="8">8</option><option value="12" selected>12</option><option value="16">16</option></select>
+        </div>
+        <button class="btn btn-primary btn-block" id="fc-btn" onclick="genFlashcards()">Generate flashcards</button>
+      </div>
+      <div class="panel">
+        <h3>Flashcards</h3>
+        <p class="sub">Term on the front, definition on the back.</p>
+        <div id="fc-output"><div class="output-empty">Fill in the text and generate.</div></div>
+        <div class="output-status" id="fc-status"></div>
+        <div class="output-actions" id="fc-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('fc-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genFlashcards(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="view" id="view-quiz">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Multiple choice, with an explanation revealed after you answer.</p>
+        <div class="field"><label>Text or topic to quiz on</label><textarea id="qz-text" style="min-height:180px" placeholder="Paste notes, or describe the topic to be quizzed on"></textarea></div>
+        <div class="field"><label>Number of questions</label>
+          <select id="qz-count"><option value="5" selected>5</option><option value="8">8</option><option value="10">10</option></select>
+        </div>
+        <button class="btn btn-primary btn-block" id="qz-btn" onclick="genQuiz()">Generate quiz</button>
+      </div>
+      <div class="panel">
+        <h3>Practice quiz</h3>
+        <p class="sub">Click an answer to check it.</p>
+        <div id="qz-output"><div class="output-empty">Fill in the text and generate.</div></div>
+        <div class="output-status" id="qz-status"></div>
+        <div class="output-actions" id="qz-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genQuiz(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LESSON PLAN -->
+  <div class="view" id="view-lesson">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">For 1:1 or small-group tutoring sessions.</p>
+        <div class="field"><label>Topic</label><input type="text" id="lp-topic" placeholder="e.g. Introduction to fractions"></div>
+        <div class="two-col">
+          <div class="field"><label>Grade / level</label><input type="text" id="lp-grade" placeholder="e.g. 4th grade"></div>
+          <div class="field"><label>Session length (minutes)</label><input type="number" id="lp-duration" value="45" min="15" step="5"></div>
+        </div>
+        <button class="btn btn-primary btn-block" id="lp-btn" onclick="genLesson()">Draft lesson plan</button>
+      </div>
+      <div class="panel">
+        <h3>Lesson plan</h3>
+        <p class="sub">Objectives, materials, timed activities, and an assessment check.</p>
+        <div id="lp-output"><div class="output-empty">Fill in the fields and draft.</div></div>
+        <div class="output-status" id="lp-status"></div>
+        <div class="output-actions" id="lp-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('lp-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genLesson(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDY SCHEDULE -->
+  <div class="view" id="view-schedule">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Splits topics evenly across the real number of days left.</p>
+        <div class="field"><label>Exam / deadline date</label><input type="date" id="sc-date"></div>
+        <div class="field"><label>Topics to cover (one per line)</label><textarea id="sc-topics" style="min-height:140px" placeholder="Cell biology&#10;Genetics&#10;Evolution&#10;Ecology"></textarea></div>
+        <div class="field"><label>Study sessions per week</label>
+          <select id="sc-freq"><option value="3">3</option><option value="5" selected>5</option><option value="7">7 (daily)</option></select>
+        </div>
+        <button class="btn btn-primary btn-block" id="sc-btn" onclick="genSchedule()">Generate schedule</button>
+      </div>
+      <div class="panel">
+        <h3>Study schedule</h3>
+        <p class="sub" id="sc-daysnote">Pick a date to see how many sessions you actually have.</p>
+        <div id="sc-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="sc-status"></div>
+        <div class="output-actions" id="sc-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('sc-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genSchedule(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBJECT PROFILE -->
+  <div class="view" id="view-profile">
+    <div class="panel" style="max-width:640px">
+      <h3>Subject profile</h3>
+      <p class="sub">Set this once per student/subject — every tab above writes with this context.</p>
+      <div class="field"><label>Subject</label><input type="text" id="pf-subject" placeholder="e.g. AP Biology"></div>
+      <div class="field"><label>Student level</label><input type="text" id="pf-level" placeholder="e.g. 11th grade, prepping for the AP exam"></div>
+      <div class="field"><label>Notes on learning style / weak spots</label><textarea id="pf-notes" placeholder="e.g. visual learner, struggles with molecular processes"></textarea></div>
+      <button class="btn btn-primary btn-block" onclick="saveProfile()">Save subject profile</button>
+      <div class="output-status" id="pf-status"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Two ways to run it: sell study materials, or use it to tutor faster.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Study guides</span>&nbsp; Sell summarized study guides and flashcard sets for $15–$40 per subject on Etsy, Gumroad, or directly to students in high-demand courses (nursing, law, intro STEM).</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Tutoring</span>&nbsp; If you tutor, this cuts prep time dramatically — lesson plans and quizzes in minutes instead of an hour. Charge your normal tutoring rate, prep faster, take more students.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Always verify</span>&nbsp; Spot-check generated facts against the real textbook before selling or teaching from it — treat this as a fast first draft, not a finished, fact-checked product.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. Nothing here is saved anywhere except this browser.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab, [data-tab]').forEach(t => t.addEventListener('click', () => {
+  const target = t.dataset.tab;
+  if(!target) return;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.dataset.tab === target));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + target));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escapeAttr(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+
+/* ---------- subject profile ---------- */
+const PROFILE_KEY = 'aa-study-profile-v1';
+function loadProfile(){ try{ return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); }catch(e){ return null; } }
+function renderProfileBar(){
+  const p = loadProfile();
+  const bar = document.getElementById('profile-bar');
+  const summary = document.getElementById('profile-summary');
+  if(p && p.subject){
+    bar.classList.remove('off');
+    summary.textContent = `Studying "${p.subject}" — ${p.level || 'level not set'}`;
+  } else {
+    bar.classList.add('off');
+    summary.textContent = 'No subject profile set — every tab writes generically.';
+  }
+}
+function saveProfile(){
+  const p = {
+    subject: document.getElementById('pf-subject').value.trim(),
+    level: document.getElementById('pf-level').value.trim(),
+    notes: document.getElementById('pf-notes').value.trim(),
+  };
+  try{ localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }catch(e){}
+  renderProfileBar();
+  const el = document.getElementById('pf-status');
+  el.textContent = 'Saved. Every generator below will now use this profile.';
+  setTimeout(() => el.textContent = '', 2500);
+}
+(function initProfileForm(){
+  const p = loadProfile();
+  if(!p) return;
+  document.getElementById('pf-subject').value = p.subject || '';
+  document.getElementById('pf-level').value = p.level || '';
+  document.getElementById('pf-notes').value = p.notes || '';
+})();
+renderProfileBar();
+function profileContext(){
+  const p = loadProfile();
+  if(!p || !p.subject) return '';
+  return `\n\nStudent context: subject "${p.subject}", level: ${p.level || 'not specified'}. Notes: ${p.notes || 'none'}. Adjust vocabulary and depth accordingly.`;
+}
+
+/* ---------- sample helpers ---------- */
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      prompt_too_large: 'That input is too long — trim it and try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+/* ---------- summarizer ---------- */
+function genSummary(regenerate){
+  const text = document.getElementById('sm-text').value.trim();
+  if(!text){ document.getElementById('sm-status').textContent = 'Paste some text first.'; return; }
+  const prompt = `Summarize this text for a student studying it.${profileContext()}
+Text:
+"""${text.slice(0,8000)}"""
+Reply with only a JSON object: {"overview": string (2-3 sentences, the big picture), "keyPoints": [string] (5-8 bullet points), "keyTerms": [{"term": string, "definition": string}] (4-8 important terms actually in the text)}. Base everything only on the text given — never add outside facts.`;
+  runSampleJson(prompt, 'sm-btn', 'sm-status', (d) => {
+    const points = (d.keyPoints||[]).map(p => `<li>${escapeHtml(p)}</li>`).join('');
+    const terms = (d.keyTerms||[]).map(t => `<div class="field-lbl"><span class="term-mark">${escapeHtml(t.term)}</span></div>${escapeHtml(t.definition)}`).join('');
+    document.getElementById('sm-output').innerHTML = `<div class="card">
+      <div class="field-lbl">Overview</div>${escapeHtml(d.overview||'')}
+      <div class="field-lbl">Key points</div><ul style="margin:4px 0 0;padding-left:18px">${points}</ul>
+      ${terms}
+    </div>`;
+    document.getElementById('sm-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- flashcards ---------- */
+let cardData = [];
+function genFlashcards(regenerate){
+  const text = document.getElementById('fc-text').value.trim();
+  const count = document.getElementById('fc-count').value;
+  if(!text){ document.getElementById('fc-status').textContent = 'Paste some text or topics first.'; return; }
+  const prompt = `Create exactly ${count} flashcards (term + definition) from this text/topic list.${profileContext()}
+Text: """${text.slice(0,6000)}"""
+Reply with only a JSON array of exactly ${count} {"term": string, "definition": string} objects, covering the most important, testable concepts.`;
+  runSampleJson(prompt, 'fc-btn', 'fc-status', (items) => {
+    cardData = Array.isArray(items) ? items : [];
+    const wrap = document.getElementById('fc-output');
+    wrap.innerHTML = `<div class="flash-grid">${cardData.map((c,i) => `
+      <div class="flashcard" data-i="${i}">
+        <div class="flashcard-inner">
+          <div class="flashcard-face"><span class="term">${escapeHtml(c.term)}</span></div>
+          <div class="flashcard-face back">${escapeHtml(c.definition)}</div>
+        </div>
+      </div>
+    `).join('')}</div>`;
+    wrap.querySelectorAll('.flashcard').forEach(el => el.addEventListener('click', () => el.classList.toggle('flipped')));
+    document.getElementById('fc-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- quiz ---------- */
+function genQuiz(regenerate){
+  const text = document.getElementById('qz-text').value.trim();
+  const count = document.getElementById('qz-count').value;
+  if(!text){ document.getElementById('qz-status').textContent = 'Paste some text or a topic first.'; return; }
+  const prompt = `Create exactly ${count} multiple-choice quiz questions from this text/topic.${profileContext()}
+Text: """${text.slice(0,6000)}"""
+Reply with only a JSON array of exactly ${count} {"question": string, "choices": [string] (exactly 4), "correctIndex": number (0-3), "explanation": string (1 sentence on why the answer is correct)} objects.`;
+  runSampleJson(prompt, 'qz-btn', 'qz-status', (items) => {
+    const questions = Array.isArray(items) ? items : [];
+    const wrap = document.getElementById('qz-output');
+    wrap.innerHTML = questions.map((q,qi) => `
+      <div class="quiz-q">
+        <div class="qtext">${qi+1}. ${escapeHtml(q.question)}</div>
+        ${(q.choices||[]).map((c,ci) => `<div class="quiz-choice" data-qi="${qi}" data-ci="${ci}">${escapeHtml(c)}</div>`).join('')}
+        <div class="quiz-explain" id="qz-explain-${qi}">${escapeHtml(q.explanation||'')}</div>
+      </div>
+    `).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    wrap.querySelectorAll('.quiz-choice').forEach(el => {
+      el.addEventListener('click', () => {
+        const qi = +el.dataset.qi, ci = +el.dataset.ci;
+        const q = questions[qi];
+        const siblings = wrap.querySelectorAll(`.quiz-choice[data-qi="${qi}"]`);
+        if(siblings[0].classList.contains('correct') || siblings[0].classList.contains('incorrect')) return;
+        siblings.forEach((s,i) => { if(i === q.correctIndex) s.classList.add('correct'); });
+        if(ci !== q.correctIndex) el.classList.add('incorrect');
+        document.getElementById('qz-explain-' + qi).classList.add('show');
+      });
+    });
+    document.getElementById('qz-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- lesson plan ---------- */
+function genLesson(regenerate){
+  const topic = document.getElementById('lp-topic').value.trim();
+  const grade = document.getElementById('lp-grade').value.trim();
+  const duration = document.getElementById('lp-duration').value;
+  if(!topic){ document.getElementById('lp-status').textContent = 'Enter a topic first.'; return; }
+  const prompt = `Create a tutoring lesson plan.${profileContext()}
+Topic: "${topic}". Grade/level: "${grade || 'not specified'}". Session length: ${duration} minutes.
+Reply with only a JSON object: {"objectives": [string] (2-3), "materials": [string], "activities": [{"name": string, "minutes": number, "description": string}] (activities should sum to roughly ${duration} minutes), "assessment": string (how to check understanding at the end)}.`;
+  runSampleJson(prompt, 'lp-btn', 'lp-status', (d) => {
+    const objs = (d.objectives||[]).map(o => `<li>${escapeHtml(o)}</li>`).join('');
+    const mats = (d.materials||[]).map(m => escapeHtml(m)).join(', ');
+    const acts = (d.activities||[]).map(a => `<div class="field-lbl">${escapeHtml(a.name)} (${a.minutes} min)</div>${escapeHtml(a.description)}`).join('');
+    document.getElementById('lp-output').innerHTML = `<div class="card">
+      <div class="field-lbl">Objectives</div><ul style="margin:4px 0 0;padding-left:18px">${objs}</ul>
+      <div class="field-lbl">Materials</div>${mats}
+      ${acts}
+      <div class="field-lbl">Assessment</div>${escapeHtml(d.assessment||'')}
+    </div>`;
+    document.getElementById('lp-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- study schedule ---------- */
+document.getElementById('sc-date').addEventListener('change', updateDaysNote);
+document.getElementById('sc-freq').addEventListener('change', updateDaysNote);
+function sessionsUntil(){
+  const dateVal = document.getElementById('sc-date').value;
+  if(!dateVal) return 0;
+  const days = Math.max(0, Math.round((new Date(dateVal) - new Date(new Date().toDateString())) / 86400000));
+  const freq = parseInt(document.getElementById('sc-freq').value, 10);
+  return Math.min(60, Math.max(1, Math.round(days * (freq/7))));
+}
+function updateDaysNote(){
+  const n = sessionsUntil();
+  document.getElementById('sc-daysnote').textContent = n ? `That's ${n} study sessions before the deadline.` : 'Pick a date to see how many sessions you actually have.';
+}
+function genSchedule(regenerate){
+  const topics = document.getElementById('sc-topics').value.trim();
+  const sessions = sessionsUntil();
+  if(!topics || !sessions){ document.getElementById('sc-status').textContent = 'Pick a date and list your topics first.'; return; }
+  const prompt = `Build a study schedule spread across exactly ${sessions} sessions before the deadline.${profileContext()}
+Topics to cover: """${topics}"""
+Distribute the topics across sessions logically (related topics grouped, harder topics get more sessions, include a final review session at the end). Reply with only a JSON array of exactly ${sessions} {"session": number, "focus": string (1-4 words), "tasks": string (what to actually do that session)} objects.`;
+  runSampleJson(prompt, 'sc-btn', 'sc-status', (items) => {
+    const wrap = document.getElementById('sc-output');
+    wrap.innerHTML = (Array.isArray(items) ? items : []).map(it => `<div class="card"><span class="n">Session ${escapeHtml(String(it.session||''))}</span><br><strong>${escapeHtml(it.focus||'')}</strong><br>${escapeHtml(it.tasks||'')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('sc-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function copyOut(id){
+  const text = Array.from(document.querySelectorAll('#' + id + ' .card')).map(c => c.textContent).join('\n\n')
+    || cardData.map(c => c.term + ': ' + c.definition).join('\n');
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+</script>

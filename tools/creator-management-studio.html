@@ -1,0 +1,419 @@
+<title>Creator Management Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Familjen+Grotesk:wght@400;500;600;700&family=Azeret+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.008 320);
+  --paper-raised:oklch(0.995 0.004 320);
+  --ink:oklch(0.2 0.03 320);
+  --ink-dim:oklch(0.46 0.02 320);
+  --line:oklch(0.85 0.016 320);
+  --line-strong:oklch(0.7 0.024 320);
+  --accent:oklch(0.52 0.19 320);
+  --accent-soft:oklch(0.52 0.19 320 / 0.1);
+  --accent-ink:oklch(0.99 0.006 90);
+  --lime:oklch(0.78 0.17 130);
+  --lime-soft:oklch(0.78 0.17 130 / 0.18);
+  --lime-ink:oklch(0.3 0.08 130);
+  --shadow:0 1px 2px oklch(0.25 0.03 320 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.16 0.02 320); --paper-raised:oklch(0.21 0.022 320);
+    --ink:oklch(0.95 0.008 320); --ink-dim:oklch(0.7 0.016 320);
+    --line:oklch(0.34 0.026 320); --line-strong:oklch(0.45 0.032 320);
+    --accent:oklch(0.72 0.16 320); --accent-soft:oklch(0.72 0.16 320 / 0.16); --accent-ink:oklch(0.16 0.03 320);
+    --lime:oklch(0.82 0.15 130); --lime-soft:oklch(0.82 0.15 130 / 0.18); --lime-ink:oklch(0.85 0.15 130);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.16 0.02 320); --paper-raised:oklch(0.21 0.022 320);
+  --ink:oklch(0.95 0.008 320); --ink-dim:oklch(0.7 0.016 320);
+  --line:oklch(0.34 0.026 320); --line-strong:oklch(0.45 0.032 320);
+  --accent:oklch(0.72 0.16 320); --accent-soft:oklch(0.72 0.16 320 / 0.16); --accent-ink:oklch(0.16 0.03 320);
+  --lime:oklch(0.82 0.15 130); --lime-soft:oklch(0.82 0.15 130 / 0.18); --lime-ink:oklch(0.85 0.15 130);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Familjen Grotesk',system-ui,sans-serif}
+h1,h2,h3{font-family:'Syne',sans-serif;margin:0;text-wrap:balance}
+.mono{font-family:'Azeret Mono',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--accent),oklch(0.6 0.18 350));display:flex;align-items:center;justify-content:center;color:var(--accent-ink);font-family:'Syne',sans-serif;font-weight:800;font-size:16px}
+.brand h1{font-size:20px;font-weight:700}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Azeret Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.profile-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;margin-top:16px;background:var(--accent-soft);border-radius:10px;font-size:12.5px;flex-wrap:wrap}
+.profile-bar .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.profile-bar.off .dot{background:var(--ink-dim)}
+.profile-bar a{color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer}
+.profile-bar a:hover{text-decoration:underline}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Familjen Grotesk',sans-serif;font-weight:700;font-size:13px;padding:11px 14px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:16px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Familjen Grotesk',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:8px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:90px;line-height:1.5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.btn{font-family:'Familjen Grotesk',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:20px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 13px;font-size:12px;border-radius:16px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'Azeret Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.hashtag{display:inline-block;font-family:'Azeret Mono',monospace;font-size:11px;color:var(--accent);margin-right:4px}
+.platform-tag{display:inline-block;font-family:'Azeret Mono',monospace;font-size:10px;padding:2px 8px;border-radius:10px;background:var(--lime-soft);color:var(--lime-ink);margin-left:6px}
+
+.tag-chip{display:inline-block;font-family:'Azeret Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--lime-soft);color:var(--lime-ink);text-transform:uppercase;letter-spacing:.04em}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">✦</div>
+      <div>
+        <h1>Creator Management Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 15</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Per creator retainer: <strong>$1k–$8k/mo</strong><br>Content batch: <strong>$200–$600</strong></div>
+  </header>
+
+  <div class="profile-bar off" id="profile-bar">
+    <span class="dot"></span>
+    <span id="profile-summary">No creator profile set — every tab writes generically.</span>
+    <a data-tab="profile">Set it up →</a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="calendar">Content Calendar</button>
+    <button class="tab" data-tab="captions">Caption Batch</button>
+    <button class="tab" data-tab="replies">Engagement Replies</button>
+    <button class="tab" data-tab="pitch">Brand Pitch</button>
+    <button class="tab" data-tab="profile">Creator Profile</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- CONTENT CALENDAR -->
+  <div class="view active" id="view-calendar">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A multi-week posting plan, not just loose ideas.</p>
+        <div class="field"><label>Niche / content focus</label><input type="text" id="cl-niche" placeholder="e.g. budget home cooking"></div>
+        <div class="field"><label>Platforms</label><input type="text" id="cl-platforms" placeholder="e.g. Instagram, TikTok"></div>
+        <div class="field"><label>Weeks to plan</label>
+          <select id="cl-weeks"><option value="2">2</option><option value="4" selected>4</option></select>
+        </div>
+        <button class="btn btn-primary btn-block" id="cl-btn" onclick="genCalendar()">Generate calendar</button>
+      </div>
+      <div class="panel">
+        <h3>Content calendar</h3>
+        <p class="sub">Post ideas spread across weeks and platforms — no repeats.</p>
+        <div id="cl-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="cl-status"></div>
+        <div class="output-actions" id="cl-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('cl-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genCalendar(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAPTION BATCH -->
+  <div class="view" id="view-captions">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">One line per post, batch-generate captions with hashtags.</p>
+        <div class="field"><label>Posts (one per line: what it's about)</label><textarea id="cp-list" style="min-height:160px" placeholder="Behind the scenes making dinner&#10;New knife set unboxing&#10;5-minute pasta recipe"></textarea></div>
+        <button class="btn btn-primary btn-block" id="cp-btn" onclick="genCaptions()">Generate captions</button>
+      </div>
+      <div class="panel">
+        <h3>Captions</h3>
+        <p class="sub">Each with a hook, body, and relevant hashtags.</p>
+        <div id="cp-output"><div class="output-empty">List your posts and generate.</div></div>
+        <div class="output-status" id="cp-status"></div>
+        <div class="output-actions" id="cp-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('cp-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genCaptions(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENGAGEMENT REPLIES -->
+  <div class="view" id="view-replies">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Reusable reply templates for the comment/DM types that show up every day.</p>
+        <button class="btn btn-primary btn-block" id="rp-btn" onclick="genReplies()">Generate reply bank</button>
+      </div>
+      <div class="panel">
+        <h3>Reply bank</h3>
+        <p class="sub">One template per common situation, with a [detail] placeholder.</p>
+        <div id="rp-output"><div class="output-empty">Click generate to build your reply bank.</div></div>
+        <div class="output-status" id="rp-status"></div>
+        <div class="output-actions" id="rp-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('rp-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genReplies(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BRAND PITCH -->
+  <div class="view" id="view-pitch">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A cold pitch email to a brand for a paid collaboration.</p>
+        <div class="field"><label>Target brand</label><input type="text" id="pt-brand" placeholder="e.g. a kitchenware brand"></div>
+        <div class="field"><label>Audience size / engagement (real numbers)</label><input type="text" id="pt-stats" placeholder="e.g. 12k followers, ~8% engagement rate"></div>
+        <div class="field"><label>Collaboration idea</label><input type="text" id="pt-idea" placeholder="e.g. a recipe video featuring their product"></div>
+        <button class="btn btn-primary btn-block" id="pt-btn" onclick="genPitch()">Draft brand pitch</button>
+      </div>
+      <div class="panel">
+        <h3>Brand pitch email</h3>
+        <p class="sub">Professional, specific, never inflates your numbers.</p>
+        <div id="pt-output"><div class="output-empty">Fill in the fields and draft.</div></div>
+        <div class="output-status" id="pt-status"></div>
+        <div class="output-actions" id="pt-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('pt-output')">Copy text</button>
+          <button class="btn btn-sm" onclick="genPitch(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATOR PROFILE -->
+  <div class="view" id="view-profile">
+    <div class="panel" style="max-width:640px">
+      <h3>Creator profile</h3>
+      <p class="sub">Set this once per creator — every tab above writes with this context.</p>
+      <div class="field"><label>Creator / brand name</label><input type="text" id="pf-name" placeholder="e.g. @cookswithcara"></div>
+      <div class="field"><label>Niche</label><input type="text" id="pf-niche" placeholder="e.g. budget home cooking"></div>
+      <div class="field"><label>Voice / personality</label><input type="text" id="pf-voice" placeholder="e.g. warm, funny, a little chaotic"></div>
+      <button class="btn btn-primary btn-block" onclick="saveProfile()">Save creator profile</button>
+      <div class="output-status" id="pf-status"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Manage a creator's content ops so they can focus on filming.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Retainer</span>&nbsp; $1k–$8k/mo per creator for full content calendar, caption writing, and engagement management.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Content batches</span>&nbsp; $200–$600 for a one-off batch of captions and a content calendar without the ongoing retainer.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Find clients</span>&nbsp; Micro-influencers (5k-100k followers) are the sweet spot — big enough to need help, too small to afford a full agency.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. Never send audience numbers to a brand that aren't real.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab, [data-tab]').forEach(t => t.addEventListener('click', () => {
+  const target = t.dataset.tab;
+  if(!target) return;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.dataset.tab === target));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + target));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ---------- creator profile ---------- */
+const PROFILE_KEY = 'aa-creator-profile-v1';
+function loadProfile(){ try{ return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); }catch(e){ return null; } }
+function renderProfileBar(){
+  const p = loadProfile();
+  const bar = document.getElementById('profile-bar');
+  const summary = document.getElementById('profile-summary');
+  if(p && p.name){
+    bar.classList.remove('off');
+    summary.textContent = `Managing "${p.name}" — ${p.niche || 'niche not set'}`;
+  } else {
+    bar.classList.add('off');
+    summary.textContent = 'No creator profile set — every tab writes generically.';
+  }
+}
+function saveProfile(){
+  const p = {
+    name: document.getElementById('pf-name').value.trim(),
+    niche: document.getElementById('pf-niche').value.trim(),
+    voice: document.getElementById('pf-voice').value.trim(),
+  };
+  try{ localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }catch(e){}
+  renderProfileBar();
+  const el = document.getElementById('pf-status');
+  el.textContent = 'Saved.';
+  setTimeout(() => el.textContent = '', 2000);
+}
+(function initProfileForm(){
+  const p = loadProfile();
+  if(!p) return;
+  document.getElementById('pf-name').value = p.name || '';
+  document.getElementById('pf-niche').value = p.niche || '';
+  document.getElementById('pf-voice').value = p.voice || '';
+})();
+renderProfileBar();
+function profileContext(){
+  const p = loadProfile();
+  if(!p || !p.name) return '';
+  return `\n\nCreator: "${p.name}". Niche: ${p.niche || 'not specified'}. Voice: ${p.voice || 'not specified'}.`;
+}
+
+/* ---------- sample helper ---------- */
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+async function runSample(promptText, btnId, statusId, outputId, actionsId, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const out = document.getElementById(outputId);
+  const actions = document.getElementById(actionsId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = '';
+  actions.style.display = 'none';
+  out.innerHTML = `<div class="card">Thinking…</div>`;
+  try{
+    const { text } = await sample(promptText, {
+      modelTier: 'default',
+      cache: regenerate ? false : true,
+      onText: ({text}) => { out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`; }
+    });
+    out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`;
+    actions.style.display = 'flex';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      empty_completion: 'Nothing came back — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+/* ---------- content calendar ---------- */
+function genCalendar(regenerate){
+  const niche = document.getElementById('cl-niche').value.trim();
+  const platforms = document.getElementById('cl-platforms').value.trim();
+  const weeks = document.getElementById('cl-weeks').value;
+  if(!niche || !platforms){ document.getElementById('cl-status').textContent = 'Fill in both fields first.'; return; }
+  const postsPerWeek = 3;
+  const total = weeks * postsPerWeek;
+  const prompt = `Build a ${weeks}-week content calendar (${postsPerWeek} posts/week) for a creator.${profileContext()}
+Niche: "${niche}". Platforms: "${platforms}".
+Vary content types (educational, behind-the-scenes, trending format, personal story, product/tip) — no repeated ideas. Reply with only a JSON array of exactly ${total} {"week": number, "platform": string, "idea": string} objects.`;
+  runSampleJson(prompt, 'cl-btn', 'cl-status', (items) => {
+    const wrap = document.getElementById('cl-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map(it => `<div class="card"><span class="n">Week ${escapeHtml(String(it.week||''))}</span><span class="platform-tag">${escapeHtml(it.platform||'')}</span><br>${escapeHtml(it.idea||'')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('cl-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- caption batch ---------- */
+function genCaptions(regenerate){
+  const list = document.getElementById('cp-list').value.trim();
+  if(!list){ document.getElementById('cp-status').textContent = 'List at least one post first.'; return; }
+  const prompt = `Write a caption with relevant hashtags for each post listed below (one per line).${profileContext()}
+Posts:
+"""${list}"""
+Each caption: a hook first line, 2-3 sentence body, then 5-8 relevant hashtags. Reply with only a JSON array of {"post": string, "caption": string, "hashtags": [string]} objects, one per line.`;
+  runSampleJson(prompt, 'cp-btn', 'cp-status', (items) => {
+    const wrap = document.getElementById('cp-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map(it => `<div class="card"><span class="n">${escapeHtml(it.post||'')}</span><br>${escapeHtml(it.caption||'')}<br><br>${(it.hashtags||[]).map(h => `<span class="hashtag">#${escapeHtml(h.replace(/^#/,''))}</span>`).join(' ')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('cp-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- engagement replies ---------- */
+function genReplies(regenerate){
+  const prompt = `Write reusable comment/DM reply templates for a content creator, covering these common situations: a genuine compliment, a product/how-to question, a collaboration inquiry from a brand or another creator, and rude/troll comments.${profileContext()}
+Each template should include a [detail] placeholder to personalize. Reply with only a JSON array of exactly 4 {"situation": string, "template": string} objects.`;
+  runSampleJson(prompt, 'rp-btn', 'rp-status', (items) => {
+    const wrap = document.getElementById('rp-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map(it => `<div class="card"><span class="n">${escapeHtml(it.situation||'')}</span><br>${escapeHtml(it.template||'')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('rp-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- brand pitch ---------- */
+function genPitch(regenerate){
+  const brand = document.getElementById('pt-brand').value.trim();
+  const stats = document.getElementById('pt-stats').value.trim();
+  const idea = document.getElementById('pt-idea').value.trim();
+  if(!brand || !stats){ document.getElementById('pt-status').textContent = 'Fill in the brand and your real stats first.'; return; }
+  const prompt = `Write a cold pitch email from a content creator to a brand, proposing a paid collaboration.${profileContext()}
+Target brand: "${brand}". Real audience stats: "${stats}". Collaboration idea: "${idea || 'a sponsored post/video'}".
+Use ONLY the stats given — never inflate or invent numbers. Keep it under 200 words: brief intro, why this brand fits the creator's audience, the specific idea, a light call to action for a call or rate card. Output only the email text.`;
+  runSample(prompt, 'pt-btn', 'pt-status', 'pt-output', 'pt-actions', regenerate);
+}
+
+function copyOut(id){
+  const text = Array.from(document.querySelectorAll('#' + id + ' .card')).map(c => c.textContent).join('\n\n');
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+</script>

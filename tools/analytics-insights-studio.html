@@ -1,0 +1,409 @@
+<title>Analytics Insights Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700;800&family=Inter+Tight:wght@400;500;600;700&family=Commit+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.004 240);
+  --paper-raised:oklch(0.995 0.002 240);
+  --ink:oklch(0.2 0.02 240);
+  --ink-dim:oklch(0.46 0.015 240);
+  --line:oklch(0.85 0.012 240);
+  --line-strong:oklch(0.7 0.02 240);
+  --accent:oklch(0.48 0.16 250);
+  --accent-soft:oklch(0.48 0.16 250 / 0.1);
+  --accent-ink:oklch(0.99 0.005 90);
+  --orange:oklch(0.68 0.16 50);
+  --orange-soft:oklch(0.68 0.16 50 / 0.15);
+  --good:oklch(0.5 0.12 150);
+  --good-soft:oklch(0.5 0.12 150 / 0.13);
+  --bad:oklch(0.55 0.16 25);
+  --bad-soft:oklch(0.55 0.16 25 / 0.13);
+  --shadow:0 1px 2px oklch(0.25 0.02 240 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.15 0.014 240); --paper-raised:oklch(0.2 0.016 240);
+    --ink:oklch(0.94 0.008 240); --ink-dim:oklch(0.68 0.014 240);
+    --line:oklch(0.33 0.018 240); --line-strong:oklch(0.44 0.024 240);
+    --accent:oklch(0.7 0.13 250); --accent-soft:oklch(0.7 0.13 250 / 0.16); --accent-ink:oklch(0.15 0.02 250);
+    --orange:oklch(0.75 0.14 50); --orange-soft:oklch(0.75 0.14 50 / 0.18);
+    --good:oklch(0.7 0.12 150); --good-soft:oklch(0.7 0.12 150 / 0.16);
+    --bad:oklch(0.72 0.15 25); --bad-soft:oklch(0.72 0.15 25 / 0.16);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.15 0.014 240); --paper-raised:oklch(0.2 0.016 240);
+  --ink:oklch(0.94 0.008 240); --ink-dim:oklch(0.68 0.014 240);
+  --line:oklch(0.33 0.018 240); --line-strong:oklch(0.44 0.024 240);
+  --accent:oklch(0.7 0.13 250); --accent-soft:oklch(0.7 0.13 250 / 0.16); --accent-ink:oklch(0.15 0.02 250);
+  --orange:oklch(0.75 0.14 50); --orange-soft:oklch(0.75 0.14 50 / 0.18);
+  --good:oklch(0.7 0.12 150); --good-soft:oklch(0.7 0.12 150 / 0.16);
+  --bad:oklch(0.72 0.15 25); --bad-soft:oklch(0.72 0.15 25 / 0.16);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter Tight',system-ui,sans-serif}
+h1,h2,h3{font-family:'Schibsted Grotesk',sans-serif;margin:0;text-wrap:balance}
+.mono{font-family:'Commit Mono',monospace;font-variant-numeric:tabular-nums}
+
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:8px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-family:'Schibsted Grotesk',sans-serif;font-weight:800;font-size:18px}
+.brand h1{font-size:20px;font-weight:700}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Commit Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.profile-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;margin-top:16px;background:var(--accent-soft);border-radius:10px;font-size:12.5px;flex-wrap:wrap}
+.profile-bar .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.profile-bar.off .dot{background:var(--ink-dim)}
+.profile-bar a{color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer}
+.profile-bar a:hover{text-decoration:underline}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:13px;padding:11px 14px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:10px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:16px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Inter Tight',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:6px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:120px;line-height:1.5;font-family:'Commit Mono',monospace;font-size:12px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.btn{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:7px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'Commit Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+@media(max-width:640px){.metric-grid{grid-template-columns:1fr}}
+.metric-tile{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px;text-align:center}
+.metric-tile .val{font-family:'Commit Mono',monospace;font-size:22px;font-weight:700;color:var(--accent)}
+.metric-tile .val.up{color:var(--good)}
+.metric-tile .val.down{color:var(--bad)}
+.metric-tile .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-top:4px}
+
+.funnel-step{display:grid;grid-template-columns:140px 1fr 90px;gap:10px;align-items:center;margin-bottom:10px;font-size:13px}
+.funnel-track{height:22px;background:var(--line);border-radius:5px;overflow:hidden}
+.funnel-fill{height:100%;background:var(--accent)}
+.priority-tag{display:inline-block;font-family:'Commit Mono',monospace;font-size:10px;padding:2px 8px;border-radius:8px;text-transform:uppercase;letter-spacing:.04em}
+.priority-tag.high{background:var(--bad-soft);color:var(--bad)}
+.priority-tag.medium{background:var(--orange-soft);color:oklch(0.5 0.14 50)}
+:root[data-theme="dark"] .priority-tag.medium{color:var(--orange)}
+.priority-tag.low{background:var(--good-soft);color:var(--good)}
+
+.tag-chip{display:inline-block;font-family:'Commit Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--orange-soft);color:oklch(0.5 0.14 50);text-transform:uppercase;letter-spacing:.04em}
+:root[data-theme="dark"] .tag-chip{color:var(--orange)}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">▲</div>
+      <div>
+        <h1>Analytics Insights Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 16</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Monthly report: <strong>$150–$500</strong><br>Retainer: <strong>$1k–$9k/mo</strong></div>
+  </header>
+
+  <div class="profile-bar off" id="profile-bar">
+    <span class="dot"></span>
+    <span id="profile-summary">No client business set — every tab writes generically.</span>
+    <a data-tab="profile">Set it up →</a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="report">Traffic Report</button>
+    <button class="tab" data-tab="funnel">Funnel Analysis</button>
+    <button class="tab" data-tab="compare">Month Comparison</button>
+    <button class="tab" data-tab="profile">Client Business</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- TRAFFIC REPORT -->
+  <div class="view active" id="view-report">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Paste raw numbers from GA4, Search Console, or any dashboard — real data only.</p>
+        <div class="field"><label>Paste your analytics data (any format)</label><textarea id="rp-data" placeholder="Sessions: 4,210 (+12% vs last month)
+Users: 3,102
+Bounce rate: 58%
+Top pages: /blog/how-to-clean-grout (890), /pricing (610)
+Top sources: Organic search 45%, Direct 30%, Social 15%, Referral 10%"></textarea></div>
+        <button class="btn btn-primary btn-block" id="rp-btn" onclick="genReport()">Generate report</button>
+      </div>
+      <div class="panel">
+        <h3>Plain-English report</h3>
+        <p class="sub">What the numbers actually mean, based only on what you pasted.</p>
+        <div id="rp-output"><div class="output-empty">Paste your data and generate.</div></div>
+        <div class="output-status" id="rp-status"></div>
+        <div class="output-actions" id="rp-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genReport(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FUNNEL ANALYSIS -->
+  <div class="view" id="view-funnel">
+    <div class="panel" style="max-width:720px;margin-bottom:16px">
+      <h3>Conversion funnel</h3>
+      <p class="sub">Real conversion math — where the drop-off actually happens.</p>
+      <div class="field"><label>Visitors</label><input type="number" id="fn-visitors" value="5000" min="0" oninput="calcFunnel()"></div>
+      <div class="field"><label>Leads (signed up / inquired)</label><input type="number" id="fn-leads" value="400" min="0" oninput="calcFunnel()"></div>
+      <div class="field"><label>Customers (purchased / booked)</label><input type="number" id="fn-customers" value="60" min="0" oninput="calcFunnel()"></div>
+      <div id="fn-viz"></div>
+    </div>
+    <div class="panel" style="max-width:720px">
+      <h3>Where to focus</h3>
+      <button class="btn btn-primary btn-block" id="fn-btn" onclick="genFunnelAdvice()">Get AI commentary on this funnel</button>
+      <div id="fn-output" style="margin-top:14px"><div class="output-empty">Run the numbers above, then get commentary.</div></div>
+      <div class="output-status" id="fn-status"></div>
+    </div>
+  </div>
+
+  <!-- MONTH COMPARISON -->
+  <div class="view" id="view-compare">
+    <div class="panel" style="max-width:720px;margin-bottom:16px">
+      <h3>Month-over-month</h3>
+      <p class="sub">Real percentage change, calculated directly.</p>
+      <div class="two-col">
+        <div class="field"><label>Last month — sessions</label><input type="number" id="cm-lastsessions" value="3800" min="0" oninput="calcCompare()"></div>
+        <div class="field"><label>This month — sessions</label><input type="number" id="cm-thissessions" value="4210" min="0" oninput="calcCompare()"></div>
+      </div>
+      <div class="two-col">
+        <div class="field"><label>Last month — conversions</label><input type="number" id="cm-lastconv" value="45" min="0" oninput="calcCompare()"></div>
+        <div class="field"><label>This month — conversions</label><input type="number" id="cm-thisconv" value="60" min="0" oninput="calcCompare()"></div>
+      </div>
+      <div class="metric-grid">
+        <div class="metric-tile"><div class="val mono" id="cm-sessionchange">0%</div><div class="lbl">Sessions change</div></div>
+        <div class="metric-tile"><div class="val mono" id="cm-convchange">0%</div><div class="lbl">Conversions change</div></div>
+        <div class="metric-tile"><div class="val mono" id="cm-ratechange">0%</div><div class="lbl">Conv. rate change</div></div>
+      </div>
+    </div>
+    <div class="panel" style="max-width:720px">
+      <h3>Narrative summary</h3>
+      <button class="btn btn-primary btn-block" id="cm-btn" onclick="genCompareSummary()">Draft a client-ready summary</button>
+      <div id="cm-output" style="margin-top:14px"><div class="output-empty">Run the numbers above, then draft a summary.</div></div>
+      <div class="output-status" id="cm-status"></div>
+      <div class="output-actions" id="cm-actions" style="display:none">
+        <button class="btn btn-sm" onclick="copyOut('cm-output')">Copy text</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLIENT BUSINESS -->
+  <div class="view" id="view-profile">
+    <div class="panel" style="max-width:640px">
+      <h3>Client business</h3>
+      <p class="sub">Set this once per client — every tab above writes with this context.</p>
+      <div class="field"><label>Business name</label><input type="text" id="pf-name" placeholder="e.g. Reyes Home Cleaning"></div>
+      <div class="field"><label>What the business does</label><input type="text" id="pf-desc" placeholder="e.g. residential cleaning service"></div>
+      <button class="btn btn-primary btn-block" onclick="saveProfile()">Save client business</button>
+      <div class="output-status" id="pf-status"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Most small businesses have analytics installed and never look at them.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Monthly report</span>&nbsp; $150–$500/mo to turn their raw dashboard numbers into a plain-English report they'll actually read.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Retainer</span>&nbsp; $1k–$9k/mo for ongoing analysis plus recommendations as a business scales its marketing spend.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Bring real numbers</span>&nbsp; This tool explains data you provide — it doesn't access anyone's actual GA4 account. Export or copy the numbers yourself first.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. All percentages are calculated directly from your inputs, not estimated by AI.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab, [data-tab]').forEach(t => t.addEventListener('click', () => {
+  const target = t.dataset.tab;
+  if(!target) return;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.dataset.tab === target));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + target));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ---------- client business profile ---------- */
+const PROFILE_KEY = 'aa-analytics-profile-v1';
+function loadProfile(){ try{ return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); }catch(e){ return null; } }
+function renderProfileBar(){
+  const p = loadProfile();
+  const bar = document.getElementById('profile-bar');
+  const summary = document.getElementById('profile-summary');
+  if(p && p.name){
+    bar.classList.remove('off');
+    summary.textContent = `Reporting for "${p.name}"`;
+  } else {
+    bar.classList.add('off');
+    summary.textContent = 'No client business set — every tab writes generically.';
+  }
+}
+function saveProfile(){
+  const p = { name: document.getElementById('pf-name').value.trim(), desc: document.getElementById('pf-desc').value.trim() };
+  try{ localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }catch(e){}
+  renderProfileBar();
+  const el = document.getElementById('pf-status');
+  el.textContent = 'Saved.';
+  setTimeout(() => el.textContent = '', 2000);
+}
+(function initProfileForm(){
+  const p = loadProfile();
+  if(!p) return;
+  document.getElementById('pf-name').value = p.name || '';
+  document.getElementById('pf-desc').value = p.desc || '';
+})();
+renderProfileBar();
+function profileContext(){
+  const p = loadProfile();
+  if(!p || !p.name) return '';
+  return `\n\nClient business: "${p.name}" — ${p.desc || 'no further description'}.`;
+}
+
+/* ---------- sample helper ---------- */
+async function runSample(promptText, btnId, statusId, outputId, actionsId, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const out = document.getElementById(outputId);
+  const actions = actionsId ? document.getElementById(actionsId) : null;
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = '';
+  if(actions) actions.style.display = 'none';
+  out.innerHTML = `<div class="card">Thinking…</div>`;
+  try{
+    const { text } = await sample(promptText, {
+      modelTier: 'default',
+      cache: regenerate ? false : true,
+      onText: ({text}) => { out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`; }
+    });
+    out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`;
+    if(actions) actions.style.display = 'flex';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      empty_completion: 'Nothing came back — try again.',
+      prompt_too_large: 'That input is too long — trim it and try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+/* ---------- traffic report ---------- */
+function genReport(regenerate){
+  const data = document.getElementById('rp-data').value.trim();
+  if(!data){ document.getElementById('rp-status').textContent = 'Paste your analytics data first.'; return; }
+  const prompt = `Turn this raw analytics data into a short, plain-English report a non-technical business owner would understand. Use ONLY the numbers given — never invent additional metrics.${profileContext()}
+Data:
+"""${data}"""
+Structure: a 2-sentence headline summary, then 3-5 specific observations, then one clear "what this means for your business" closing line. Keep it under 250 words.`;
+  runSample(prompt, 'rp-btn', 'rp-status', 'rp-output', 'rp-actions', regenerate);
+}
+
+/* ---------- funnel (real math) ---------- */
+function calcFunnel(){
+  const visitors = parseFloat(document.getElementById('fn-visitors').value) || 0;
+  const leads = parseFloat(document.getElementById('fn-leads').value) || 0;
+  const customers = parseFloat(document.getElementById('fn-customers').value) || 0;
+  const v2l = visitors > 0 ? (leads/visitors)*100 : 0;
+  const l2c = leads > 0 ? (customers/leads)*100 : 0;
+  const v2c = visitors > 0 ? (customers/visitors)*100 : 0;
+  document.getElementById('fn-viz').innerHTML = `
+    <div class="funnel-step"><span>Visitors</span><div class="funnel-track"><div class="funnel-fill" style="width:100%"></div></div><span class="mono">${visitors.toLocaleString()}</span></div>
+    <div class="funnel-step"><span>Leads <span class="mono" style="color:var(--ink-dim)">(${v2l.toFixed(1)}%)</span></span><div class="funnel-track"><div class="funnel-fill" style="width:${visitors?Math.min(100,(leads/visitors)*100):0}%"></div></div><span class="mono">${leads.toLocaleString()}</span></div>
+    <div class="funnel-step"><span>Customers <span class="mono" style="color:var(--ink-dim)">(${l2c.toFixed(1)}%)</span></span><div class="funnel-track"><div class="funnel-fill" style="width:${visitors?Math.min(100,(customers/visitors)*100):0}%"></div></div><span class="mono">${customers.toLocaleString()}</span></div>
+    <p class="sub" style="margin-top:10px">Overall conversion: <strong class="mono">${v2c.toFixed(2)}%</strong> (visitor → customer)</p>
+  `;
+}
+calcFunnel();
+
+function genFunnelAdvice(){
+  const visitors = document.getElementById('fn-visitors').value;
+  const leads = document.getElementById('fn-leads').value;
+  const customers = document.getElementById('fn-customers').value;
+  const v2l = (visitors > 0 ? (leads/visitors)*100 : 0).toFixed(1);
+  const l2c = (leads > 0 ? (customers/leads)*100 : 0).toFixed(1);
+  const prompt = `Given this conversion funnel: ${visitors} visitors → ${leads} leads (${v2l}% conversion) → ${customers} customers (${l2c}% conversion).${profileContext()}
+Identify which stage has the weakest conversion relative to typical benchmarks, and give 2-3 specific, actionable things to investigate or test at that stage. Keep it under 150 words.`;
+  runSample(prompt, 'fn-btn', 'fn-status', 'fn-output', null, false);
+}
+
+/* ---------- month comparison (real math) ---------- */
+function pctChange(a,b){ return a > 0 ? ((b-a)/a)*100 : 0; }
+function calcCompare(){
+  const lastS = parseFloat(document.getElementById('cm-lastsessions').value) || 0;
+  const thisS = parseFloat(document.getElementById('cm-thissessions').value) || 0;
+  const lastC = parseFloat(document.getElementById('cm-lastconv').value) || 0;
+  const thisC = parseFloat(document.getElementById('cm-thisconv').value) || 0;
+  const sChange = pctChange(lastS, thisS);
+  const cChange = pctChange(lastC, thisC);
+  const lastRate = lastS > 0 ? (lastC/lastS)*100 : 0;
+  const thisRate = thisS > 0 ? (thisC/thisS)*100 : 0;
+  const rateChange = pctChange(lastRate, thisRate);
+
+  const sEl = document.getElementById('cm-sessionchange');
+  sEl.textContent = (sChange>=0?'+':'') + sChange.toFixed(1) + '%';
+  sEl.className = 'val mono ' + (sChange>0?'up':sChange<0?'down':'');
+  const cEl = document.getElementById('cm-convchange');
+  cEl.textContent = (cChange>=0?'+':'') + cChange.toFixed(1) + '%';
+  cEl.className = 'val mono ' + (cChange>0?'up':cChange<0?'down':'');
+  const rEl = document.getElementById('cm-ratechange');
+  rEl.textContent = (rateChange>=0?'+':'') + rateChange.toFixed(1) + '%';
+  rEl.className = 'val mono ' + (rateChange>0?'up':rateChange<0?'down':'');
+}
+calcCompare();
+
+function genCompareSummary(regenerate){
+  const sChange = document.getElementById('cm-sessionchange').textContent;
+  const cChange = document.getElementById('cm-convchange').textContent;
+  const rChange = document.getElementById('cm-ratechange').textContent;
+  const prompt = `Write a short client-ready summary of this month-over-month analytics change: sessions ${sChange}, conversions ${cChange}, conversion rate ${rChange}.${profileContext()}
+Explain what these three numbers together suggest happened (e.g. more traffic but lower quality, or steady traffic with better conversion). Under 100 words. Use only these numbers — don't invent causes not implied by them, just note plausible hypotheses to check.`;
+  runSample(prompt, 'cm-btn', 'cm-status', 'cm-output', 'cm-actions', regenerate);
+}
+
+function copyOut(id){
+  const text = document.querySelector('#' + id + ' .card')?.textContent || '';
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+</script>

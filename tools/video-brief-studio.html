@@ -1,0 +1,361 @@
+<title>Video Brief Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.005 60);
+  --paper-raised:oklch(0.995 0.003 60);
+  --ink:oklch(0.18 0.015 250);
+  --ink-dim:oklch(0.46 0.012 250);
+  --line:oklch(0.85 0.01 60);
+  --line-strong:oklch(0.7 0.016 60);
+  --accent:oklch(0.6 0.15 45);
+  --accent-soft:oklch(0.6 0.15 45 / 0.13);
+  --accent-ink:oklch(0.16 0.03 45);
+  --navy:oklch(0.35 0.08 250);
+  --navy-soft:oklch(0.35 0.08 250 / 0.13);
+  --shadow:0 1px 2px oklch(0.2 0.02 60 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.15 0.012 250); --paper-raised:oklch(0.2 0.014 250);
+    --ink:oklch(0.94 0.008 60); --ink-dim:oklch(0.68 0.012 60);
+    --line:oklch(0.33 0.016 250); --line-strong:oklch(0.44 0.02 250);
+    --accent:oklch(0.72 0.14 45); --accent-soft:oklch(0.72 0.14 45 / 0.16); --accent-ink:oklch(0.16 0.03 45);
+    --navy:oklch(0.62 0.1 250); --navy-soft:oklch(0.62 0.1 250 / 0.16);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.15 0.012 250); --paper-raised:oklch(0.2 0.014 250);
+  --ink:oklch(0.94 0.008 60); --ink-dim:oklch(0.68 0.012 60);
+  --line:oklch(0.33 0.016 250); --line-strong:oklch(0.44 0.02 250);
+  --accent:oklch(0.72 0.14 45); --accent-soft:oklch(0.72 0.14 45 / 0.16); --accent-ink:oklch(0.16 0.03 45);
+  --navy:oklch(0.62 0.1 250); --navy-soft:oklch(0.62 0.1 250 / 0.16);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Barlow',system-ui,sans-serif}
+h1,h2,h3{font-family:'Bebas Neue',sans-serif;font-weight:400;letter-spacing:.02em;text-transform:uppercase;margin:0;text-wrap:balance}
+.mono{font-family:'IBM Plex Mono',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:6px;background:var(--navy);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px}
+.brand h1{font-size:22px;font-weight:400}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+.caveat{background:var(--navy-soft);border-left:3px solid var(--navy);padding:10px 12px;font-size:11.5px;line-height:1.5;border-radius:0 6px 6px 0;margin-top:16px}
+.caveat strong{color:var(--navy)}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Barlow',sans-serif;font-weight:600;font-size:12.5px;padding:11px 13px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:8px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:20px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Barlow',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:90px;line-height:1.5}
+
+.btn{font-family:'Barlow',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:6px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:8px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent-ink);background:var(--accent-soft);padding:2px 8px;border-radius:8px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.prompt-block{font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:pre-wrap;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:12px;line-height:1.6}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.shot-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;padding:2px 8px;border-radius:8px;background:var(--navy-soft);color:var(--navy);margin-right:6px}
+
+.tag-chip{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--navy-soft);color:var(--navy);text-transform:uppercase;letter-spacing:.04em}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">▶</div>
+      <div>
+        <h1>Video Brief Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 31</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Per project: <strong>$50–$800</strong><br>Depends heavily on project type</div>
+  </header>
+  <div class="caveat"><strong>This doesn't generate or edit video itself</strong> — no video generation is available here. It writes the scripts, shot lists, and technical briefs you use with an AI avatar tool (HeyGen/Synthesia), an editor, or a colorist. You still film, generate, or edit the actual footage.</div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="faceless">Faceless Video Script</button>
+    <button class="tab" data-tab="spokesperson">Spokesperson Script</button>
+    <button class="tab" data-tab="vfx">VFX Brief</button>
+    <button class="tab" data-tab="grade">Color Grade Direction</button>
+    <button class="tab" data-tab="restore">Restoration Brief</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- FACELESS VIDEO SCRIPT -->
+  <div class="view active" id="view-faceless">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A full script with a B-roll/visual shot list — for TTS or AI-avatar narration.</p>
+        <div class="field"><label>Video topic</label><input type="text" id="fc-topic" placeholder="e.g. 5 surprising facts about deep-sea creatures"></div>
+        <div class="field"><label>Target length</label><input type="text" id="fc-length" placeholder="e.g. 60 seconds"></div>
+        <button class="btn btn-primary btn-block" id="fc-btn" onclick="genFaceless()">Write script &amp; shot list</button>
+      </div>
+      <div class="panel">
+        <h3>Script &amp; shot list</h3>
+        <p class="sub">Narration lines paired with what footage/visual to show.</p>
+        <div id="fc-output"><div class="output-empty">Fill in the fields and write.</div></div>
+        <div class="output-status" id="fc-status"></div>
+        <div class="output-actions" id="fc-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('fc-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genFaceless(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPOKESPERSON SCRIPT -->
+  <div class="view" id="view-spokesperson">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A script for an AI avatar tool like HeyGen or Synthesia.</p>
+        <div class="field"><label>What the video is for</label><input type="text" id="sp-use" placeholder="e.g. a product explainer for a new SaaS feature"></div>
+        <div class="field"><label>Key points to cover</label><textarea id="sp-points" placeholder="e.g. introduces the feature, one use case, how to get started"></textarea></div>
+        <button class="btn btn-primary btn-block" id="sp-btn" onclick="genSpokesperson()">Write script</button>
+      </div>
+      <div class="panel">
+        <h3>Spokesperson script</h3>
+        <p class="sub">Paced for a talking-head avatar, with on-screen text cues.</p>
+        <div id="sp-output"><div class="output-empty">Fill in the fields and write.</div></div>
+        <div class="output-status" id="sp-status"></div>
+        <div class="output-actions" id="sp-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('sp-output')">Copy script</button>
+          <button class="btn btn-sm" onclick="genSpokesperson(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VFX BRIEF -->
+  <div class="view" id="view-vfx">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A brief for AI video-effects tools like Runway or Kaiber.</p>
+        <div class="field"><label>Shot description</label><textarea id="vf-shot" placeholder="e.g. a product bottle on a table, want it to look like it's glowing and particles are swirling around it"></textarea></div>
+        <button class="btn btn-primary btn-block" id="vf-btn" onclick="genVfx()">Build VFX brief</button>
+      </div>
+      <div class="panel">
+        <h3>VFX generation brief</h3>
+        <p class="sub">Effect description, style reference terms, and a tool suggestion.</p>
+        <div id="vf-output"><div class="output-empty">Describe the shot and build.</div></div>
+        <div class="output-status" id="vf-status"></div>
+        <div class="output-actions" id="vf-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('vf-output')">Copy brief</button>
+          <button class="btn btn-sm" onclick="genVfx(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLOR GRADE DIRECTION -->
+  <div class="view" id="view-grade">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A grading direction sheet for DaVinci Resolve or an AI grading tool.</p>
+        <div class="field"><label>Footage description</label><input type="text" id="gr-footage" placeholder="e.g. indoor interview, warm tungsten lighting"></div>
+        <div class="field"><label>Desired look</label><input type="text" id="gr-look" placeholder="e.g. cinematic, moody, teal-and-orange"></div>
+        <button class="btn btn-primary btn-block" id="gr-btn" onclick="genGrade()">Build grading direction</button>
+      </div>
+      <div class="panel">
+        <h3>Color grade direction</h3>
+        <p class="sub">Concrete adjustments — shadows/mids/highlights, saturation, contrast.</p>
+        <div id="gr-output"><div class="output-empty">Fill in the fields and build.</div></div>
+        <div class="output-status" id="gr-status"></div>
+        <div class="output-actions" id="gr-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genGrade(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESTORATION BRIEF -->
+  <div class="view" id="view-restore">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A processing plan for a tool like Topaz Video AI.</p>
+        <div class="field"><label>Footage condition</label><textarea id="rs-condition" placeholder="e.g. old VHS home video, low resolution, some flicker and grain, muffled audio"></textarea></div>
+        <button class="btn btn-primary btn-block" id="rs-btn" onclick="genRestore()">Build restoration plan</button>
+      </div>
+      <div class="panel">
+        <h3>Restoration plan</h3>
+        <p class="sub">Recommended processing steps and what to expect from each.</p>
+        <div id="rs-output"><div class="output-empty">Describe the footage and build.</div></div>
+        <div class="output-status" id="rs-status"></div>
+        <div class="output-actions" id="rs-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genRestore(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:680px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Five different video niches, one script-and-direction skill.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:10px"><span class="tag-chip">Faceless content</span>&nbsp; $50–$300 per video for scripting + AI voice/avatar production.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:10px"><span class="tag-chip">Spokesperson videos</span>&nbsp; $100–$500 per video using HeyGen/Synthesia-style tools.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:10px"><span class="tag-chip">VFX &amp; color grading</span>&nbsp; $100–$600 per project for indie filmmakers who can't afford a full post house.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Restoration</span>&nbsp; $50–$300 per project for families restoring old home videos.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. No video is ever generated or edited by this page itself.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + t.dataset.tab));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function runSample(promptText, btnId, statusId, outputId, actionsId, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const out = document.getElementById(outputId);
+  const actions = document.getElementById(actionsId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = '';
+  actions.style.display = 'none';
+  out.innerHTML = `<div class="card">Thinking…</div>`;
+  try{
+    const { text } = await sample(promptText, {
+      modelTier: 'default',
+      cache: regenerate ? false : true,
+      onText: ({text}) => { out.innerHTML = `<div class="card"><div class="prompt-block">${escapeHtml(text)}</div></div>`; }
+    });
+    out.innerHTML = `<div class="card"><div class="prompt-block">${escapeHtml(text)}</div></div>`;
+    actions.style.display = 'flex';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      empty_completion: 'Nothing came back — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function genFaceless(regenerate){
+  const topic = document.getElementById('fc-topic').value.trim();
+  const length = document.getElementById('fc-length').value.trim();
+  if(!topic){ document.getElementById('fc-status').textContent = 'Enter a topic first.'; return; }
+  const prompt = `Write a faceless video script for "${topic}", targeting ${length || '60 seconds'}. Pace it for a hook in the first 2 seconds.
+Reply with only a JSON array of 4-8 {"narration": string, "visual": string (what to show — stock footage type, text overlay, or B-roll idea)} objects, in order.`;
+  runSampleJson(prompt, 'fc-btn', 'fc-status', (items) => {
+    const wrap = document.getElementById('fc-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map((it,i) => `<div class="card"><span class="shot-tag">Beat ${i+1}</span><br><strong>${escapeHtml(it.narration||'')}</strong><div class="field-lbl">Visual</div>${escapeHtml(it.visual||'')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('fc-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function genSpokesperson(regenerate){
+  const use = document.getElementById('sp-use').value.trim();
+  const points = document.getElementById('sp-points').value.trim();
+  if(!use || !points){ document.getElementById('sp-status').textContent = 'Fill in both fields first.'; return; }
+  const prompt = `Write a spokesperson video script for an AI avatar tool (HeyGen/Synthesia style). Use: "${use}". Key points: "${points}".
+Keep sentences short for natural avatar delivery. Include [on-screen text: ...] cues where helpful. Never invent product facts not given. Output only the script.`;
+  runSample(prompt, 'sp-btn', 'sp-status', 'sp-output', 'sp-actions', regenerate);
+}
+
+function genVfx(regenerate){
+  const shot = document.getElementById('vf-shot').value.trim();
+  if(!shot){ document.getElementById('vf-status').textContent = 'Describe the shot first.'; return; }
+  const prompt = `Write an AI video-effects generation brief for this shot: "${shot}".
+Include: the effect description in generation-prompt style, 3-4 style reference terms, and which tool type fits best (Runway for generative effects, Kaiber for stylization, After Effects for precise control). Output as plain text.`;
+  runSample(prompt, 'vf-btn', 'vf-status', 'vf-output', 'vf-actions', regenerate);
+}
+
+function genGrade(regenerate){
+  const footage = document.getElementById('gr-footage').value.trim();
+  const look = document.getElementById('gr-look').value.trim();
+  if(!footage || !look){ document.getElementById('gr-status').textContent = 'Fill in both fields first.'; return; }
+  const prompt = `Write color grading direction for this footage: "${footage}", targeting this look: "${look}".
+Give concrete starting points: shadow/midtone/highlight color bias, contrast and saturation direction, and one reference film/show style if it fits. Output as plain text a colorist or AI grading tool could follow.`;
+  runSample(prompt, 'gr-btn', 'gr-status', 'gr-output', 'gr-actions', regenerate);
+}
+
+function genRestore(regenerate){
+  const condition = document.getElementById('rs-condition').value.trim();
+  if(!condition){ document.getElementById('rs-status').textContent = 'Describe the footage condition first.'; return; }
+  const prompt = `Write a video restoration processing plan for footage in this condition: "${condition}".
+Recommend the order of operations (denoise, deflicker, upscale, stabilize, audio cleanup) relevant to what's described, and what realistic improvement to expect from each step — never promise a perfect result. Output as plain text.`;
+  runSample(prompt, 'rs-btn', 'rs-status', 'rs-output', 'rs-actions', regenerate);
+}
+
+function copyOut(id){
+  const text = Array.from(document.querySelectorAll('#' + id + ' .prompt-block, #' + id + ' .card')).map(c => c.textContent).join('\n\n');
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+</script>

@@ -1,0 +1,426 @@
+<title>Email Flow Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Lexend:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.006 340);
+  --paper-raised:oklch(0.995 0.003 340);
+  --ink:oklch(0.2 0.02 340);
+  --ink-dim:oklch(0.46 0.016 340);
+  --line:oklch(0.85 0.012 340);
+  --line-strong:oklch(0.7 0.02 340);
+  --accent:oklch(0.55 0.18 350);
+  --accent-soft:oklch(0.55 0.18 350 / 0.1);
+  --accent-ink:oklch(0.99 0.006 90);
+  --slate:oklch(0.5 0.03 260);
+  --slate-soft:oklch(0.5 0.03 260 / 0.12);
+  --shadow:0 1px 2px oklch(0.25 0.02 340 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.16 0.014 340); --paper-raised:oklch(0.21 0.016 340);
+    --ink:oklch(0.95 0.008 340); --ink-dim:oklch(0.7 0.014 340);
+    --line:oklch(0.34 0.02 340); --line-strong:oklch(0.45 0.026 340);
+    --accent:oklch(0.72 0.15 350); --accent-soft:oklch(0.72 0.15 350 / 0.16); --accent-ink:oklch(0.16 0.03 350);
+    --slate:oklch(0.68 0.03 260); --slate-soft:oklch(0.68 0.03 260 / 0.16);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.16 0.014 340); --paper-raised:oklch(0.21 0.016 340);
+  --ink:oklch(0.95 0.008 340); --ink-dim:oklch(0.7 0.014 340);
+  --line:oklch(0.34 0.02 340); --line-strong:oklch(0.45 0.026 340);
+  --accent:oklch(0.72 0.15 350); --accent-soft:oklch(0.72 0.15 350 / 0.16); --accent-ink:oklch(0.16 0.03 350);
+  --slate:oklch(0.68 0.03 260); --slate-soft:oklch(0.68 0.03 260 / 0.16);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Lexend',system-ui,sans-serif}
+h1,h2,h3{font-family:'Outfit',sans-serif;margin:0;text-wrap:balance}
+.mono{font-family:'Spline Sans Mono',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:10px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-weight:800;font-size:17px}
+.brand h1{font-size:20px;font-weight:700}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Spline Sans Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.profile-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;margin-top:16px;background:var(--accent-soft);border-radius:10px;font-size:12.5px;flex-wrap:wrap}
+.profile-bar .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.profile-bar.off .dot{background:var(--ink-dim)}
+.profile-bar a{color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer}
+.profile-bar a:hover{text-decoration:underline}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Lexend',sans-serif;font-weight:600;font-size:12.5px;padding:11px 13px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:10px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:16px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Lexend',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:7px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:80px;line-height:1.5}
+
+.btn{font-family:'Lexend',sans-serif;font-weight:600;font-size:13.5px;padding:11px 18px;border-radius:8px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'Spline Sans Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+
+.flow-timeline{position:relative;padding-left:20px}
+.flow-timeline::before{content:'';position:absolute;left:5px;top:8px;bottom:8px;width:2px;background:var(--line)}
+.flow-email{position:relative;margin-bottom:14px}
+.flow-email::before{content:'';position:absolute;left:-20px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--paper-raised)}
+.flow-email .timing{font-family:'Spline Sans Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+
+.seg-tag{display:inline-block;font-family:'Spline Sans Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--slate-soft);color:var(--slate);margin-bottom:6px}
+
+.tag-chip{display:inline-block;font-family:'Spline Sans Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--accent-soft);color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">✉</div>
+      <div>
+        <h1>Email Flow Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 14</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Per flow: <strong>$250–$700</strong><br>Retainer: <strong>$1.5k–$9k/mo</strong></div>
+  </header>
+
+  <div class="profile-bar off" id="profile-bar">
+    <span class="dot"></span>
+    <span id="profile-summary">No brand voice set — every tab writes generically.</span>
+    <a data-tab="profile">Set it up →</a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="welcome">Welcome Series</button>
+    <button class="tab" data-tab="cart">Cart Recovery</button>
+    <button class="tab" data-tab="winback">Win-back</button>
+    <button class="tab" data-tab="segment">Segmentation</button>
+    <button class="tab" data-tab="subject">Subject Line Lab</button>
+    <button class="tab" data-tab="profile">Brand Voice</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- WELCOME SERIES -->
+  <div class="view active" id="view-welcome">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">The first flow every subscriber sees.</p>
+        <div class="field"><label>What subscribers signed up for</label><input type="text" id="wl-what" placeholder="e.g. a home cleaning service newsletter"></div>
+        <div class="field"><label>What you want them to do eventually</label><input type="text" id="wl-goal" placeholder="e.g. book their first cleaning"></div>
+        <div class="field"><label>Number of emails</label>
+          <select id="wl-count"><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option></select>
+        </div>
+        <button class="btn btn-primary btn-block" id="wl-btn" onclick="genWelcome()">Generate welcome series</button>
+      </div>
+      <div class="panel">
+        <h3>Welcome series</h3>
+        <p class="sub">Each email with send timing and a subject line.</p>
+        <div id="wl-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="wl-status"></div>
+        <div class="output-actions" id="wl-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('wl-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genWelcome(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CART RECOVERY -->
+  <div class="view" id="view-cart">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A 3-email recovery sequence with escalating urgency.</p>
+        <div class="field"><label>What's being sold</label><input type="text" id="ct-what" placeholder="e.g. handmade candles"></div>
+        <div class="field"><label>Incentive to offer (if any)</label><input type="text" id="ct-incentive" placeholder="e.g. 10% off, or none — leave blank"></div>
+        <button class="btn btn-primary btn-block" id="ct-btn" onclick="genCart()">Generate cart recovery flow</button>
+      </div>
+      <div class="panel">
+        <h3>Cart recovery sequence</h3>
+        <p class="sub">Timed at 1 hour, 24 hours, and 72 hours after abandonment.</p>
+        <div id="ct-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="ct-status"></div>
+        <div class="output-actions" id="ct-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('ct-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genCart(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WIN-BACK -->
+  <div class="view" id="view-winback">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Re-engage subscribers who've gone quiet.</p>
+        <div class="field"><label>What the business offers</label><input type="text" id="wb-what" placeholder="e.g. a monthly coffee subscription"></div>
+        <div class="field"><label>How long they've been inactive</label><input type="text" id="wb-inactive" placeholder="e.g. 90 days without opening an email"></div>
+        <button class="btn btn-primary btn-block" id="wb-btn" onclick="genWinback()">Generate win-back flow</button>
+      </div>
+      <div class="panel">
+        <h3>Win-back sequence</h3>
+        <p class="sub">A short 2-3 email flow, ending with a clear opt-out.</p>
+        <div id="wb-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="wb-status"></div>
+        <div class="output-actions" id="wb-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('wb-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genWinback(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEGMENTATION -->
+  <div class="view" id="view-segment">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Who should get different messages, and why.</p>
+        <div class="field"><label>Business type</label><input type="text" id="sg-type" placeholder="e.g. e-commerce store selling skincare"></div>
+        <div class="field"><label>Data you have on subscribers</label><textarea id="sg-data" placeholder="e.g. purchase history, signup date, email opens, product category browsed"></textarea></div>
+        <button class="btn btn-primary btn-block" id="sg-btn" onclick="genSegment()">Suggest segments</button>
+      </div>
+      <div class="panel">
+        <h3>Segmentation strategy</h3>
+        <p class="sub">Each segment with what to send them.</p>
+        <div id="sg-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="sg-status"></div>
+        <div class="output-actions" id="sg-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genSegment(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBJECT LINE LAB -->
+  <div class="view" id="view-subject">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Real variants for real A/B testing — different psychological angles, not just rewording.</p>
+        <div class="field"><label>Email topic / campaign</label><input type="text" id="sl-topic" placeholder="e.g. announcing a 20%-off weekend sale"></div>
+        <button class="btn btn-primary btn-block" id="sl-btn" onclick="genSubjects()">Generate subject line set</button>
+      </div>
+      <div class="panel">
+        <h3>Subject line variants</h3>
+        <p class="sub">One per angle — pick 2-3 to actually A/B test.</p>
+        <div id="sl-output"><div class="output-empty">Enter a topic and generate.</div></div>
+        <div class="output-status" id="sl-status"></div>
+        <div class="output-actions" id="sl-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('sl-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genSubjects(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BRAND VOICE -->
+  <div class="view" id="view-profile">
+    <div class="panel" style="max-width:640px">
+      <h3>Brand voice</h3>
+      <p class="sub">Set this once per client — every flow above writes in this voice.</p>
+      <div class="field"><label>Brand name</label><input type="text" id="pf-name" placeholder="e.g. Reyes Home Cleaning"></div>
+      <div class="field"><label>Tone</label><input type="text" id="pf-tone" placeholder="e.g. warm, straightforward, a little playful"></div>
+      <button class="btn btn-primary btn-block" onclick="saveProfile()">Save brand voice</button>
+      <div class="output-status" id="pf-status"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Automated flows are the highest-ROI email work — build once, they run forever.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Per flow</span>&nbsp; $250–$700 per sequence (welcome, cart recovery, or win-back) — most e-commerce and service businesses have none of these set up.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Retainer</span>&nbsp; $1.5k–$9k/mo to build and maintain all flows plus ongoing segmented campaigns for a growing list.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Easy pitch</span>&nbsp; Ask "what happens when someone abandons their cart right now?" — most business owners will say "nothing," which is the entire sale.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. Load these into your email platform (Klaviyo, Mailchimp, etc.) to actually trigger and send them.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab, [data-tab]').forEach(t => t.addEventListener('click', () => {
+  const target = t.dataset.tab;
+  if(!target) return;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.dataset.tab === target));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + target));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ---------- brand voice ---------- */
+const PROFILE_KEY = 'aa-emailflow-profile-v1';
+function loadProfile(){ try{ return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); }catch(e){ return null; } }
+function renderProfileBar(){
+  const p = loadProfile();
+  const bar = document.getElementById('profile-bar');
+  const summary = document.getElementById('profile-summary');
+  if(p && p.name){
+    bar.classList.remove('off');
+    summary.textContent = `Writing as "${p.name}" — ${p.tone || 'tone not set'}`;
+  } else {
+    bar.classList.add('off');
+    summary.textContent = 'No brand voice set — every tab writes generically.';
+  }
+}
+function saveProfile(){
+  const p = { name: document.getElementById('pf-name').value.trim(), tone: document.getElementById('pf-tone').value.trim() };
+  try{ localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }catch(e){}
+  renderProfileBar();
+  const el = document.getElementById('pf-status');
+  el.textContent = 'Saved.';
+  setTimeout(() => el.textContent = '', 2000);
+}
+(function initProfileForm(){
+  const p = loadProfile();
+  if(!p) return;
+  document.getElementById('pf-name').value = p.name || '';
+  document.getElementById('pf-tone').value = p.tone || '';
+})();
+renderProfileBar();
+function profileContext(){
+  const p = loadProfile();
+  if(!p || !p.name) return '';
+  return `\n\nBrand: "${p.name}". Tone: ${p.tone || 'professional'}.`;
+}
+
+/* ---------- sample helper ---------- */
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+function renderFlow(items, outputId, actionsId){
+  const wrap = document.getElementById(outputId);
+  wrap.innerHTML = `<div class="flow-timeline">${(Array.isArray(items)?items:[]).map(e => `
+    <div class="flow-email">
+      <div class="timing">${escapeHtml(e.timing||'')}</div>
+      <div class="card"><strong>${escapeHtml(e.subject||'')}</strong><div style="margin-top:6px;white-space:pre-wrap">${escapeHtml(e.body||'')}</div></div>
+    </div>
+  `).join('')}</div>` || '<div class="output-empty">Nothing came back — try again.</div>';
+  document.getElementById(actionsId).style.display = 'flex';
+}
+
+/* ---------- welcome series ---------- */
+function genWelcome(regenerate){
+  const what = document.getElementById('wl-what').value.trim();
+  const goal = document.getElementById('wl-goal').value.trim();
+  const count = document.getElementById('wl-count').value;
+  if(!what){ document.getElementById('wl-status').textContent = 'Describe what subscribers signed up for.'; return; }
+  const prompt = `Write a ${count}-email welcome series for new subscribers.${profileContext()}
+They signed up for: "${what}". Eventual goal: "${goal || 'general engagement'}".
+Space emails naturally (immediately, then a few days apart). Each email should have one clear purpose (intro, value/story, social proof, soft CTA). Reply with only a JSON array of exactly ${count} {"timing": string (e.g. "Immediately", "Day 3"), "subject": string, "body": string (3-5 short paragraphs)} objects.`;
+  runSampleJson(prompt, 'wl-btn', 'wl-status', (items) => renderFlow(items, 'wl-output', 'wl-actions'), regenerate);
+}
+
+/* ---------- cart recovery ---------- */
+function genCart(regenerate){
+  const what = document.getElementById('ct-what').value.trim();
+  const incentive = document.getElementById('ct-incentive').value.trim();
+  if(!what){ document.getElementById('ct-status').textContent = 'Describe what\'s being sold first.'; return; }
+  const prompt = `Write a 3-email cart abandonment recovery sequence.${profileContext()}
+Product: "${what}". Incentive to offer: "${incentive || 'none — rely on urgency and helpfulness instead'}".
+Timing: 1 hour (gentle reminder), 24 hours (address hesitation/FAQs), 72 hours (final nudge, incentive if given). Reply with only a JSON array of exactly 3 {"timing": string, "subject": string, "body": string} objects.`;
+  runSampleJson(prompt, 'ct-btn', 'ct-status', (items) => renderFlow(items, 'ct-output', 'ct-actions'), regenerate);
+}
+
+/* ---------- win-back ---------- */
+function genWinback(regenerate){
+  const what = document.getElementById('wb-what').value.trim();
+  const inactive = document.getElementById('wb-inactive').value.trim();
+  if(!what){ document.getElementById('wb-status').textContent = 'Describe the business first.'; return; }
+  const prompt = `Write a 2-3 email win-back sequence for inactive subscribers.${profileContext()}
+Business: "${what}". Inactivity: "${inactive || 'not specified'}".
+First email: "we miss you" + reminder of value. Final email: honest, low-pressure, offers an easy opt-out (respects their inbox). Reply with only a JSON array of 2-3 {"timing": string, "subject": string, "body": string} objects.`;
+  runSampleJson(prompt, 'wb-btn', 'wb-status', (items) => renderFlow(items, 'wb-output', 'wb-actions'), regenerate);
+}
+
+/* ---------- segmentation ---------- */
+function genSegment(regenerate){
+  const type = document.getElementById('sg-type').value.trim();
+  const data = document.getElementById('sg-data').value.trim();
+  if(!type || !data){ document.getElementById('sg-status').textContent = 'Fill in both fields first.'; return; }
+  const prompt = `Suggest an email segmentation strategy for this business, using only the data actually available.${profileContext()}
+Business: "${type}". Available subscriber data: "${data}".
+Reply with only a JSON array of 3-5 {"segment": string, "criteria": string (based only on the data given), "whatToSend": string} objects.`;
+  runSampleJson(prompt, 'sg-btn', 'sg-status', (items) => {
+    const wrap = document.getElementById('sg-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map(s => `<div class="card"><span class="seg-tag">${escapeHtml(s.segment||'')}</span><div class="field-lbl">Criteria</div>${escapeHtml(s.criteria||'')}<div class="field-lbl">What to send</div>${escapeHtml(s.whatToSend||'')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('sg-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- subject line lab ---------- */
+function genSubjects(regenerate){
+  const topic = document.getElementById('sl-topic').value.trim();
+  if(!topic){ document.getElementById('sl-status').textContent = 'Enter a topic first.'; return; }
+  const prompt = `Write 5 subject line variants for this email campaign, each using a distinct psychological angle.${profileContext()}
+Topic: "${topic}"
+Reply with only a JSON array of exactly 5 {"angle": "Curiosity" | "Urgency" | "Direct benefit" | "Personal/conversational" | "Social proof", "subject": string} objects.`;
+  runSampleJson(prompt, 'sl-btn', 'sl-status', (items) => {
+    const wrap = document.getElementById('sl-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map(s => `<div class="card"><span class="tag-chip">${escapeHtml(s.angle||'')}</span><div style="margin-top:6px;font-weight:600">${escapeHtml(s.subject||'')}</div></div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('sl-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function copyOut(id){
+  const text = Array.from(document.querySelectorAll('#' + id + ' .card')).map(c => c.textContent).join('\n\n');
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+</script>

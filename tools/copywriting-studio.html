@@ -1,0 +1,423 @@
+<title>Copywriting Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700&family=Red+Hat+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.005 250);
+  --paper-raised:oklch(0.995 0.003 250);
+  --ink:oklch(0.2 0.03 250);
+  --ink-dim:oklch(0.46 0.02 250);
+  --line:oklch(0.85 0.015 250);
+  --line-strong:oklch(0.7 0.025 250);
+  --accent:oklch(0.5 0.19 260);
+  --accent-soft:oklch(0.5 0.19 260 / 0.1);
+  --accent-ink:oklch(0.99 0.006 90);
+  --gold:oklch(0.75 0.15 78);
+  --gold-soft:oklch(0.75 0.15 78 / 0.16);
+  --shadow:0 1px 2px oklch(0.25 0.03 250 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.16 0.018 255); --paper-raised:oklch(0.21 0.02 255);
+    --ink:oklch(0.95 0.008 255); --ink-dim:oklch(0.7 0.016 255);
+    --line:oklch(0.34 0.024 255); --line-strong:oklch(0.45 0.03 255);
+    --accent:oklch(0.72 0.15 260); --accent-soft:oklch(0.72 0.15 260 / 0.16); --accent-ink:oklch(0.15 0.02 260);
+    --gold:oklch(0.78 0.13 78); --gold-soft:oklch(0.78 0.13 78 / 0.18);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.16 0.018 255); --paper-raised:oklch(0.21 0.02 255);
+  --ink:oklch(0.95 0.008 255); --ink-dim:oklch(0.7 0.016 255);
+  --line:oklch(0.34 0.024 255); --line-strong:oklch(0.45 0.03 255);
+  --accent:oklch(0.72 0.15 260); --accent-soft:oklch(0.72 0.15 260 / 0.16); --accent-ink:oklch(0.15 0.02 260);
+  --gold:oklch(0.78 0.13 78); --gold-soft:oklch(0.78 0.13 78 / 0.18);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Manrope',system-ui,sans-serif}
+h1,h2,h3{font-family:'Bricolage Grotesque',sans-serif;margin:0;text-wrap:balance}
+.mono{font-family:'Red Hat Mono',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--accent),oklch(0.45 0.2 290));display:flex;align-items:center;justify-content:center;color:var(--accent-ink);font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px}
+.brand h1{font-size:21px;font-weight:700}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Red Hat Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.voice-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;margin-top:16px;background:var(--accent-soft);border-radius:10px;font-size:12.5px;flex-wrap:wrap}
+.voice-bar .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.voice-bar.off .dot{background:var(--ink-dim)}
+.voice-bar a{color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer}
+.voice-bar a:hover{text-decoration:underline}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Manrope',sans-serif;font-weight:700;font-size:13.5px;padding:11px 15px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:16px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Manrope',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:7px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:90px;line-height:1.5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.btn{font-family:'Manrope',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:8px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.6}
+.card .n{display:inline-block;font-family:'Red Hat Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.card .char{float:right;font-family:'Red Hat Mono',monospace;font-size:10px;color:var(--ink-dim)}
+.card h4{font-size:14px;margin-bottom:4px}
+.card .field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.thinking-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+
+.tag-chip{display:inline-block;font-family:'Red Hat Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--gold-soft);color:oklch(0.42 0.13 78);text-transform:uppercase;letter-spacing:.04em}
+@media (prefers-color-scheme: dark){.tag-chip{color:var(--gold)}}
+:root[data-theme="dark"] .tag-chip{color:var(--gold)}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">Cw</div>
+      <div>
+        <h1>Copywriting Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 07</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Landing pages: <strong>$200–$600</strong> each<br>Ad copy sets: <strong>$100–$300</strong> · Retainers: <strong>$800–$3k/mo</strong></div>
+  </header>
+
+  <div class="voice-bar off" id="voice-bar">
+    <span class="dot"></span>
+    <span id="voice-summary">No brand voice set — every tab writes in a generic tone.</span>
+    <a data-tab="voice">Set it up →</a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="landing">Landing Page</button>
+    <button class="tab" data-tab="ads">Ad Copy</button>
+    <button class="tab" data-tab="email">Email Campaign</button>
+    <button class="tab" data-tab="products">Product Descriptions</button>
+    <button class="tab" data-tab="voice">Brand Voice</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- LANDING PAGE -->
+  <div class="view active" id="view-landing">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Generates a full landing page copy block: headline, subhead, value props, and CTA.</p>
+        <div class="field"><label>Product or service</label><input type="text" id="lp-product" placeholder="e.g. an instant quote &amp; booking tool for local service businesses"></div>
+        <div class="field"><label>Primary audience</label><input type="text" id="lp-audience" placeholder="e.g. local home-service business owners"></div>
+        <div class="field"><label>Main benefit or angle</label><textarea id="lp-benefit" placeholder="e.g. stops losing leads to slow quote replies"></textarea></div>
+        <button class="btn btn-primary btn-block" id="lp-btn" onclick="genLanding()">Generate landing copy</button>
+      </div>
+      <div class="panel">
+        <h3>Landing page copy</h3>
+        <p class="sub">Structured, ready to hand to a designer or paste into a page builder.</p>
+        <div id="lp-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="lp-status"></div>
+        <div class="output-actions" id="lp-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genLanding(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AD COPY -->
+  <div class="view" id="view-ads">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Generates platform-correct ad copy, sized to each platform's real limits.</p>
+        <div class="field"><label>Product, service, or offer</label><textarea id="ad-product" placeholder="e.g. 20% off first booking, instant online quotes"></textarea></div>
+        <div class="field"><label>Platform</label>
+          <select id="ad-platform"><option value="both">Both Meta &amp; Google</option><option value="meta">Meta (Facebook/Instagram) only</option><option value="google">Google Search only</option></select>
+        </div>
+        <button class="btn btn-primary btn-block" id="ad-btn" onclick="genAds()">Generate ad copy</button>
+      </div>
+      <div class="panel">
+        <h3>Ad copy sets</h3>
+        <p class="sub">Character counts shown so nothing gets truncated at publish time.</p>
+        <div id="ad-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="ad-status"></div>
+        <div class="output-actions" id="ad-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genAds(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMAIL -->
+  <div class="view" id="view-email">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Generates 5 subject line options plus a full email body.</p>
+        <div class="field"><label>Email type</label>
+          <select id="em-type"><option>Welcome email</option><option>Promotional offer</option><option>Newsletter update</option><option>Abandoned cart / follow-up</option><option>Re-engagement ("we miss you")</option></select>
+        </div>
+        <div class="field"><label>What it needs to say</label><textarea id="em-content" placeholder="e.g. welcome new subscribers, introduce our 3 core services, offer 10% off first order"></textarea></div>
+        <button class="btn btn-primary btn-block" id="em-btn" onclick="genEmail()">Generate email</button>
+      </div>
+      <div class="panel">
+        <h3>Email copy</h3>
+        <p class="sub">Pick your favorite subject line, paste the body into your email tool.</p>
+        <div id="em-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="em-status"></div>
+        <div class="output-actions" id="em-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genEmail(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT DESCRIPTIONS -->
+  <div class="view" id="view-products">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Batch mode — one product per line, get a description for each. Built for e-commerce catalogs.</p>
+        <div class="field"><label>Products (one per line: name — key features)</label><textarea id="pd-list" placeholder="Ceramic Travel Mug — 16oz, keeps drinks hot 6hrs, leakproof lid
+Bamboo Cutting Board — reversible, knife-safe, sustainably sourced" style="min-height:160px"></textarea></div>
+        <div class="field"><label>Style</label>
+          <select id="pd-style"><option>Concise (1–2 sentences)</option><option>Standard (short paragraph)</option><option>Detailed (paragraph + bullet features)</option></select>
+        </div>
+        <button class="btn btn-primary btn-block" id="pd-btn" onclick="genProducts()">Generate descriptions</button>
+      </div>
+      <div class="panel">
+        <h3>Descriptions</h3>
+        <p class="sub">One card per product, ready to paste into a store listing.</p>
+        <div id="pd-output"><div class="output-empty">List your products and generate.</div></div>
+        <div class="output-status" id="pd-status"></div>
+        <div class="output-actions" id="pd-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('pd-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genProducts(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BRAND VOICE -->
+  <div class="view" id="view-voice">
+    <div class="panel" style="max-width:640px">
+      <h3>Brand voice profile</h3>
+      <p class="sub">Set this once per client — every tab above automatically writes in this voice instead of a generic tone.</p>
+      <div class="field"><label>Brand / business name</label><input type="text" id="bv-name" placeholder="e.g. Reyes Home Cleaning"></div>
+      <div class="field"><label>Target audience</label><input type="text" id="bv-audience" placeholder="e.g. busy homeowners aged 30–55"></div>
+      <div class="field"><label>Tone (pick a few words)</label><input type="text" id="bv-tone" placeholder="e.g. warm, no-nonsense, a little playful"></div>
+      <div class="field"><label>Phrases or claims to avoid</label><input type="text" id="bv-avoid" placeholder="e.g. no 'best in town', no exclamation-heavy hype"></div>
+      <button class="btn btn-primary btn-block" onclick="saveVoice()">Save brand voice</button>
+      <div class="output-status" id="bv-status"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Copywriting is priced per deliverable or as a content retainer.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Per project</span>&nbsp; Landing page copy: $200–$600. Ad copy set (Meta + Google): $100–$300. Email sequence (3–5 emails): $250–$600.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Retainer</span>&nbsp; $800–$3k/mo for a business that needs ongoing ads, emails, and landing pages — set their brand voice once, reuse it for every deliverable.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Catalog work</span>&nbsp; E-commerce product description batches are fast, repeatable income: $0.50–$2 per product description, or a flat fee per catalog.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. Brand voice and drafts are saved only in this browser.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab, [data-tab]').forEach(t => t.addEventListener('click', (e) => {
+  const target = t.dataset.tab;
+  if(!target) return;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.dataset.tab === target));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + target));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ---------- brand voice ---------- */
+const VOICE_KEY = 'aa-copywriting-voice-v1';
+function loadVoice(){ try{ return JSON.parse(localStorage.getItem(VOICE_KEY) || 'null'); }catch(e){ return null; } }
+function renderVoiceBar(){
+  const v = loadVoice();
+  const bar = document.getElementById('voice-bar');
+  const summary = document.getElementById('voice-summary');
+  if(v && v.name){
+    bar.classList.remove('off');
+    summary.textContent = `Writing as "${v.name}" — tone: ${v.tone || 'not set'}`;
+  } else {
+    bar.classList.add('off');
+    summary.textContent = 'No brand voice set — every tab writes in a generic tone.';
+  }
+}
+function saveVoice(){
+  const v = {
+    name: document.getElementById('bv-name').value.trim(),
+    audience: document.getElementById('bv-audience').value.trim(),
+    tone: document.getElementById('bv-tone').value.trim(),
+    avoid: document.getElementById('bv-avoid').value.trim(),
+  };
+  try{ localStorage.setItem(VOICE_KEY, JSON.stringify(v)); }catch(e){}
+  renderVoiceBar();
+  const el = document.getElementById('bv-status');
+  el.textContent = 'Saved. Every generator below will now use this voice.';
+  setTimeout(() => el.textContent = '', 2500);
+}
+(function initVoiceForm(){
+  const v = loadVoice();
+  if(!v) return;
+  document.getElementById('bv-name').value = v.name || '';
+  document.getElementById('bv-audience').value = v.audience || '';
+  document.getElementById('bv-tone').value = v.tone || '';
+  document.getElementById('bv-avoid').value = v.avoid || '';
+})();
+renderVoiceBar();
+
+function voiceContext(){
+  const v = loadVoice();
+  if(!v || !v.name) return '';
+  return `\n\nBrand voice to write in: the brand is "${v.name}", targeting ${v.audience || 'a general audience'}. Tone: ${v.tone || 'professional'}. Avoid: ${v.avoid || 'nothing specific'}.`;
+}
+
+/* ---------- sample helpers ---------- */
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing the input.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      prompt_too_large: 'That input is too long — trim it and try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+/* ---------- landing page ---------- */
+function genLanding(regenerate){
+  const product = document.getElementById('lp-product').value.trim();
+  const audience = document.getElementById('lp-audience').value.trim();
+  const benefit = document.getElementById('lp-benefit').value.trim();
+  if(!product){ document.getElementById('lp-status').textContent = 'Describe the product or service first.'; return; }
+  const prompt = `Write landing page copy for: "${product}". Audience: "${audience || 'general'}". Main benefit/angle: "${benefit || 'not specified'}".${voiceContext()}
+Reply with only a JSON object: {"headline": string, "subheadline": string, "valueProps": [{"title": string, "description": string}] (exactly 3), "ctaText": string, "socialProofLine": string (a placeholder line like "Trusted by 50+ [type] businesses" using a generic bracketed placeholder, never a fabricated specific number)}.`;
+  runSampleJson(prompt, 'lp-btn', 'lp-status', (d) => {
+    const wrap = document.getElementById('lp-output');
+    const props = (d.valueProps||[]).map(p => `<div class="field-lbl">Value prop</div><strong>${escapeHtml(p.title||'')}</strong> — ${escapeHtml(p.description||'')}`).join('<br>');
+    wrap.innerHTML = `<div class="card">
+      <div class="field-lbl">Headline</div><h4>${escapeHtml(d.headline||'')}</h4>
+      <div class="field-lbl">Subheadline</div>${escapeHtml(d.subheadline||'')}
+      ${props}
+      <div class="field-lbl">CTA button</div><strong>${escapeHtml(d.ctaText||'')}</strong>
+      <div class="field-lbl">Social proof line</div>${escapeHtml(d.socialProofLine||'')}
+    </div>`;
+    document.getElementById('lp-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- ads ---------- */
+function genAds(regenerate){
+  const product = document.getElementById('ad-product').value.trim();
+  const platform = document.getElementById('ad-platform').value;
+  if(!product){ document.getElementById('ad-status').textContent = 'Describe the product or offer first.'; return; }
+  const prompt = `Write ad copy for: "${product}". Target platforms: ${platform}.${voiceContext()}
+Reply with only a JSON object: {
+  "meta": ${platform === 'google' ? 'null' : '{"headline": string (max 40 chars), "primaryText": string (max 125 chars), "description": string (max 30 chars)}'},
+  "google": ${platform === 'meta' ? 'null' : '{"headlines": [string] (exactly 3, each max 30 chars), "descriptions": [string] (exactly 2, each max 90 chars)}'}
+}. Respect the character limits exactly.`;
+  runSampleJson(prompt, 'ad-btn', 'ad-status', (d) => {
+    let html = '';
+    if(d.meta){
+      html += `<div class="card"><span class="n">Meta / Facebook / Instagram</span>
+        <div class="field-lbl">Headline <span class="char">${(d.meta.headline||'').length}/40</span></div>${escapeHtml(d.meta.headline||'')}
+        <div class="field-lbl">Primary text <span class="char">${(d.meta.primaryText||'').length}/125</span></div>${escapeHtml(d.meta.primaryText||'')}
+        <div class="field-lbl">Description <span class="char">${(d.meta.description||'').length}/30</span></div>${escapeHtml(d.meta.description||'')}
+      </div>`;
+    }
+    if(d.google){
+      const heads = (d.google.headlines||[]).map((h,i) => `<div class="field-lbl">Headline ${i+1} <span class="char">${h.length}/30</span></div>${escapeHtml(h)}`).join('');
+      const descs = (d.google.descriptions||[]).map((h,i) => `<div class="field-lbl">Description ${i+1} <span class="char">${h.length}/90</span></div>${escapeHtml(h)}`).join('');
+      html += `<div class="card"><span class="n">Google Search</span>${heads}${descs}</div>`;
+    }
+    document.getElementById('ad-output').innerHTML = html || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('ad-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- email ---------- */
+function genEmail(regenerate){
+  const type = document.getElementById('em-type').value;
+  const content = document.getElementById('em-content').value.trim();
+  if(!content){ document.getElementById('em-status').textContent = 'Describe what the email needs to say first.'; return; }
+  const prompt = `Write a "${type}" marketing email. What it needs to say: "${content}".${voiceContext()}
+Reply with only a JSON object: {"subjectLines": [string] (exactly 5, varied styles: direct, curiosity, benefit-driven, urgency, question), "body": string (the full email body, with a clear greeting, 2-4 short paragraphs, and a closing CTA line, formatted with \\n for line breaks)}.`;
+  runSampleJson(prompt, 'em-btn', 'em-status', (d) => {
+    const subs = (d.subjectLines||[]).map((s,i) => `<div class="field-lbl">Subject option ${i+1} <span class="char">${s.length} chars</span></div>${escapeHtml(s)}`).join('');
+    document.getElementById('em-output').innerHTML = `<div class="card">${subs}<div class="field-lbl">Body</div><div style="white-space:pre-wrap">${escapeHtml(d.body||'')}</div></div>`;
+    document.getElementById('em-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- product descriptions ---------- */
+function genProducts(regenerate){
+  const list = document.getElementById('pd-list').value.trim();
+  const style = document.getElementById('pd-style').value;
+  if(!list){ document.getElementById('pd-status').textContent = 'List at least one product first.'; return; }
+  const prompt = `Write e-commerce product descriptions for each product listed below, one per line as "Name — features". Style: ${style}.${voiceContext()}
+Products:
+"""${list}"""
+Reply with only a JSON array of {"name": string, "description": string} objects, one per product line, in the same order.`;
+  runSampleJson(prompt, 'pd-btn', 'pd-status', (items) => {
+    const wrap = document.getElementById('pd-output');
+    wrap.innerHTML = (Array.isArray(items) ? items : []).map(it => `<div class="card"><h4>${escapeHtml(it.name||'')}</h4>${escapeHtml(it.description||'')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('pd-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function copyOut(id){
+  const text = Array.from(document.querySelectorAll('#' + id + ' .card')).map(c => c.textContent).join('\n\n');
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+</script>

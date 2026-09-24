@@ -1,0 +1,274 @@
+<title>Data Quality Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Saira:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.004 200);
+  --paper-raised:oklch(0.995 0.002 200);
+  --ink:oklch(0.2 0.016 200);
+  --ink-dim:oklch(0.46 0.012 200);
+  --line:oklch(0.85 0.01 200);
+  --line-strong:oklch(0.7 0.016 200);
+  --accent:oklch(0.5 0.11 190);
+  --accent-soft:oklch(0.5 0.11 190 / 0.1);
+  --accent-ink:oklch(0.99 0.005 90);
+  --bad:oklch(0.55 0.16 25);
+  --bad-soft:oklch(0.55 0.16 25 / 0.13);
+  --good:oklch(0.5 0.12 150);
+  --good-soft:oklch(0.5 0.12 150 / 0.13);
+  --shadow:0 1px 2px oklch(0.25 0.015 200 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.15 0.012 200); --paper-raised:oklch(0.2 0.014 200);
+    --ink:oklch(0.94 0.006 200); --ink-dim:oklch(0.68 0.01 200);
+    --line:oklch(0.33 0.014 200); --line-strong:oklch(0.44 0.018 200);
+    --accent:oklch(0.7 0.1 190); --accent-soft:oklch(0.7 0.1 190 / 0.16); --accent-ink:oklch(0.15 0.02 190);
+    --bad:oklch(0.72 0.15 25); --bad-soft:oklch(0.72 0.15 25 / 0.16);
+    --good:oklch(0.7 0.12 150); --good-soft:oklch(0.7 0.12 150 / 0.16);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.15 0.012 200); --paper-raised:oklch(0.2 0.014 200);
+  --ink:oklch(0.94 0.006 200); --ink-dim:oklch(0.68 0.01 200);
+  --line:oklch(0.33 0.014 200); --line-strong:oklch(0.44 0.018 200);
+  --accent:oklch(0.7 0.1 190); --accent-soft:oklch(0.7 0.1 190 / 0.16); --accent-ink:oklch(0.15 0.02 190);
+  --bad:oklch(0.72 0.15 25); --bad-soft:oklch(0.72 0.15 25 / 0.16);
+  --good:oklch(0.7 0.12 150); --good-soft:oklch(0.7 0.12 150 / 0.16);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Saira',system-ui,sans-serif}
+h1,h2,h3{font-family:'Rajdhani',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.01em;margin:0;text-wrap:balance}
+.mono{font-family:'Space Mono',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:6px;background:var(--ink);color:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-weight:700;font-size:16px}
+.brand h1{font-size:20px}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Saira',sans-serif;font-weight:600;font-size:13px;padding:11px 14px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:420px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:8px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:18px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field textarea{width:100%;font-family:'Space Mono',monospace;font-size:11.5px;padding:10px 11px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink);resize:vertical;min-height:220px;line-height:1.5}
+
+.btn{font-family:'Saira',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:6px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:8px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:8px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.code-block{font-family:'Space Mono',monospace;font-size:11.5px;white-space:pre-wrap;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:14px;line-height:1.6;overflow-x:auto}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.severity-tag{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;padding:2px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:.04em}
+.severity-tag.high{background:var(--bad-soft);color:var(--bad)}
+.severity-tag.low{background:var(--good-soft);color:var(--good)}
+
+.tag-chip{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;padding:3px 9px;border-radius:8px;background:var(--accent-soft);color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">DQ</div>
+      <div>
+        <h1>Data Quality Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 21</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Per dataset: <strong>$100–$600</strong><br>Retainer: <strong>$500–$2.5k/mo</strong></div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="audit">Quality Audit</button>
+    <button class="tab" data-tab="script">Cleaning Script</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- QUALITY AUDIT -->
+  <div class="view active" id="view-audit">
+    <div class="split">
+      <div class="panel">
+        <h3>Sample data</h3>
+        <p class="sub">Paste a representative sample (20-50 rows is plenty) — CSV, TSV, or any delimited text.</p>
+        <div class="field"><label>Data sample</label><textarea id="au-data" placeholder="name,email,signup_date,revenue
+John Smith,john@email,2024-1-5,1200
+jane doe,JANE@EMAIL.COM,01/05/2024,
+John Smith,john@email.com,2024-01-05,1200.00"></textarea></div>
+        <button class="btn btn-primary btn-block" id="au-btn" onclick="genAudit()">Audit data quality</button>
+      </div>
+      <div class="panel">
+        <h3>Quality issues found</h3>
+        <p class="sub">Ranked by how much they'd break downstream analysis or a model trained on this data.</p>
+        <div id="au-output"><div class="output-empty">Paste a data sample and audit it.</div></div>
+        <div class="output-status" id="au-status"></div>
+        <div class="output-actions" id="au-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genAudit(true)">Re-audit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLEANING SCRIPT -->
+  <div class="view" id="view-script">
+    <div class="split">
+      <div class="panel">
+        <h3>Sample data</h3>
+        <p class="sub">Same sample, or paste a new one — generates a real Python script.</p>
+        <div class="field"><label>Data sample</label><textarea id="sc-data" placeholder="Paste the same sample, or a new one"></textarea></div>
+        <button class="btn btn-primary btn-block" id="sc-btn" onclick="genScript()">Generate cleaning script</button>
+      </div>
+      <div class="panel">
+        <h3>Python (pandas) cleaning script</h3>
+        <p class="sub">A real starting script — review before running on production data.</p>
+        <div id="sc-output"><div class="output-empty">Paste data and generate.</div></div>
+        <div class="output-status" id="sc-status"></div>
+        <div class="output-actions" id="sc-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('sc-output')">Copy script</button>
+          <button class="btn btn-sm" onclick="genScript(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Every AI/ML project starts with messy data nobody wants to clean.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Per dataset</span>&nbsp; $100–$600 to audit a dataset and hand back a cleaning script, scaled to size and complexity.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Retainer</span>&nbsp; $500–$2.5k/mo for ongoing data pipeline maintenance as new data comes in.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Find clients</span>&nbsp; Small AI startups and data teams on freelance platforms — search for "data cleaning" or "data labeling" gigs directly.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. Always test a generated script on a copy of the data first.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + t.dataset.tab));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      prompt_too_large: 'That sample is too long — trim it and try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+async function runSample(promptText, btnId, statusId, outputId, actionsId, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const out = document.getElementById(outputId);
+  const actions = document.getElementById(actionsId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = '';
+  actions.style.display = 'none';
+  out.innerHTML = `<div class="code-block">Thinking…</div>`;
+  try{
+    const { text } = await sample(promptText, {
+      modelTier: 'default',
+      cache: regenerate ? false : true,
+      onText: ({text}) => { out.innerHTML = `<div class="code-block">${escapeHtml(text)}</div>`; }
+    });
+    out.innerHTML = `<div class="code-block">${escapeHtml(text)}</div>`;
+    actions.style.display = 'flex';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      empty_completion: 'Nothing came back — try again.',
+      prompt_too_large: 'That sample is too long — trim it and try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function genAudit(regenerate){
+  const data = document.getElementById('au-data').value.trim();
+  if(!data){ document.getElementById('au-status').textContent = 'Paste a data sample first.'; return; }
+  const prompt = `Audit this data sample for quality issues a data engineer would need to fix before using it to train a model or run analysis. Base findings only on what's actually visible in the sample.
+Sample:
+"""${data.slice(0,6000)}"""
+Reply with only a JSON array of 4-8 {"issue": string, "severity": "High" | "Low", "example": string (a specific value from the sample showing the issue), "fix": string (1 sentence)} objects, covering things like inconsistent formats, casing, duplicates, missing values, or type mismatches actually present.`;
+  runSampleJson(prompt, 'au-btn', 'au-status', (items) => {
+    const wrap = document.getElementById('au-output');
+    wrap.innerHTML = (Array.isArray(items)?items:[]).map(it => `<div class="card"><span class="severity-tag ${(it.severity||'').toLowerCase()}">${escapeHtml(it.severity||'')}</span> <strong>${escapeHtml(it.issue||'')}</strong><div class="field-lbl">Example</div><span class="mono">${escapeHtml(it.example||'')}</span><div class="field-lbl">Fix</div>${escapeHtml(it.fix||'')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('au-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function genScript(regenerate){
+  const data = document.getElementById('sc-data').value.trim();
+  if(!data){ document.getElementById('sc-status').textContent = 'Paste a data sample first.'; return; }
+  const prompt = `Write a Python (pandas) data cleaning script for this data sample, based only on the issues actually visible in it — handle things like: trimming whitespace, normalizing case, parsing inconsistent date formats, deduplicating rows, and flagging (not silently dropping) missing values. Assume the data is loaded into a DataFrame called df. Include brief comments explaining each step.
+Sample:
+"""${data.slice(0,6000)}"""
+Output only the Python code, no explanation before or after.`;
+  runSample(prompt, 'sc-btn', 'sc-status', 'sc-output', 'sc-actions', regenerate);
+}
+
+function copyOut(id){
+  const text = document.querySelector('#' + id + ' .code-block')?.textContent
+    || Array.from(document.querySelectorAll('#' + id + ' .card')).map(c => c.textContent).join('\n\n');
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+</script>

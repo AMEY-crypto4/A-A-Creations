@@ -1,0 +1,442 @@
+<title>Travel Planner Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Domine:wght@500;600;700&family=Jost:wght@400;500;600;700&family=Chivo+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.008 200);
+  --paper-raised:oklch(0.995 0.004 200);
+  --ink:oklch(0.22 0.025 210);
+  --ink-dim:oklch(0.47 0.018 210);
+  --line:oklch(0.85 0.015 200);
+  --line-strong:oklch(0.7 0.022 200);
+  --accent:oklch(0.5 0.12 195);
+  --accent-soft:oklch(0.5 0.12 195 / 0.1);
+  --accent-ink:oklch(0.99 0.005 90);
+  --coral:oklch(0.66 0.16 40);
+  --coral-soft:oklch(0.66 0.16 40 / 0.14);
+  --shadow:0 1px 2px oklch(0.25 0.02 200 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.16 0.018 205); --paper-raised:oklch(0.21 0.02 205);
+    --ink:oklch(0.95 0.008 200); --ink-dim:oklch(0.7 0.014 200);
+    --line:oklch(0.34 0.024 205); --line-strong:oklch(0.45 0.03 205);
+    --accent:oklch(0.7 0.1 195); --accent-soft:oklch(0.7 0.1 195 / 0.16); --accent-ink:oklch(0.14 0.02 195);
+    --coral:oklch(0.72 0.14 40); --coral-soft:oklch(0.72 0.14 40 / 0.17);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.16 0.018 205); --paper-raised:oklch(0.21 0.02 205);
+  --ink:oklch(0.95 0.008 200); --ink-dim:oklch(0.7 0.014 200);
+  --line:oklch(0.34 0.024 205); --line-strong:oklch(0.45 0.03 205);
+  --accent:oklch(0.7 0.1 195); --accent-soft:oklch(0.7 0.1 195 / 0.16); --accent-ink:oklch(0.14 0.02 195);
+  --coral:oklch(0.72 0.14 40); --coral-soft:oklch(0.72 0.14 40 / 0.17);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Jost',system-ui,sans-serif}
+h1,h2,h3{font-family:'Domine',georgia,serif;margin:0;text-wrap:balance}
+.mono{font-family:'Chivo Mono',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--coral));display:flex;align-items:center;justify-content:center;color:var(--accent-ink);font-family:'Domine',serif;font-weight:700;font-size:17px}
+.brand h1{font-size:21px;font-weight:700}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Chivo Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.profile-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;margin-top:16px;background:var(--accent-soft);border-radius:10px;font-size:12.5px;flex-wrap:wrap}
+.profile-bar .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.profile-bar.off .dot{background:var(--ink-dim)}
+.profile-bar a{color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer}
+.profile-bar a:hover{text-decoration:underline}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Jost',sans-serif;font-weight:600;font-size:13px;padding:11px 14px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:10px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:16px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Jost',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:7px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:80px;line-height:1.5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.btn{font-family:'Jost',sans-serif;font-weight:600;font-size:13.5px;padding:11px 18px;border-radius:20px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 13px;font-size:12px;border-radius:16px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.day-card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:12px}
+.day-card .dn{font-family:'Chivo Mono',monospace;font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.day-card h4{font-size:15px;margin-bottom:10px}
+.day-slot{display:grid;grid-template-columns:70px 1fr;gap:10px;margin-bottom:8px;font-size:13px;line-height:1.5}
+.day-slot .tod{font-family:'Chivo Mono',monospace;font-size:10px;color:var(--ink-dim);text-transform:uppercase;padding-top:2px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'Chivo Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.pack-cat{margin-bottom:14px}
+.pack-cat h4{font-size:13px;color:var(--accent);margin-bottom:6px}
+.pack-cat ul{margin:0;padding-left:18px;font-size:13px;line-height:1.7}
+.budget-bar-row{display:grid;grid-template-columns:110px 1fr 60px;gap:10px;align-items:center;margin-bottom:10px;font-size:12.5px}
+.budget-bar-track{height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+.budget-bar-fill{height:100%;background:var(--accent)}
+.caveat{background:var(--coral-soft);border-left:3px solid var(--coral);padding:10px 12px;font-size:11.5px;line-height:1.5;border-radius:0 6px 6px 0;margin-bottom:16px}
+
+.tag-chip{display:inline-block;font-family:'Chivo Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--coral-soft);color:oklch(0.5 0.16 40);text-transform:uppercase;letter-spacing:.04em}
+:root[data-theme="dark"] .tag-chip{color:var(--coral)}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">✈</div>
+      <div>
+        <h1>Travel Planner Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 10</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Custom itinerary: <strong>$50–$200</strong><br>Full trip package: <strong>$150–$400</strong></div>
+  </header>
+
+  <div class="profile-bar off" id="profile-bar">
+    <span class="dot"></span>
+    <span id="profile-summary">No travel style set — every tab uses generic defaults.</span>
+    <a data-tab="profile">Set it up →</a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="itinerary">Itinerary</button>
+    <button class="tab" data-tab="packing">Packing List</button>
+    <button class="tab" data-tab="budget">Budget Allocator</button>
+    <button class="tab" data-tab="tips">Local Tips</button>
+    <button class="tab" data-tab="profile">Travel Style</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- ITINERARY -->
+  <div class="view active" id="view-itinerary">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A day-by-day plan matched to real trip length and pace.</p>
+        <div class="field"><label>Destination</label><input type="text" id="it-dest" placeholder="e.g. Lisbon, Portugal"></div>
+        <div class="two-col">
+          <div class="field"><label>Start date</label><input type="date" id="it-start"></div>
+          <div class="field"><label>End date</label><input type="date" id="it-end"></div>
+        </div>
+        <div class="field"><label>Interests</label><input type="text" id="it-interests" placeholder="e.g. food, history, hiking, nightlife"></div>
+        <button class="btn btn-primary btn-block" id="it-btn" onclick="genItinerary()">Generate itinerary</button>
+      </div>
+      <div class="panel">
+        <h3>Itinerary</h3>
+        <p class="sub" id="it-daysnote">Pick dates to see how many days this covers.</p>
+        <div class="caveat">Attraction names, hours, and prices can change — verify specifics before the trip. Treat this as a strong starting plan, not a booking guarantee.</div>
+        <div id="it-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="it-status"></div>
+        <div class="output-actions" id="it-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('it-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genItinerary(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PACKING LIST -->
+  <div class="view" id="view-packing">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Organized by category, matched to trip type and season.</p>
+        <div class="field"><label>Destination &amp; season</label><input type="text" id="pk-dest" placeholder="e.g. Lisbon in October"></div>
+        <div class="field"><label>Trip type</label>
+          <select id="pk-type"><option>Leisure / sightseeing</option><option>Business</option><option>Adventure / outdoors</option><option>Beach</option><option>Winter / cold weather</option></select>
+        </div>
+        <div class="field"><label>Trip length (days)</label><input type="number" id="pk-days" value="7" min="1" step="1"></div>
+        <button class="btn btn-primary btn-block" id="pk-btn" onclick="genPacking()">Generate packing list</button>
+      </div>
+      <div class="panel">
+        <h3>Packing list</h3>
+        <p class="sub">Grouped by category — check off as you pack.</p>
+        <div id="pk-output"><div class="output-empty">Fill in the fields and generate.</div></div>
+        <div class="output-status" id="pk-status"></div>
+        <div class="output-actions" id="pk-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('pk-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genPacking(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUDGET ALLOCATOR -->
+  <div class="view" id="view-budget">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Allocates a total budget across categories — not a price predictor, a planning tool.</p>
+        <div class="field"><label>Total trip budget ($, excluding flights)</label><input type="number" id="bg-total" value="2000" min="0" step="50"></div>
+        <div class="field"><label>Trip length (days)</label><input type="number" id="bg-days" value="7" min="1" step="1"></div>
+        <div class="field"><label>Travel style</label>
+          <select id="bg-style"><option>Budget / backpacker</option><option>Mid-range comfort</option><option>Luxury</option></select>
+        </div>
+        <button class="btn btn-primary btn-block" id="bg-btn" onclick="genBudget()">Allocate budget</button>
+      </div>
+      <div class="panel">
+        <h3>Budget breakdown</h3>
+        <p class="sub">A sensible split, not a guarantee of local prices.</p>
+        <div id="bg-output"><div class="output-empty">Fill in the fields and allocate.</div></div>
+        <div class="output-status" id="bg-status"></div>
+        <div class="output-actions" id="bg-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genBudget(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOCAL TIPS -->
+  <div class="view" id="view-tips">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Etiquette, tipping norms, and practical notes.</p>
+        <div class="field"><label>Destination</label><input type="text" id="tp-dest" placeholder="e.g. Tokyo, Japan"></div>
+        <button class="btn btn-primary btn-block" id="tp-btn" onclick="genTips()">Generate local tips</button>
+      </div>
+      <div class="panel">
+        <h3>Local tips</h3>
+        <div class="caveat">General guidance only — always verify safety-related and legal information (visas, customs rules) against an official source before you travel.</div>
+        <div id="tp-output"><div class="output-empty">Enter a destination and generate.</div></div>
+        <div class="output-status" id="tp-status"></div>
+        <div class="output-actions" id="tp-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('tp-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genTips(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRAVEL STYLE PROFILE -->
+  <div class="view" id="view-profile">
+    <div class="panel" style="max-width:640px">
+      <h3>Travel style profile</h3>
+      <p class="sub">Set this once per client — every tab above adjusts to this pace and budget.</p>
+      <div class="field"><label>Client name (optional)</label><input type="text" id="pf-name" placeholder="e.g. The Reyes family"></div>
+      <div class="field"><label>Pace</label>
+        <select id="pf-pace"><option>Relaxed — 2-3 activities/day</option><option>Moderate — 3-4 activities/day</option><option>Packed — 5+ activities/day</option></select>
+      </div>
+      <div class="field"><label>Travelers</label><input type="text" id="pf-travelers" placeholder="e.g. couple, no kids"></div>
+      <div class="field"><label>Notes</label><textarea id="pf-notes" placeholder="e.g. loves street food, avoid early mornings, one traveler has mobility limits"></textarea></div>
+      <button class="btn btn-primary btn-block" onclick="saveProfile()">Save travel style</button>
+      <div class="output-status" id="pf-status"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Custom trip planning for people who hate planning.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Per trip</span>&nbsp; $50–$200 for a custom itinerary depending on trip length and complexity; $150–$400 for a full package (itinerary + packing list + budget breakdown + local tips).</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Where to find clients</span>&nbsp; Travel Facebook groups, honeymoon/anniversary planning communities, busy-parent groups — anyone who wants a trip planned without doing the research themselves.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Always verify</span>&nbsp; Double-check opening hours, current prices, and any visa/entry requirements before handing off a final itinerary — this drafts the plan, it doesn't replace checking real sources.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. Nothing here is saved anywhere except this browser.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab, [data-tab]').forEach(t => t.addEventListener('click', () => {
+  const target = t.dataset.tab;
+  if(!target) return;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.dataset.tab === target));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + target));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ---------- travel style profile ---------- */
+const PROFILE_KEY = 'aa-travel-profile-v1';
+function loadProfile(){ try{ return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); }catch(e){ return null; } }
+function renderProfileBar(){
+  const p = loadProfile();
+  const bar = document.getElementById('profile-bar');
+  const summary = document.getElementById('profile-summary');
+  if(p && (p.pace || p.travelers)){
+    bar.classList.remove('off');
+    summary.textContent = `Planning for ${p.name || 'this traveler'} — ${p.pace ? p.pace.split(' —')[0] : 'pace not set'}`;
+  } else {
+    bar.classList.add('off');
+    summary.textContent = 'No travel style set — every tab uses generic defaults.';
+  }
+}
+function saveProfile(){
+  const p = {
+    name: document.getElementById('pf-name').value.trim(),
+    pace: document.getElementById('pf-pace').value,
+    travelers: document.getElementById('pf-travelers').value.trim(),
+    notes: document.getElementById('pf-notes').value.trim(),
+  };
+  try{ localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }catch(e){}
+  renderProfileBar();
+  const el = document.getElementById('pf-status');
+  el.textContent = 'Saved. Every generator below will now use this profile.';
+  setTimeout(() => el.textContent = '', 2500);
+}
+(function initProfileForm(){
+  const p = loadProfile();
+  if(!p) return;
+  document.getElementById('pf-name').value = p.name || '';
+  if(p.pace) document.getElementById('pf-pace').value = p.pace;
+  document.getElementById('pf-travelers').value = p.travelers || '';
+  document.getElementById('pf-notes').value = p.notes || '';
+})();
+renderProfileBar();
+function profileContext(){
+  const p = loadProfile();
+  if(!p || !(p.pace || p.travelers)) return '';
+  return `\n\nTraveler context: ${p.travelers || 'not specified'}. Pace: ${p.pace || 'moderate'}. Notes: ${p.notes || 'none'}.`;
+}
+
+/* ---------- sample helpers ---------- */
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+/* ---------- itinerary ---------- */
+document.getElementById('it-start').addEventListener('change', updateDaysNote);
+document.getElementById('it-end').addEventListener('change', updateDaysNote);
+function tripDays(){
+  const s = document.getElementById('it-start').value, e = document.getElementById('it-end').value;
+  if(!s || !e) return 0;
+  const days = Math.round((new Date(e) - new Date(s)) / 86400000) + 1;
+  return Math.max(1, Math.min(21, days));
+}
+function updateDaysNote(){
+  const n = tripDays();
+  document.getElementById('it-daysnote').textContent = n ? `That's a ${n}-day trip.` : 'Pick dates to see how many days this covers.';
+}
+function genItinerary(regenerate){
+  const dest = document.getElementById('it-dest').value.trim();
+  const interests = document.getElementById('it-interests').value.trim();
+  const days = tripDays();
+  if(!dest || !days){ document.getElementById('it-status').textContent = 'Enter a destination and both dates first.'; return; }
+  const prompt = `Plan a ${days}-day trip to ${dest}. Interests: ${interests || 'general sightseeing'}.${profileContext()}
+For each day, suggest a morning, afternoon, and evening activity that make geographic sense together (don't zigzag across the city). Use real, well-known attractions/neighborhoods for this destination where you're confident, but avoid stating specific prices or opening hours since those change — describe activities generally instead. Reply with only a JSON array of exactly ${days} {"day": number, "theme": string (1-4 words), "morning": string, "afternoon": string, "evening": string} objects.`;
+  runSampleJson(prompt, 'it-btn', 'it-status', (items) => {
+    const wrap = document.getElementById('it-output');
+    wrap.innerHTML = (Array.isArray(items) ? items : []).map(d => `
+      <div class="day-card">
+        <div class="dn">Day ${d.day}</div>
+        <h4>${escapeHtml(d.theme||'')}</h4>
+        <div class="day-slot"><span class="tod">Morning</span><span>${escapeHtml(d.morning||'')}</span></div>
+        <div class="day-slot"><span class="tod">Afternoon</span><span>${escapeHtml(d.afternoon||'')}</span></div>
+        <div class="day-slot"><span class="tod">Evening</span><span>${escapeHtml(d.evening||'')}</span></div>
+      </div>
+    `).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('it-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- packing list ---------- */
+function genPacking(regenerate){
+  const dest = document.getElementById('pk-dest').value.trim();
+  const type = document.getElementById('pk-type').value;
+  const days = document.getElementById('pk-days').value;
+  if(!dest){ document.getElementById('pk-status').textContent = 'Enter a destination and season first.'; return; }
+  const prompt = `Create a packing list for a ${days}-day ${type} trip to ${dest}.${profileContext()}
+Reply with only a JSON array of {"category": string, "items": [string]} objects covering clothing, toiletries, documents/money, electronics, and trip-type-specific gear. Keep items practical and specific to the season/climate implied by the destination.`;
+  runSampleJson(prompt, 'pk-btn', 'pk-status', (cats) => {
+    const wrap = document.getElementById('pk-output');
+    wrap.innerHTML = `<div class="card">${(Array.isArray(cats)?cats:[]).map(c => `
+      <div class="pack-cat"><h4>${escapeHtml(c.category||'')}</h4><ul>${(c.items||[]).map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul></div>
+    `).join('')}</div>` || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('pk-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- budget allocator ---------- */
+function genBudget(regenerate){
+  const total = parseFloat(document.getElementById('bg-total').value) || 0;
+  const days = document.getElementById('bg-days').value;
+  const style = document.getElementById('bg-style').value;
+  if(!total){ document.getElementById('bg-status').textContent = 'Enter a total budget first.'; return; }
+  const prompt = `Suggest a sensible percentage budget allocation for a ${days}-day trip with a ${style} travel style and a total budget of $${total} (excluding flights).
+Reply with only a JSON array of exactly 5 {"category": string, "percent": number} objects for: Lodging, Food, Activities/Tours, Local Transport, Buffer/Misc. Percentages must sum to exactly 100.`;
+  runSampleJson(prompt, 'bg-btn', 'bg-status', (items) => {
+    const list = Array.isArray(items) ? items : [];
+    const wrap = document.getElementById('bg-output');
+    wrap.innerHTML = list.map(it => `
+      <div class="budget-bar-row">
+        <span>${escapeHtml(it.category||'')}</span>
+        <div class="budget-bar-track"><div class="budget-bar-fill" style="width:${it.percent||0}%"></div></div>
+        <span class="mono">$${Math.round(total * (it.percent||0)/100)}</span>
+      </div>
+    `).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('bg-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- local tips ---------- */
+function genTips(regenerate){
+  const dest = document.getElementById('tp-dest').value.trim();
+  if(!dest){ document.getElementById('tp-status').textContent = 'Enter a destination first.'; return; }
+  const prompt = `Give practical local tips for a first-time visitor to ${dest}: tipping norms, common etiquette/customs to know, general safety notes, and one or two useful local phrases if the language differs from English. Be general and avoid overly specific claims (exact prices, current laws) that could be outdated — flag anything the traveler should verify with an official source.
+Reply with only a JSON array of {"topic": string, "tip": string} objects, 5-7 entries.`;
+  runSampleJson(prompt, 'tp-btn', 'tp-status', (items) => {
+    const wrap = document.getElementById('tp-output');
+    wrap.innerHTML = (Array.isArray(items) ? items : []).map(it => `<div class="card"><span class="n">${escapeHtml(it.topic||'')}</span><br>${escapeHtml(it.tip||'')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('tp-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+function copyOut(id){
+  const el = document.getElementById(id);
+  const text = Array.from(el.querySelectorAll('.day-card, .card')).map(c => c.textContent.trim()).join('\n\n');
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+</script>

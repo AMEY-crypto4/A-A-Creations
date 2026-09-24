@@ -1,0 +1,545 @@
+<title>Grant Writing Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;600;700&family=Karla:wght@400;500;600;700&family=Fira+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.006 220);
+  --paper-raised:oklch(0.995 0.003 220);
+  --ink:oklch(0.2 0.025 220);
+  --ink-dim:oklch(0.46 0.018 220);
+  --line:oklch(0.85 0.014 220);
+  --line-strong:oklch(0.7 0.02 220);
+  --accent:oklch(0.42 0.1 210);
+  --accent-soft:oklch(0.42 0.1 210 / 0.1);
+  --accent-ink:oklch(0.99 0.005 90);
+  --gold:oklch(0.64 0.13 75);
+  --gold-soft:oklch(0.64 0.13 75 / 0.15);
+  --shadow:0 1px 2px oklch(0.25 0.02 220 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.15 0.016 220); --paper-raised:oklch(0.2 0.018 220);
+    --ink:oklch(0.94 0.008 220); --ink-dim:oklch(0.68 0.014 220);
+    --line:oklch(0.33 0.02 220); --line-strong:oklch(0.44 0.026 220);
+    --accent:oklch(0.68 0.1 210); --accent-soft:oklch(0.68 0.1 210 / 0.16); --accent-ink:oklch(0.14 0.02 210);
+    --gold:oklch(0.74 0.12 75); --gold-soft:oklch(0.74 0.12 75 / 0.18);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.15 0.016 220); --paper-raised:oklch(0.2 0.018 220);
+  --ink:oklch(0.94 0.008 220); --ink-dim:oklch(0.68 0.014 220);
+  --line:oklch(0.33 0.02 220); --line-strong:oklch(0.44 0.026 220);
+  --accent:oklch(0.68 0.1 210); --accent-soft:oklch(0.68 0.1 210 / 0.16); --accent-ink:oklch(0.14 0.02 210);
+  --gold:oklch(0.74 0.12 75); --gold-soft:oklch(0.74 0.12 75 / 0.18);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Karla',system-ui,sans-serif}
+h1,h2,h3{font-family:'Frank Ruhl Libre',georgia,serif;margin:0;text-wrap:balance}
+.mono{font-family:'Fira Mono',monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:6px;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);font-family:'Frank Ruhl Libre',serif;font-weight:700;font-size:17px}
+.brand h1{font-size:21px;font-weight:700}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'Fira Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+
+.profile-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;margin-top:16px;background:var(--accent-soft);border-radius:10px;font-size:12.5px;flex-wrap:wrap}
+.profile-bar .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.profile-bar.off .dot{background:var(--ink-dim)}
+.profile-bar a{color:var(--accent);font-weight:700;text-decoration:none;cursor:pointer}
+.profile-bar a:hover{text-decoration:underline}
+
+.tabs{display:flex;gap:4px;margin:18px 0 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{font-family:'Karla',sans-serif;font-weight:700;font-size:13px;padding:11px 14px;background:none;border:0;cursor:pointer;color:var(--ink-dim);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none;padding:26px 0}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.split{display:grid;grid-template-columns:380px 1fr;gap:22px}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:10px;padding:22px;box-shadow:var(--shadow)}
+.panel h3{font-size:16px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;font-family:'Karla',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:6px;background:var(--paper);color:var(--ink)}
+.field textarea{resize:vertical;min-height:90px;line-height:1.5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.btn{font-family:'Karla',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:7px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.card .n{display:inline-block;font-family:'Fira Mono',monospace;font-size:10px;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.field-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-dim);margin-top:8px;margin-bottom:2px;font-weight:700}
+.field-lbl:first-child{margin-top:0}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+.output-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.fit-score{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.fit-score .badge{font-family:'Fira Mono',monospace;font-weight:700;font-size:13px;padding:6px 14px;border-radius:20px}
+.fit-score .badge.strong{background:var(--gold-soft);color:oklch(0.45 0.13 75)}
+:root[data-theme="dark"] .fit-score .badge.strong{color:var(--gold)}
+.fit-score .badge.weak{background:oklch(0.55 0.16 25 / 0.13);color:oklch(0.5 0.16 25)}
+
+.item-row-edit{display:grid;grid-template-columns:1fr 100px 26px;gap:6px;margin-bottom:8px}
+.item-row-edit input{font-size:12.5px;padding:7px 9px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
+.item-row-edit .rm{width:26px;height:26px;border:1px solid var(--line);border-radius:5px;background:var(--paper);color:var(--ink-dim);cursor:pointer}
+
+.tag-chip{display:inline-block;font-family:'Fira Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;background:var(--gold-soft);color:oklch(0.45 0.13 75);text-transform:uppercase;letter-spacing:.04em}
+:root[data-theme="dark"] .tag-chip{color:var(--gold)}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">G</div>
+      <div>
+        <h1>Grant Writing Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 08</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Per grant: <strong>$400–$2,500</strong><br>Retainer (multiple/yr): <strong>$1.5k–$10k/mo</strong></div>
+  </header>
+
+  <div class="profile-bar off" id="profile-bar">
+    <span class="dot"></span>
+    <span id="profile-summary">No organization profile set — every tab writes generically.</span>
+    <a data-tab="profile">Set it up →</a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="fit">Fit Checker</button>
+    <button class="tab" data-tab="needs">Needs Statement</button>
+    <button class="tab" data-tab="narrative">Program Narrative</button>
+    <button class="tab" data-tab="budget">Budget Narrative</button>
+    <button class="tab" data-tab="outcomes">Outcomes &amp; Evaluation</button>
+    <button class="tab" data-tab="loi">Executive Summary / LOI</button>
+    <button class="tab" data-tab="profile">Org Profile</button>
+    <button class="tab" data-tab="about">How to sell this</button>
+  </div>
+
+  <!-- FIT CHECKER -->
+  <div class="view active" id="view-fit">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Paste an RFP or grant description before investing hours in a full application.</p>
+        <div class="field"><label>Grant / RFP description (paste as much as you have)</label><textarea id="fit-grant" style="min-height:180px" placeholder="Paste the funder's description, eligibility criteria, and priorities…"></textarea></div>
+        <button class="btn btn-primary btn-block" id="fit-btn" onclick="genFit()">Check fit</button>
+      </div>
+      <div class="panel">
+        <h3>Fit assessment</h3>
+        <p class="sub">A go/no-go read, plus what the application will need to prove.</p>
+        <div id="fit-output"><div class="output-empty">Set up your Org Profile first for the best read, then paste a grant and check.</div></div>
+        <div class="output-status" id="fit-status"></div>
+        <div class="output-actions" id="fit-actions" style="display:none">
+          <button class="btn btn-sm" onclick="genFit(true)">Re-check</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEEDS STATEMENT -->
+  <div class="view" id="view-needs">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">The problem, backed by whatever data or observations you have.</p>
+        <div class="field"><label>The problem or gap</label><textarea id="nd-problem" placeholder="e.g. Rural families in the county have no free after-school tutoring within 20 miles"></textarea></div>
+        <div class="field"><label>Data points / evidence (rough is fine — never invents stats)</label><textarea id="nd-data" placeholder="e.g. 40% of 3rd graders below reading level per state data; nearest program is 45 min away"></textarea></div>
+        <button class="btn btn-primary btn-block" id="nd-btn" onclick="genNeeds()">Draft needs statement</button>
+      </div>
+      <div class="panel">
+        <h3>Needs statement</h3>
+        <p class="sub">Ready to drop into the application, cite-checked against your inputs.</p>
+        <div id="nd-output"><div class="output-empty">Fill in the fields and draft.</div></div>
+        <div class="output-status" id="nd-status"></div>
+        <div class="output-actions" id="nd-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('nd-output')">Copy text</button>
+          <button class="btn btn-sm" onclick="genNeeds(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRAM NARRATIVE -->
+  <div class="view" id="view-narrative">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">What the funded program actually does.</p>
+        <div class="field"><label>Project goals</label><textarea id="pn-goals" placeholder="e.g. provide free tutoring to 100 students over one school year"></textarea></div>
+        <div class="field"><label>Key activities (rough list)</label><textarea id="pn-activities" placeholder="e.g. twice-weekly 1:1 tutoring, quarterly progress assessments, parent workshops"></textarea></div>
+        <div class="field"><label>Who it serves</label><input type="text" id="pn-population" placeholder="e.g. K-5 students in [County] qualifying for free/reduced lunch"></div>
+        <button class="btn btn-primary btn-block" id="pn-btn" onclick="genNarrative()">Draft program narrative</button>
+      </div>
+      <div class="panel">
+        <h3>Program narrative</h3>
+        <p class="sub">Structured with clear goal → activity → population framing.</p>
+        <div id="pn-output"><div class="output-empty">Fill in the fields and draft.</div></div>
+        <div class="output-status" id="pn-status"></div>
+        <div class="output-actions" id="pn-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('pn-output')">Copy text</button>
+          <button class="btn btn-sm" onclick="genNarrative(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUDGET NARRATIVE -->
+  <div class="view" id="view-budget">
+    <div class="split">
+      <div class="panel">
+        <h3>Budget line items</h3>
+        <p class="sub">Add each line — the narrative explains how it supports the project.</p>
+        <div id="bg-rows"></div>
+        <button class="btn btn-sm" onclick="addBudgetItem()">+ Add line item</button>
+        <button class="btn btn-primary btn-block" id="bg-btn" onclick="genBudget()" style="margin-top:14px">Draft budget narrative</button>
+      </div>
+      <div class="panel">
+        <h3>Budget narrative</h3>
+        <p class="sub">Ties every dollar back to the project — funders read this closely.</p>
+        <div id="bg-output"><div class="output-empty">Add line items and draft.</div></div>
+        <div class="output-status" id="bg-status"></div>
+        <div class="output-actions" id="bg-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('bg-output')">Copy text</button>
+          <button class="btn btn-sm" onclick="genBudget(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTCOMES -->
+  <div class="view" id="view-outcomes">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">Turns loose goals into SMART objectives with real evaluation methods.</p>
+        <div class="field"><label>Project goals (plain language)</label><textarea id="oc-goals" style="min-height:130px" placeholder="e.g. improve reading levels, increase family engagement"></textarea></div>
+        <button class="btn btn-primary btn-block" id="oc-btn" onclick="genOutcomes()">Draft outcomes &amp; evaluation plan</button>
+      </div>
+      <div class="panel">
+        <h3>Outcomes &amp; evaluation</h3>
+        <p class="sub">Each objective paired with how you'll actually measure it.</p>
+        <div id="oc-output"><div class="output-empty">Fill in the goals and draft.</div></div>
+        <div class="output-status" id="oc-status"></div>
+        <div class="output-actions" id="oc-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('oc-output')">Copy all</button>
+          <button class="btn btn-sm" onclick="genOutcomes(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOI -->
+  <div class="view" id="view-loi">
+    <div class="split">
+      <div class="panel">
+        <h3>Inputs</h3>
+        <p class="sub">A tight one-page letter of inquiry — pulls from your Org Profile automatically.</p>
+        <div class="field"><label>Project in one sentence</label><input type="text" id="loi-project" placeholder="e.g. a free after-school tutoring program for K-5 students"></div>
+        <div class="field"><label>Amount requested ($)</label><input type="number" id="loi-amount" min="0" step="100" placeholder="25000"></div>
+        <div class="field"><label>Funder name (if known)</label><input type="text" id="loi-funder" placeholder="e.g. The Ridgeline Family Foundation"></div>
+        <button class="btn btn-primary btn-block" id="loi-btn" onclick="genLoi()">Draft letter of inquiry</button>
+      </div>
+      <div class="panel">
+        <h3>Letter of inquiry</h3>
+        <p class="sub">Under one page — most funders screen LOIs in under a minute.</p>
+        <div id="loi-output"><div class="output-empty">Fill in the fields and draft.</div></div>
+        <div class="output-status" id="loi-status"></div>
+        <div class="output-actions" id="loi-actions" style="display:none">
+          <button class="btn btn-sm" onclick="copyOut('loi-output')">Copy text</button>
+          <button class="btn btn-sm" onclick="downloadOut('loi-output','letter-of-inquiry.txt')">Save as .txt</button>
+          <button class="btn btn-sm" onclick="genLoi(true)">Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORG PROFILE -->
+  <div class="view" id="view-profile">
+    <div class="panel" style="max-width:640px">
+      <h3>Organization profile</h3>
+      <p class="sub">Set this once per client org — every tab above writes with this context instead of generic placeholders.</p>
+      <div class="field"><label>Organization name</label><input type="text" id="pf-name" placeholder="e.g. Riverside Community Literacy Project"></div>
+      <div class="field"><label>Mission (1–2 sentences)</label><textarea id="pf-mission" placeholder="What the org exists to do"></textarea></div>
+      <div class="field"><label>Primary focus area</label><input type="text" id="pf-focus" placeholder="e.g. K-12 literacy, food security, youth mentorship"></div>
+      <div class="field"><label>Geographic area served</label><input type="text" id="pf-geo" placeholder="e.g. Riverside County, CA"></div>
+      <button class="btn btn-primary btn-block" onclick="saveProfile()">Save organization profile</button>
+      <div class="output-status" id="pf-status"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" id="view-about">
+    <div class="panel" style="max-width:640px">
+      <h3>Turning this into income</h3>
+      <p class="sub" style="margin-bottom:18px">Grant writing pays well because most nonprofits can't do it in-house consistently.</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Per grant</span>&nbsp; $400–$2,500 depending on grant size and complexity — a fit check plus a full application package (needs statement, narrative, budget narrative, outcomes plan).</p>
+      <p style="font-size:14px;line-height:1.8;margin-bottom:14px"><span class="tag-chip">Retainer</span>&nbsp; $1.5k–$10k/mo for organizations applying to multiple grants per year — set the Org Profile once, reuse it across every application.</p>
+      <p style="font-size:14px;line-height:1.8"><span class="tag-chip">Reality check</span>&nbsp; This tool drafts fast, well-structured first passes. A human still needs to verify every fact, statistic, and claim against real sources before submission — funders reject applications with fabricated or unverifiable data instantly.</p>
+    </div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — drafts use your own Claude usage and ask permission the first time you generate. Nothing here invents statistics or facts not in your inputs — always verify data against real sources before submitting to a funder.
+  </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab, [data-tab]').forEach(t => t.addEventListener('click', () => {
+  const target = t.dataset.tab;
+  if(!target) return;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.dataset.tab === target));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + target));
+}));
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escapeAttr(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+
+/* ---------- org profile ---------- */
+const PROFILE_KEY = 'aa-grant-profile-v1';
+function loadProfile(){ try{ return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); }catch(e){ return null; } }
+function renderProfileBar(){
+  const p = loadProfile();
+  const bar = document.getElementById('profile-bar');
+  const summary = document.getElementById('profile-summary');
+  if(p && p.name){
+    bar.classList.remove('off');
+    summary.textContent = `Writing for "${p.name}" — ${p.focus || 'focus area not set'}`;
+  } else {
+    bar.classList.add('off');
+    summary.textContent = 'No organization profile set — every tab writes generically.';
+  }
+}
+function saveProfile(){
+  const p = {
+    name: document.getElementById('pf-name').value.trim(),
+    mission: document.getElementById('pf-mission').value.trim(),
+    focus: document.getElementById('pf-focus').value.trim(),
+    geo: document.getElementById('pf-geo').value.trim(),
+  };
+  try{ localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }catch(e){}
+  renderProfileBar();
+  const el = document.getElementById('pf-status');
+  el.textContent = 'Saved. Every generator below will now use this profile.';
+  setTimeout(() => el.textContent = '', 2500);
+}
+(function initProfileForm(){
+  const p = loadProfile();
+  if(!p) return;
+  document.getElementById('pf-name').value = p.name || '';
+  document.getElementById('pf-mission').value = p.mission || '';
+  document.getElementById('pf-focus').value = p.focus || '';
+  document.getElementById('pf-geo').value = p.geo || '';
+})();
+renderProfileBar();
+
+function profileContext(){
+  const p = loadProfile();
+  if(!p || !p.name) return '';
+  return `\n\nOrganization context: "${p.name}". Mission: ${p.mission || 'not specified'}. Focus area: ${p.focus || 'not specified'}. Serves: ${p.geo || 'not specified'}. Weave this in naturally; never invent additional facts about the org beyond what's given here.`;
+}
+
+/* ---------- sample helpers ---------- */
+async function runSample(promptText, btnId, statusId, outputId, actionsId, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const out = document.getElementById(outputId);
+  const actions = document.getElementById(actionsId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = '';
+  actions.style.display = 'none';
+  out.innerHTML = `<div class="card">Thinking…</div>`;
+  try{
+    const { text } = await sample(promptText, {
+      modelTier: 'default',
+      cache: regenerate ? false : true,
+      onText: ({text}) => { out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`; }
+    });
+    out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`;
+    actions.style.display = 'flex';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      empty_completion: 'Nothing came back — add more detail and try again.',
+      prompt_too_large: 'That input is too long — trim it and try again.',
+      cancelled: 'Cancelled.',
+    };
+    if(e.text){ out.innerHTML = `<div class="card">${escapeHtml(e.text)}</div>`; }
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+async function runSampleJson(promptText, btnId, statusId, renderFn, regenerate){
+  const btn = document.getElementById(btnId);
+  const statusEl = document.getElementById(statusId);
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+  btn.disabled = true;
+  statusEl.textContent = 'Thinking…';
+  try{
+    const data = await sample.json(promptText, { modelTier: 'default', cache: regenerate ? false : true });
+    renderFn(data);
+    statusEl.textContent = '';
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try rephrasing.',
+      invalid_json: 'The response wasn\'t formatted right — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+/* ---------- fit checker ---------- */
+function genFit(regenerate){
+  const grant = document.getElementById('fit-grant').value.trim();
+  if(!grant){ document.getElementById('fit-status').textContent = 'Paste a grant/RFP description first.'; return; }
+  const prompt = `Assess how well this organization fits this grant opportunity.${profileContext()}
+Grant/RFP description:
+"""${grant}"""
+Reply with only a JSON object: {"fit": "Strong" | "Possible" | "Weak", "reasoning": string (2-3 sentences), "keyRequirements": [string] (3-5 concrete requirements the application will need to satisfy, drawn from the text)}. Base the fit rating only on what's actually stated in the org context and grant text — if the org profile is empty, note that in the reasoning rather than guessing fit.`;
+  runSampleJson(prompt, 'fit-btn', 'fit-status', (d) => {
+    const cls = d.fit === 'Strong' ? 'strong' : d.fit === 'Weak' ? 'weak' : '';
+    const reqs = (d.keyRequirements||[]).map(r => `<li>${escapeHtml(r)}</li>`).join('');
+    document.getElementById('fit-output').innerHTML = `<div class="card">
+      <div class="fit-score"><span class="badge ${cls}">${escapeHtml(d.fit||'Unknown')}</span></div>
+      ${escapeHtml(d.reasoning||'')}
+      <div class="field-lbl">Key requirements to satisfy</div>
+      <ul style="margin:4px 0 0;padding-left:18px">${reqs}</ul>
+    </div>`;
+    document.getElementById('fit-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- needs statement ---------- */
+function genNeeds(regenerate){
+  const problem = document.getElementById('nd-problem').value.trim();
+  const data = document.getElementById('nd-data').value.trim();
+  if(!problem){ document.getElementById('nd-status').textContent = 'Describe the problem first.'; return; }
+  const prompt = `Write a compelling grant needs statement (1-2 paragraphs) for this problem.${profileContext()}
+Problem: "${problem}"
+Supporting data/evidence: "${data || 'none provided — write the statement without fabricating statistics, using qualitative framing instead'}"
+Never invent statistics, percentages, or sources not given above. Output only the needs statement text.`;
+  runSample(prompt, 'nd-btn', 'nd-status', 'nd-output', 'nd-actions', regenerate);
+}
+
+/* ---------- program narrative ---------- */
+function genNarrative(regenerate){
+  const goals = document.getElementById('pn-goals').value.trim();
+  const activities = document.getElementById('pn-activities').value.trim();
+  const population = document.getElementById('pn-population').value.trim();
+  if(!goals || !activities){ document.getElementById('pn-status').textContent = 'Fill in goals and activities first.'; return; }
+  const prompt = `Write a grant program narrative (2-3 paragraphs) connecting goals, activities, and the population served.${profileContext()}
+Goals: "${goals}"
+Activities: "${activities}"
+Population served: "${population || 'not specified'}"
+Never invent numbers, partners, or facts not given above. Output only the narrative text.`;
+  runSample(prompt, 'pn-btn', 'pn-status', 'pn-output', 'pn-actions', regenerate);
+}
+
+/* ---------- budget narrative ---------- */
+let budgetItems = [{category:'', amount:0, notes:''}];
+function renderBudgetForm(){
+  const wrap = document.getElementById('bg-rows');
+  wrap.innerHTML = budgetItems.map((it,i) => `
+    <div class="item-row-edit">
+      <input type="text" placeholder="Line item (e.g. Tutor stipends)" value="${escapeAttr(it.category)}" data-f="category" data-i="${i}">
+      <input type="number" placeholder="Amount" min="0" step="50" value="${it.amount}" data-f="amount" data-i="${i}">
+      <button class="rm" data-i="${i}">&times;</button>
+    </div>
+  `).join('');
+  wrap.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const i = +e.target.dataset.i, f = e.target.dataset.f;
+      budgetItems[i][f] = f === 'amount' ? (parseFloat(e.target.value)||0) : e.target.value;
+    });
+  });
+  wrap.querySelectorAll('.rm').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if(budgetItems.length <= 1) return;
+      budgetItems.splice(+btn.dataset.i, 1);
+      renderBudgetForm();
+    });
+  });
+}
+function addBudgetItem(){ budgetItems.push({category:'', amount:0, notes:''}); renderBudgetForm(); }
+function genBudget(regenerate){
+  const validItems = budgetItems.filter(it => it.category.trim());
+  if(!validItems.length){ document.getElementById('bg-status').textContent = 'Add at least one line item with a name.'; return; }
+  const total = validItems.reduce((s,it) => s + it.amount, 0);
+  const list = validItems.map(it => `${it.category}: $${it.amount}`).join('; ');
+  const prompt = `Write a grant budget narrative that justifies each line item and ties it back to the project.${profileContext()}
+Budget line items: ${list}
+Total: $${total}
+For each line item, explain in one sentence why it's needed for the project to succeed. Never invent line items not listed above. Output only the narrative text, one paragraph per major line item.`;
+  runSample(prompt, 'bg-btn', 'bg-status', 'bg-output', 'bg-actions', regenerate);
+}
+renderBudgetForm();
+
+/* ---------- outcomes & evaluation ---------- */
+function genOutcomes(regenerate){
+  const goals = document.getElementById('oc-goals').value.trim();
+  if(!goals){ document.getElementById('oc-status').textContent = 'Describe the project goals first.'; return; }
+  const prompt = `Turn these plain-language project goals into SMART objectives with an evaluation method for each.${profileContext()}
+Goals: "${goals}"
+Reply with only a JSON array of 3-5 {"objective": string (SMART-worded), "evaluationMethod": string (how it will actually be measured — a survey, pre/post assessment, attendance log, etc.)} objects. Never invent specific numeric targets beyond reasonable placeholders like "[X]%" that the org fills in.`;
+  runSampleJson(prompt, 'oc-btn', 'oc-status', (items) => {
+    const wrap = document.getElementById('oc-output');
+    wrap.innerHTML = (Array.isArray(items) ? items : []).map((it,i) => `<div class="card"><span class="n">Objective ${i+1}</span><br>${escapeHtml(it.objective||'')}<div class="field-lbl">Evaluation method</div>${escapeHtml(it.evaluationMethod||'')}</div>`).join('') || '<div class="output-empty">Nothing came back — try again.</div>';
+    document.getElementById('oc-actions').style.display = 'flex';
+  }, regenerate);
+}
+
+/* ---------- LOI ---------- */
+function genLoi(regenerate){
+  const project = document.getElementById('loi-project').value.trim();
+  const amount = document.getElementById('loi-amount').value.trim();
+  const funder = document.getElementById('loi-funder').value.trim();
+  if(!project){ document.getElementById('loi-status').textContent = 'Describe the project first.'; return; }
+  const prompt = `Write a one-page letter of inquiry (LOI) to a grant funder.${profileContext()}
+Project: "${project}"
+Amount requested: ${amount ? '$' + amount : 'not specified — omit a specific figure'}
+Funder: "${funder || '[Funder Name]'}"
+Structure: opening hook, brief org intro, the need, the project and ask, closing call to action. Under 400 words. Never invent facts about the org or project beyond what's given. Output only the letter text, using "[Funder Name]" as greeting placeholder if not known.`;
+  runSample(prompt, 'loi-btn', 'loi-status', 'loi-output', 'loi-actions', regenerate);
+}
+
+function copyOut(id){
+  const text = Array.from(document.querySelectorAll('#' + id + ' .card')).map(c => c.textContent).join('\n\n');
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+async function downloadOut(id, filename){
+  const text = document.querySelector('#' + id + ' .card')?.textContent || '';
+  const downloads = await claude.use('downloads').catch(() => null);
+  if(!downloads){ alert('Downloads aren\'t available in this view — use Copy text instead.'); return; }
+  try{ await downloads.save({ filename, data: text }); }
+  catch(e){ if(e.code !== 'declined') alert('Could not save the file (' + e.code + ').'); }
+}
+</script>

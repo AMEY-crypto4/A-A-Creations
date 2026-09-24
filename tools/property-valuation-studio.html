@@ -1,0 +1,229 @@
+<title>Property Valuation Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@500;600;700&family=Rethink+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:oklch(0.975 0.006 95);
+  --paper-raised:oklch(0.995 0.003 95);
+  --ink:oklch(0.2 0.015 230);
+  --ink-dim:oklch(0.46 0.012 230);
+  --line:oklch(0.85 0.012 95);
+  --line-strong:oklch(0.7 0.018 95);
+  --accent:oklch(0.42 0.1 235);
+  --accent-soft:oklch(0.42 0.1 235 / 0.1);
+  --accent-ink:oklch(0.99 0.005 90);
+  --gold:oklch(0.68 0.12 75);
+  --gold-soft:oklch(0.68 0.12 75 / 0.16);
+  --shadow:0 1px 2px oklch(0.25 0.015 95 / 0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:oklch(0.16 0.012 230); --paper-raised:oklch(0.21 0.014 230);
+    --ink:oklch(0.94 0.006 95); --ink-dim:oklch(0.68 0.01 95);
+    --line:oklch(0.34 0.016 230); --line-strong:oklch(0.45 0.02 230);
+    --accent:oklch(0.68 0.1 235); --accent-soft:oklch(0.68 0.1 235 / 0.16); --accent-ink:oklch(0.15 0.02 235);
+    --gold:oklch(0.75 0.12 75); --gold-soft:oklch(0.75 0.12 75 / 0.18);
+    --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:oklch(0.16 0.012 230); --paper-raised:oklch(0.21 0.014 230);
+  --ink:oklch(0.94 0.006 95); --ink-dim:oklch(0.68 0.01 95);
+  --line:oklch(0.34 0.016 230); --line-strong:oklch(0.45 0.02 230);
+  --accent:oklch(0.68 0.1 235); --accent-soft:oklch(0.68 0.1 235 / 0.16); --accent-ink:oklch(0.15 0.02 235);
+  --gold:oklch(0.75 0.12 75); --gold-soft:oklch(0.75 0.12 75 / 0.18);
+  --shadow:0 1px 3px oklch(0 0 0 / 0.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Rethink Sans',system-ui,sans-serif}
+h1,h2,h3{font-family:'Crimson Pro',georgia,serif;margin:0;text-wrap:balance}
+.mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px 60px}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mark{width:38px;height:38px;border-radius:6px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-family:'Crimson Pro',serif;font-weight:700;font-size:19px}
+.brand h1{font-size:20px}
+.brand .tag{font-size:11px;color:var(--ink-dim);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
+.pricing-hint{font-size:12px;color:var(--ink-dim);text-align:right}
+.pricing-hint strong{color:var(--accent)}
+.caveat{background:var(--gold-soft);border-left:3px solid var(--gold);padding:10px 12px;font-size:11.5px;line-height:1.5;border-radius:0 6px 6px 0;margin:16px 0 0}
+
+.panel{background:var(--paper-raised);border:1px solid var(--line);border-radius:8px;padding:22px;box-shadow:var(--shadow);margin-top:24px}
+.panel h3{font-size:20px;margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--ink-dim);margin-bottom:16px;line-height:1.5}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.field input,.field textarea{width:100%;font-family:'Rethink Sans',sans-serif;font-size:13.5px;padding:9px 11px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.comp-row{display:grid;grid-template-columns:1fr 90px 90px 26px;gap:6px;margin-bottom:8px}
+.comp-row input{font-size:12.5px;padding:7px 9px;border:1px solid var(--line-strong);border-radius:5px;background:var(--paper);color:var(--ink)}
+.comp-head{display:grid;grid-template-columns:1fr 90px 90px 26px;gap:6px;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-bottom:6px;font-weight:700}
+.rm{width:26px;height:26px;border:1px solid var(--line);border-radius:5px;background:var(--paper);color:var(--ink-dim);cursor:pointer}
+
+.btn{font-family:'Rethink Sans',sans-serif;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:6px;border:1px solid var(--line-strong);cursor:pointer;background:var(--paper-raised);color:var(--ink)}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:0}
+.btn:hover{border-color:var(--ink)}
+.btn-primary:hover{opacity:.92}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;font-size:12px}
+
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+@media(max-width:600px){.metric-grid{grid-template-columns:1fr}}
+.metric-tile{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:16px;text-align:center}
+.metric-tile .val{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--accent)}
+.metric-tile .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-dim);margin-top:4px}
+
+.output-empty{color:var(--ink-dim);font-size:13px;padding:30px 10px;text-align:center;border:1px dashed var(--line);border-radius:8px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:15px 16px;margin-bottom:12px;font-size:13.5px;line-height:1.65}
+.output-status{font-size:12px;color:var(--ink-dim);margin:6px 0;min-height:16px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);line-height:1.7}
+footer strong{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="mark">⌂</div>
+      <div>
+        <h1>Property Valuation Studio</h1>
+        <div class="tag">A&amp;A Creations · Fig. 25</div>
+      </div>
+    </div>
+    <div class="pricing-hint">Per report: <strong>$50–$300</strong></div>
+  </header>
+  <div class="caveat">This is a comps-based estimate from data you enter — not a licensed appraisal, and not a substitute for one on any real transaction. Use it for quick market-position context only.</div>
+
+  <div class="panel">
+    <h3>Comparable sales</h3>
+    <p class="sub">Enter recent comps you've researched — real math on price/sqft, nothing invented.</p>
+    <div class="comp-head"><span>Address / label</span><span>Sqft</span><span>Sale price</span><span></span></div>
+    <div id="comp-rows"></div>
+    <button class="btn btn-sm" onclick="addComp()">+ Add comp</button>
+
+    <div class="two-col" style="margin-top:20px">
+      <div class="field"><label>Subject property sqft</label><input type="number" id="subj-sqft" value="1800" min="0" step="10" oninput="calc()"></div>
+      <div class="field"><label>Condition adjustment (%, +/-)</label><input type="number" id="subj-adjust" value="0" step="1" oninput="calc()"></div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric-tile"><div class="val mono" id="v-avgpsf">$0</div><div class="lbl">Avg $/sqft (comps)</div></div>
+      <div class="metric-tile"><div class="val mono" id="v-range">$0 – $0</div><div class="lbl">Estimated range</div></div>
+      <div class="metric-tile"><div class="val mono" id="v-mid">$0</div><div class="lbl">Midpoint estimate</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Market commentary</h3>
+    <p class="sub">Context for the number above — enter your comps first.</p>
+    <button class="btn btn-primary btn-block" id="cm-btn" onclick="genCommentary()">Generate market commentary</button>
+    <div id="cm-output" style="margin-top:16px"><div class="output-empty">Add comps, then generate commentary.</div></div>
+    <div class="output-status" id="cm-status"></div>
+  </div>
+
+  <footer>
+    <strong>A&amp;A Creations</strong> · 8454021541 — the $/sqft math is plain arithmetic from your comps. Commentary uses your own Claude usage and asks permission the first time. Never present this as a licensed appraisal.
+  </footer>
+</div>
+
+<script>
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function money(n){ return '$' + (n||0).toLocaleString('en-US',{maximumFractionDigits:0}); }
+
+let comps = [
+  {label:'123 Maple St', sqft:1750, price:385000},
+  {label:'456 Oak Ave', sqft:1900, price:410000},
+  {label:'789 Pine Rd', sqft:1650, price:362000},
+];
+function renderCompForm(){
+  const wrap = document.getElementById('comp-rows');
+  wrap.innerHTML = comps.map((c,i) => `
+    <div class="comp-row">
+      <input type="text" value="${c.label.replace(/"/g,'&quot;')}" data-f="label" data-i="${i}">
+      <input type="number" value="${c.sqft}" min="0" step="10" data-f="sqft" data-i="${i}">
+      <input type="number" value="${c.price}" min="0" step="1000" data-f="price" data-i="${i}">
+      <button class="rm" data-i="${i}">&times;</button>
+    </div>
+  `).join('');
+  wrap.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const i = +e.target.dataset.i, f = e.target.dataset.f;
+      comps[i][f] = f === 'label' ? e.target.value : (parseFloat(e.target.value)||0);
+      calc();
+    });
+  });
+  wrap.querySelectorAll('.rm').forEach(btn => {
+    btn.addEventListener('click', () => { comps.splice(+btn.dataset.i,1); renderCompForm(); calc(); });
+  });
+}
+function addComp(){ comps.push({label:'New comp', sqft:0, price:0}); renderCompForm(); calc(); }
+
+function calc(){
+  const valid = comps.filter(c => c.sqft > 0 && c.price > 0);
+  const subjSqft = parseFloat(document.getElementById('subj-sqft').value) || 0;
+  const adjust = parseFloat(document.getElementById('subj-adjust').value) || 0;
+  if(!valid.length || !subjSqft){
+    document.getElementById('v-avgpsf').textContent = '$0';
+    document.getElementById('v-range').textContent = '$0 – $0';
+    document.getElementById('v-mid').textContent = '$0';
+    return;
+  }
+  const psfValues = valid.map(c => c.price / c.sqft);
+  const avgPsf = psfValues.reduce((a,b) => a+b, 0) / psfValues.length;
+  const minPsf = Math.min(...psfValues), maxPsf = Math.max(...psfValues);
+
+  const adjustMult = 1 + (adjust/100);
+  const low = subjSqft * minPsf * adjustMult;
+  const high = subjSqft * maxPsf * adjustMult;
+  const mid = subjSqft * avgPsf * adjustMult;
+
+  document.getElementById('v-avgpsf').textContent = money(avgPsf) + '/sqft';
+  document.getElementById('v-range').textContent = money(low) + ' – ' + money(high);
+  document.getElementById('v-mid').textContent = money(mid);
+}
+renderCompForm();
+calc();
+
+async function genCommentary(){
+  const valid = comps.filter(c => c.sqft > 0 && c.price > 0);
+  const btn = document.getElementById('cm-btn');
+  const statusEl = document.getElementById('cm-status');
+  const out = document.getElementById('cm-output');
+  if(!valid.length){ statusEl.textContent = 'Add at least one comp with sqft and price first.'; return; }
+
+  const sample = await claude.use('sample').catch(() => null);
+  if(!sample){ statusEl.textContent = 'AI drafting isn\'t available in this view.'; return; }
+
+  btn.disabled = true;
+  statusEl.textContent = '';
+  out.innerHTML = `<div class="card">Thinking…</div>`;
+
+  const compList = valid.map(c => `${c.label}: ${c.sqft} sqft, $${c.price} ($${(c.price/c.sqft).toFixed(0)}/sqft)`).join('; ');
+  const range = document.getElementById('v-range').textContent;
+  const prompt = `Write a brief market commentary paragraph for a property valuation estimate, using ONLY the comps given — never invent additional market data or claim access to real MLS data.
+Comps: ${compList}
+Estimated range: ${range}
+Note what the comp spread suggests about market consistency, and one thing to verify before relying on this number (condition, exact location, recent renovations). Under 120 words. End by restating this is not a licensed appraisal.`;
+
+  try{
+    const { text } = await sample(prompt, {
+      modelTier: 'default',
+      onText: ({text}) => { out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`; }
+    });
+    out.innerHTML = `<div class="card">${escapeHtml(text)}</div>`;
+  }catch(e){
+    const copy = {
+      not_granted: 'You declined AI access for this page.',
+      rate_limited: 'Too many requests right now — wait a moment and try again.',
+      refused: 'Claude declined this one — try again.',
+      empty_completion: 'Nothing came back — try again.',
+      cancelled: 'Cancelled.',
+    };
+    statusEl.textContent = copy[e.code] || ('Something went wrong (' + e.code + '). Try again.');
+  }finally{
+    btn.disabled = false;
+  }
+}
+</script>
